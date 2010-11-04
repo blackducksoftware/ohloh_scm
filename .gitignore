@@ -2,3 +2,4 @@
 *.pyc
 pkg/
 *.cache
+TAGS
