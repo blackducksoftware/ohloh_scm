@@ -1,16 +1,7 @@
 module Scm::Adapters
 	class DarcsAdapter < AbstractAdapter
 		def head_token
-			# This only returns first 12 characters.
-			# How can we make it return the entire hash?
-			token = run("darcs id -q #{url}").strip
-
-			# Recent versions of Darcs now somtimes append a '+' char to the token.
-			# I believe this signifies pending changes... but we don't care.
-			# Strip the trailing '+', if any.
-			token = token[0..-2] if token[-1..-1] == '+'
-
-			token
+		  string_to_patch_names(run("cd '#{url}' && darcs changes --last 1"))[0]
 		end
 
 		def head
@@ -18,11 +9,15 @@ module Scm::Adapters
 		end
 
 		def parent_tokens(commit)
-			run("cd '#{url}' && darcs parents -r #{commit.token} --template '{node}\\n'").split("\n")
+		  string_to_patch_names(run("cd '#{url}' && darcs changes --to-patch #{commit.token}"))[1..-1]
 		end
 
 		def parents(commit)
-			parent_tokens(commit).collect { |token| verbose_commit(token) }
+			parent_tokens(commit).map {|token| verbose_commit(token)}
+		end
+
+		def string_to_patch_names(s)
+		  s.split(/\n/).select {|s| s =~ /^  \* /}.map {|s| s.sub(/^  \* /,'')}
 		end
 	end
 end

@@ -27,9 +27,9 @@ module Scm::Adapters
 		# If you need all commits including diffs, you should use the each_commit() iterator, which only holds one commit
 		# in memory at a time.
 		def commits(since=0)
-			log = run("cd '#{self.url}' && darcs log -f -v -r tip:#{since || 0} --style #{Scm::Parsers::DarcsStyledParser.style_path}")
-			a = Scm::Parsers::DarcsStyledParser.parse(log).reverse
-
+			count = run("cd '#{self.url}' && darcs changes --count")
+			log = run("cd '#{self.url}' && darcs changes --last #{count-since}")
+			a = Scm::Parsers::DarcsParser.parse(log).reverse
 			if a.any? && a.first.token == since
 				a[1..-1]
 			else
@@ -39,8 +39,8 @@ module Scm::Adapters
 
 		# Returns a single commit, including its diffs
 		def verbose_commit(token)
-			log = run("cd '#{self.url}' && darcs log -v -r #{token} --style #{Scm::Parsers::DarcsStyledParser.verbose_style_path}")
-			Scm::Parsers::DarcsStyledParser.parse(log).first
+			log = run("cd '#{self.url}' && darcs changes -v -p #{token}")
+			Scm::Parsers::DarcsParser.parse(log).first
 		end
 
 		# Yields each commit after +since+, including its diffs.
@@ -49,7 +49,7 @@ module Scm::Adapters
 		# Only a single commit is ever held in memory at once.
 		def each_commit(since=0)
 			open_log_file(since) do |io|
-				Scm::Parsers::DarcsStyledParser.parse(io) do |commit|
+				Scm::Parsers::DarcsParser.parse(io) do |commit|
 					yield commit if block_given? && commit.token != since
 				end
 			end
@@ -70,7 +70,7 @@ module Scm::Adapters
 					# As a time optimization, just create an empty file rather than fetch a log we know will be empty.
 					File.open(log_filename, 'w') { }
 				else
-					run "cd '#{url}' && darcs log --verbose -r #{since || 0}:tip --style #{Scm::Parsers::DarcsStyledParser.verbose_style_path} > #{log_filename}"
+					run "cd '#{url}' && darcs log --verbose -r #{since || 0}:tip --style #{Scm::Parsers::DarcsParser.verbose_style_path} > #{log_filename}"
 				end
 				File.open(log_filename, 'r') { |io| yield io }
 			ensure
