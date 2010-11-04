@@ -16,7 +16,7 @@ expected = <<-EXPECTED
 #include <stdio.h>
 main()
 {
-	printf("Hello, World!\\n");
+	printf("Hello, World!\\\\n");
 }
 EXPECTED
 
@@ -28,17 +28,18 @@ EXPECTED
 		end
 
 		# Ensure that we escape bash-significant characters like ' and & when they appear in the filename
-		def Xtest_funny_file_name_chars
+                # NB only works with --reserved-ok, otherwise darcs rejects with "invalid under Windows"
+		def test_funny_file_name_chars
 			Scm::ScratchDir.new do |dir|
 				# Make a file with a problematic filename
 				funny_name = '|file_name (&\'")'
 				File.open(File.join(dir, funny_name), 'w') { |f| f.write "contents" }
 
-				# Add it to an darcs repository
-				`cd #{dir} && darcs init && darcs add * && darcs commit -m test`
+				# Add it to a darcs repository
+				darcs = DarcsAdapter.new(:url => dir).normalize
+				darcs.run("cd #{dir} && darcs init && darcs add --reserved-ok * && darcs record -a -m test")
 
 				# Confirm that we can read the file back
-				darcs = DarcsAdapter.new(:url => dir).normalize
 				assert_equal "contents", darcs.cat_file(darcs.head, Scm::Diff.new(:path => funny_name))
 			end
 		end

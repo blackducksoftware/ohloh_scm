@@ -39,7 +39,7 @@ module Scm::Adapters
 
 		# Returns a single commit, including its diffs
 		def verbose_commit(token)
-			log = run("cd '#{self.url}' && darcs changes -v -p #{token}")
+			log = run("cd '#{self.url}' && darcs changes -v -p '#{token}'")
 			Scm::Parsers::DarcsParser.parse(log).first
 		end
 
