@@ -10,9 +10,10 @@ module Scm::Adapters
 			unless self.exist?
 				run "mkdir -p '#{self.url}'"
 				run "rm -rf '#{self.url}'"
-				run "darcs clone -U '#{from.url}' '#{self.url}'"
+				run "darcs get '#{from.url}' '#{self.url}'"
 			else
-				run "cd '#{self.url}' && darcs revert --all && darcs pull -u -y '#{from.url}'"
+				# might also need to unpull for an exact copy
+				run "cd '#{self.url}' && darcs revert --all && darcs pull -a '#{from.url}'"
 			end
 
 			yield(1,1) if block_given? # Progress bar callback

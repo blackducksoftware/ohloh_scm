@@ -16,7 +16,7 @@ module Scm::Adapters
 					assert_equal src.log, dest.log
 
 					# Commit some new code on the original and pull again
-					src.run "cd '#{src.url}' && touch foo && darcs add foo && darcs commit -u test -m test"
+					src.run "cd '#{src.url}' && touch foo && darcs add foo && darcs record -a -m test"
 					assert_equal "test\n", src.commits.last.message
 
 					dest.pull(src)
