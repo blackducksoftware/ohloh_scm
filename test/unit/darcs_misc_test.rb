@@ -14,15 +14,15 @@ module Scm::Adapters
 
 		def test_ls_tree
 			with_darcs_repository('darcs') do |darcs|
-				assert_equal ['README','makefile'], darcs.ls_tree(darcs.head_token).sort
+				assert_equal ['.','./helloworld.c'], darcs.ls_tree('add helloworld.c').sort
 			end
 		end
 
 		def test_export
 			with_darcs_repository('darcs') do |darcs|
 				Scm::ScratchDir.new do |dir|
-					darcs.export(dir)
-					assert_equal ['.', '..', 'README', 'makefile'], Dir.entries(dir).sort
+					darcs.export(dir, 'add helloworld.c')
+					assert_equal ['.', '..', 'darcs.tar.gz'], Dir.entries(dir).sort
 				end
 			end
 		end

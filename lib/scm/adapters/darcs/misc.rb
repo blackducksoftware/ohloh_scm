@@ -10,13 +10,12 @@ module Scm::Adapters
 		end
 
 		def ls_tree(token)
-			run("cd '#{path}' && darcs manifest -r #{token}").split("\n")
+			run("cd '#{path}' && darcs show files -p '#{token}'").split("\n")
 		end
 
-		def export(dest_dir, token='tip')
-			run("cd '#{path}' && darcs archive -r #{token} '#{dest_dir}'")
-			# Darcs leaves a little cookie crumb in the export directory. Remove it.
-			File.delete(File.join(dest_dir, '.darcs_archival.txt')) if File.exist?(File.join(dest_dir, '.darcs_archival.txt'))
+		def export(dest_dir, token=nil)
+			p = token ? " -p '#{token}'" : ""
+			run("cd '#{path}' && darcs dist#{p} && mv darcs.tar.gz '#{dest_dir}'")
 		end
 	end
 end
