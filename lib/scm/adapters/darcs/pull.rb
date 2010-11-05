@@ -13,7 +13,7 @@ module Scm::Adapters
 				run "darcs get '#{from.url}' '#{self.url}'"
 			else
 				# might also need to unpull for an exact copy
-				run "cd '#{self.url}' && darcs revert --all && darcs pull -a '#{from.url}'"
+				run "cd '#{self.url}' && darcs revert --all && darcs pull --dont-allow-conflicts -a '#{from.url}'"
 			end
 
 			yield(1,1) if block_given? # Progress bar callback
