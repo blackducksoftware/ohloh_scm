@@ -12,11 +12,10 @@ module Scm::Adapters
 					# Create a new repo on the same local machine. Just use existing pull code in reverse.
 					to.pull(self)
 				else
-					run "ssh #{to.hostname} 'mkdir -p #{to.path}'"
-					run "scp -rpqB #{darcs_path} #{to.hostname}:#{to.path}"
+					run "cd '#{self.url}' && darcs put #{to.hostname}:#{to.path}"
 				end
 			else
-				run "cd '#{self.url}' && darcs push -f -y '#{to.url}'"
+				run "cd '#{self.url}' && darcs push -a '#{to.url}'"
 			end
 
 			yield(1,1) if block_given? # Progress bar callback
