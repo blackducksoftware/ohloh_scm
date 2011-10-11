@@ -267,6 +267,32 @@ module Scm::Adapters
 			end
 		end
 
+    def test_committer_and_author_name
+      with_bzr_repository('bzr_with_authors') do |bzr|
+        commits = []
+        bzr.each_commit do |c|
+          commits << c
+        end
+        assert_equal 3, commits.size
+
+        assert_equal 'Initial.', commits[0].message
+        assert_equal 'Abhay Mujumdar', commits[0].committer_name
+        assert_equal nil, commits[0].author_name
+        assert_equal nil, commits[0].author_email
+        
+        assert_equal 'Updated.', commits[1].message
+        assert_equal 'Abhay Mujumdar', commits[1].committer_name
+        assert_equal 'John Doe', commits[1].author_name
+        assert_equal 'johndoe@example.com', commits[1].author_email
+
+        # When there are multiple authors, first one is captured.
+        assert_equal 'Updated by two authors.', commits[2].message
+        assert_equal 'test', commits[2].committer_name
+        assert_equal 'John Doe', commits[2].author_name
+        assert_equal 'johndoe@example.com', commits[2].author_email
+      end
+    end
+
 		protected
 
 		def revision_ids

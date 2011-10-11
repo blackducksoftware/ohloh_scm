@@ -11,6 +11,7 @@ module Scm::Parsers
 			@callback = callback
       @merge_commit = []
       @state = :none
+      @authors = []
 		end
 
 		attr_accessor :text, :commit, :diff
@@ -30,6 +31,9 @@ module Scm::Parsers
       when 'merge'
         # This is a merge commit, save it and pop it after all branch commits
         @merge_commit.push(@commit)
+      when 'authors'
+        @state = :collect_authors
+        @authors = []
 			end
 		end
 
@@ -44,6 +48,8 @@ module Scm::Parsers
 			when 'committer'
 				@commit.committer_name = @text[/(.+?)(\s+<(.+)>)/, 1]
 				@commit.committer_email = @text[/(.+?)(\s+<(.+)>)/, 3]
+			when 'author'
+				@authors << {:author_name => @text[/(.+?)(\s+<(.+)>)/, 1], :author_email => @text[/(.+?)(\s+<(.+)>)/, 3] }
 			when 'timestamp'
 				@commit.committer_date = Time.parse(@text)
       when 'file'
@@ -58,6 +64,10 @@ module Scm::Parsers
 			  @commit.diffs = remove_dupes(@diffs)
       when 'merge'
         @commit = @merge_commit.pop
+      when 'authors'
+        @commit.author_name = @authors[0][:author_name]
+        @commit.author_email = @authors[0][:author_email]
+        @authors.clear
 			end
 		end
 

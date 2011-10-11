@@ -168,5 +168,82 @@ module Scm::Parsers
       assert_equal "M", c.diffs[2].action
       assert_equal ".bzrignore", c.diffs[2].path
     end
+
+    def test_different_author_and_committer
+      xml = <<-XML
+<logs>
+  <log>
+    <revno>1</revno>
+    <revisionid>amujumdar@blackducksoftware.com-20111011152356-90nluwydpw9g4ncu</revisionid>
+    <committer>Abhay Mujumdar &lt;amujumdar@blackducksoftware.com&gt;</committer>
+    <branch-nick>bzr_with_authors</branch-nick>
+    <timestamp>Tue 2011-10-11 11:23:56 -0400</timestamp>
+    <message><![CDATA[Initial.]]></message>
+  </log>
+  <log>
+    <revno>2</revno>
+    <revisionid>amujumdar@blackducksoftware.com-20111011152412-l9ehyruiezws32kj</revisionid>
+    <parents>
+      <parent>amujumdar@blackducksoftware.com-20111011152356-90nluwydpw9g4ncu</parent>
+    </parents>
+    <committer>Abhay Mujumdar &lt;amujumdar@blackducksoftware.com&gt;</committer>
+    <authors>
+      <author>John Doe &lt;johndoe@example.com&gt;</author>
+    </authors>
+    <branch-nick>bzr_with_authors</branch-nick>
+    <timestamp>Tue 2011-10-11 11:24:12 -0400</timestamp>
+    <message><![CDATA[Updated.]]></message>
+  </log>
+  <log>
+    <revno>3</revno>
+    <revisionid>test@example.com-20111011162601-ud1nidteswfdbhbu</revisionid>
+    <parents>
+      <parent>amujumdar@blackducksoftware.com-20111011152412-l9ehyruiezws32kj</parent>
+    </parents>
+    <committer>test &lt;test@example.com&gt;</committer>
+    <authors>
+      <author>Jim Beam &lt;jimbeam@example.com&gt;</author>
+      <author>Jane Smith &lt;janesmith@example.com&gt;</author>
+    </authors>
+    <branch-nick>bzr_with_authors</branch-nick>
+    <timestamp>Tue 2011-10-11 12:26:01 -0400</timestamp>
+    <message><![CDATA[Updated by two authors.]]></message>
+  </log>
+  <log>
+    <revno>4</revno>
+    <revisionid>test@example.com-20111011162601-dummyrevision</revisionid>
+    <parents>
+      <parent>test@example.com-20111011162601-ud1nidteswfdbhbu</parent>
+    </parents>
+    <committer>test &lt;test@example.com&gt;</committer>
+    <branch-nick>bzr_with_authors</branch-nick>
+    <timestamp>Tue 2011-10-11 12:28:01 -0400</timestamp>
+    <message><![CDATA[Updated by committer.]]></message>
+  </log>
+</logs>
+      XML
+      commits = BzrXmlParser.parse(xml)
+      c = commits[0]
+      assert_equal "Abhay Mujumdar", c.committer_name
+      assert_equal "amujumdar@blackducksoftware.com", c.committer_email
+
+      c = commits[1]
+      assert_equal "Abhay Mujumdar", c.committer_name
+      assert_equal "amujumdar@blackducksoftware.com", c.committer_email
+      assert_equal "John Doe", c.author_name
+      assert_equal "johndoe@example.com", c.author_email
+
+      c = commits[2]
+      assert_equal "test", c.committer_name
+      assert_equal "test@example.com", c.committer_email
+      assert_equal "Jim Beam", c.author_name
+      assert_equal "jimbeam@example.com", c.author_email
+
+      c = commits[3]
+      assert_equal "test", c.committer_name
+      assert_equal "test@example.com", c.committer_email
+      assert_equal nil, c.author_name
+      assert_equal nil, c.author_email      
+    end
   end
 end
