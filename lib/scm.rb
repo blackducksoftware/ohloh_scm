@@ -17,6 +17,7 @@ require 'lib/scm/adapters/svn_chain_adapter'
 require 'lib/scm/adapters/git_adapter'
 require 'lib/scm/adapters/hg_adapter'
 require 'lib/scm/adapters/bzr_adapter'
+require 'lib/scm/adapters/bzrlib_adapter'
 require 'lib/scm/adapters/factory'
 
 require 'lib/scm/parsers/parser'

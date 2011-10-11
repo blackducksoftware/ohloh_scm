@@ -13,8 +13,6 @@ module Scm::Adapters
 			run("cd #{path} && bzr ls -V -r #{to_rev_param(token)}").split("\n")
 		end
 
-		# If you want to pass a revision-id as a bzr parameter, you
-		# must prefix it with "revid:". This takes care of that.
 		def to_rev_param(r=nil)
 			case r
 			when nil
@@ -24,7 +22,7 @@ module Scm::Adapters
 			when /^\d+$/
 				r
 			else
-				"'revid:#{r.to_s}'"
+        "'revid:#{r.to_s}'"
 			end
 		end
 
