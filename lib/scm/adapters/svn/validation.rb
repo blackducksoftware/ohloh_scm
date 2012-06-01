@@ -26,6 +26,7 @@ module Scm::Adapters
 
 		# If the URL is a simple directory path, make sure it is prefixed by file://
 		def path_to_file_url(path)
+			return nil if path.empty?
 			url =~ /:\/\// ? url : 'file://' + File.expand_path(path)
 		end
 

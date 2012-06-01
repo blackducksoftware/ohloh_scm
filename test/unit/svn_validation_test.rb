@@ -7,6 +7,16 @@ module Scm::Adapters
 				assert !SvnAdapter.new(:username => username).validate_username
 			end
 		end
+		
+		def test_for_blank_svn_urls
+			svn = SvnAdapter.new(:url =>"")
+			assert_nil svn.path_to_file_url(svn.url)
+		end
+
+		def test_for_non_blank_svn_urls
+			svn = SvnAdapter.new(:url =>"/home/rapbhan")
+			assert_equal 'file:///home/rapbhan', svn.path_to_file_url(svn.url)
+		end
 
 		def test_rejected_urls
 			[	nil, "", "foo", "http:/", "http:://", "http://",
