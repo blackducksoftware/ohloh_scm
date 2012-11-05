@@ -44,6 +44,8 @@
            from.branch_name = run("mtn #{db_opt} ls branches | head -1").chomp
          end
 
+         self.branch_name = from.branch_name
+
          #We can now create the working copy
          run "mtn #{db_opt} co --branch '#{from.branch_name}' '#{self.url}'"
 

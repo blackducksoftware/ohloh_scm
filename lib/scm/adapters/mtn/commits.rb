@@ -92,7 +92,14 @@ module Scm::Adapters
     # Not used by Ohloh proper, but handy for debugging and testing
     def log(opts={})
       after = opts[:after] || 0
-      run "cd '#{url}' && mtn log --from h: --to #{after}"
+
+      command = "cd '#{url}' && mtn log --from h:"
+      # We only put an "after" revision if :after was set
+      if after != 0 then
+        command = command + " --to #{after} "
+      end
+
+      run command
     end
 
     # Returns a file handle to the log.
