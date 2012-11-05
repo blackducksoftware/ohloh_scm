@@ -1,0 +1,3 @@
+database "/home/fred/perso/git/ohloh_scm/test/repositories/mtn/database.mtn"
+  branch "test"
+  keydir "/home/fred/.monotone/keys"
