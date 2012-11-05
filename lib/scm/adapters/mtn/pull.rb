@@ -47,15 +47,20 @@
          self.branch_name = from.branch_name
 
          #We can now create the working copy
-         run "mtn #{db_opt} co --branch '#{from.branch_name}' '#{self.url}'"
+         checkout_working_copy
 
        else
          # Just go into the working copy and synchronize
-         run "cd '#{self.url}' && mtn #{db_opt} revert . && mtn #{db_opt} sync"
+         run "cd '#{self.url}' && mtn #{db_opt} revert . && mtn #{db_opt} sync && mtn #{db_opt} update"
        end
 
        yield(1,1) if block_given? # Progress bar callback
      end
 
+     def checkout_working_copy
+       if @database != '' then
+         run "mtn --db #{self.database} co --branch '#{self.branch_name}' '#{self.url}'"
+       end
+     end
    end
  end
