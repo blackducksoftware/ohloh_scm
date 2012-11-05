@@ -13,14 +13,11 @@ module Scm::Adapters
       unless to.exist?
         if to.local?
           # Create a new repo on the same local machine. Just use existing pull code in reverse.
-          # Not really useful
           to.pull(self)
         else
-          # This one is difficult. What are we supposed to do
-          # Just copying the database on a remote server ?
-          #
-          #run "ssh #{to.hostname} 'mkdir -p #{to.path}'"
-          #run "scp -rpqB #{hg_path} #{to.hostname}:#{to.path}"
+          run "ssh #{to.hostname} 'mkdir -p #{to.path}'"
+          #After creating the path, we just copy the database but don't recreate a working copy
+          run "scp -rpqB #{self.database}  #{to.hostname}:#{to.path}"
         end
       else
         # This one is easy, just push the standard way
@@ -52,8 +49,5 @@ module Scm::Adapters
       end
     end
 
-    def hg_path
-      path && File.join(path, '.hg')
-    end
   end
 end

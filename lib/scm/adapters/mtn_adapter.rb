@@ -6,11 +6,24 @@ module Scm::Adapters
     
     def initialize(params={})
       super(params)
-      @database=''
     end
     
     def english_name
       "Monotone"
+    end
+
+    def database
+      if @database.nil? then
+        #Try to find from the working copy if url is file or 
+        #without scheme
+        if self.local? then
+          self.get_database
+        else
+          #It's a remote repository, we don't have a database
+          self.database = ''
+        end
+      end
+      @database
     end
   end
 end

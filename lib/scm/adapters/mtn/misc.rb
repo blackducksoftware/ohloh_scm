@@ -1,6 +1,8 @@
 # -*- coding: undecided -*-
 module Scm::Adapters
   class MtnAdapter < AbstractAdapter
+
+    #Allow to see if a local working copy exists
     def exist?
       begin
         !!(head_token)
@@ -10,6 +12,7 @@ module Scm::Adapters
       end
     end
 
+    #Allow to test if a remote copy exists
     def remote_exist?
       begin
         # NOTE : we don't have a local working copy, use remote to get the head token
@@ -33,5 +36,16 @@ module Scm::Adapters
         false
       end
     end
+
+    # Retrieve the database path from a working copy
+    def get_database
+      log = run("grep database #{self.url}/_MTN/options")
+      log.each_line do |database_line|
+        if database_line =~ /database "(.+)"/i then
+          self.database = $1
+        end
+      end
+    end
+
   end
 end
