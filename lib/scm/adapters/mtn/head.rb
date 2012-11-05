@@ -3,8 +3,6 @@ module Scm::Adapters
   
     # Retrieve the last SHA1 cert inserted in database
     def head_token
-      # NOTE : if we don't have a local working copy, use remote
-      # NOTE : token = run("mtn automate remote --remote-stdio-host=#{url} heads -q #{branch_name}")
       token = run("cd '#{url}' && mtn automate heads").chomp
     end
     
