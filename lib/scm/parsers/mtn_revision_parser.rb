@@ -13,6 +13,11 @@ module Scm::Parsers
       buffer.each_line do |l|
           case l
           when /^delete\s+\"(.+)\"$/
+            #Something was deleted
+            e = Scm::Diff.new
+            e.path = $1
+            e.action = 'D'
+            yield e if block_given?
 
           when /^rename\s+\"(.+)\"$/
             #A file or directory was renamed
@@ -61,6 +66,13 @@ module Scm::Parsers
             e = Scm::Diff.new
             e.path = $1
             e.action = 'A'
+            state = :add
+
+          when /^\s+content\s+\[(.+)\]$/
+            # This is the content sha1 sig for added file
+            if state == :add and e.nil? == false then
+              e.sha1 = $1
+            end
             yield e if block_given?
 
           when /^patch\s+\"(.+)\"$/

@@ -18,6 +18,11 @@ module Scm::Adapters
       # We only put an "after" revision if :after was set
       if after != 0 then
         command = command + "--to #{after} "
+        
+        # deals with the case where :after is the same as head
+        if after == head_token then
+          return [];
+        end
       end
       
       # run the command to retrieve tokens and split by newline character
@@ -57,7 +62,9 @@ module Scm::Adapters
       log = run("cd '#{self.url}' && mtn automate --date-format '%Y%M%dT%H%m%S%z' certs #{token}")
       # Send the output to the parser
       commit = Scm::Parsers::MtnCertsParser.parse(log).first
-      
+      # Init the diffs array
+      commit.diffs = []
+
       #Fix the token returned as only the cert of the manifest is returned
       commit.token=token
 
@@ -68,7 +75,6 @@ module Scm::Adapters
     def verbose_commit(token)
       # First we get the normal fields for commit
       commit = simple_commit(token)
-      commit.diffs = []
 
       # Then we get the diffs
       log = run("cd '#{self.url}' && mtn automate --date-format '%Y%M%dT%H%m%S%z' get_revision #{token}")

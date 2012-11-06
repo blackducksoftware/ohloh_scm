@@ -13,8 +13,8 @@ module Scm::Adapters
     
     # Retrieve content of a specific file in a specific revision
     def cat(revision, path)
-      out, err = run_with_err("cd '#{url}' && mtn cat -r #{revision} #{escape(path)}")
-      return nil if err =~ /No such file in rev/i
+      out, err, status = run_with_err("cd '#{url}' && mtn cat -r #{revision} #{escape(path)}")
+      return nil if status != 0
       raise RuntimeError.new(err) unless err.to_s == ''
       out
     end
