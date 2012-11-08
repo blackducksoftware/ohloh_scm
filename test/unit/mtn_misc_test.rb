@@ -1,20 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/mtn_abstract_test_class'
 
 module Scm::Adapters
-  class MtnMiscTest < Scm::Test
-
-    def init
-      with_mtn_repository('mtn') do |mtn|
-        Scm::ScratchDir.new do |dest_dir|
-          mtn.database = File.join(mtn.url, 'database.mtn')
-          mtn.branch_name = 'test'
-          mtn.url = File.join(mtn.url, mtn.branch_name)
-          mtn.checkout_working_copy
-          
-          yield mtn
-        end
-      end
-    end
+  class MtnMiscTest < Scm::Adapters::MtnAbstractTest
 
     def test_exist
       save_mtn = nil

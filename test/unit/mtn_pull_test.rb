@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/mtn_abstract_test_class'
 
 module Scm::Adapters
-  class MtnPullTest < Scm::Test
+  class MtnPullTest < Scm::Adapters::MtnAbstractTest
 
     def test_pull
       with_mtn_repository('mtn') do |src|

@@ -1,7 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/mtn_abstract_test_class'
 
 module Scm::Parsers
-  class MtnRevisionParserTest < Scm::Test
+  class MtnRevisionParserTest < Scm::Adapters::MtnAbstractTest
 
     def test_empty_array
       assert_equal([], MtnRevisionParser.parse(''))
