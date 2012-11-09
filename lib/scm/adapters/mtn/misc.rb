@@ -67,7 +67,7 @@ module Scm::Adapters
       end
     end
 
-    # Retrieve the database path from a working copy
+    # Retrieve the database path from a working copy if existing
     def get_database
       log = run("grep database #{self.url}/_MTN/options")
       log.each_line do |database_line|
@@ -77,5 +77,8 @@ module Scm::Adapters
       end
     end
 
+    def get_branch_name
+      log = run("cd #{self.url} && mtn automate get_option branch").chomp
+    end
   end
 end

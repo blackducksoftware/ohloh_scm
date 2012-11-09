@@ -13,14 +13,21 @@ module Scm::Adapters
     end
 
     def database
-      if @database.nil? then
-        #Try to find from the working copy if url is file or 
-        #without scheme
-        if self.local? then
-          self.get_database
+      if @database.nil? or @database == '' then
+        #Try to find from the working copy if url is without scheme
+        # with scheme denotes a "remote" server
+        if self.url == self.path then
+          begin
+            self.get_database
+          rescue
+            # It failed because we don't have a working copy, so set it to :default
+            logger.info "Did not find any database, falling back to :default"
+            @database = ':default'
+          end
         else
           #It's a remote repository, we don't have a database
-          self.database = ''
+          logger.info "This is a remote repository to pull from, we don't need a database file."
+          @database = ''
         end
       end
       @database
@@ -37,6 +44,23 @@ module Scm::Adapters
       else
         @url = u
       end
+    end
+
+    # As for database, if we don't have the branch name
+    # We try to find it in the working copy
+    def branch_name
+      if @branch_name.nil?() == true or @branch_name == '' then
+        #Try to find from the working copy if url is without scheme
+        # with scheme denotes a "remote" server
+        if self.url == self.path then
+          begin
+            @branch_name = self.get_branch_name
+          rescue
+            logger.info "No workspace found"
+          end
+        end
+      end
+      @branch_name
     end
 
   end

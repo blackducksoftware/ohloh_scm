@@ -22,10 +22,13 @@
        db_opt = ""
        if @database != '' then
          db_opt = "--db #{self.database} "
-
-         # Must create the database first if it does not exist
-         if File.exists?(@database) == false then
+         
+         # Now we try to create the database
+         begin
            run "mtn db init #{db_opt}"
+         rescue
+           # Database already existing, we go on like this
+           logger.info "database #{self.database} already existing, using it without init"
          end
        end
 
@@ -33,7 +36,10 @@
          #if no branch is specified, use the wildcard
          from.branch_name = '*' unless from.branch_name or from.branch_name == ''
 
+         # build the complete path to the clone
          run "mkdir -p '#{self.url}'"
+         
+         # but remove the last component as it will be created after
          run "rm -rf '#{self.url}'"
 
 
@@ -60,9 +66,7 @@
      end
 
      def checkout_working_copy
-       if @database != '' then
          run "mtn --db #{self.database} co --branch '#{self.branch_name}' '#{self.url}'"
-       end
      end
    end
  end
