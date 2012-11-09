@@ -10,8 +10,9 @@
      # http://www.monotone.ca/docs/Network.html#Network
      # The other field that should be filled is branch_name. It will allow to filter
      # the source retrieved from remote database.
-     # When not provided, branch_name will first be set to '*', filling the local
-     # database with all branches but the working copy cloned will be the first branch found.
+     # Another way to provide branch_name is in the url field.
+     # When not provided, it will be set to '*', 
+     # filling the local database with all branches but the working copy cloned will be the first branch found.
      def pull(from, &block)
        raise ArgumentError.new("Cannot pull from #{from.inspect}") unless from.is_a?(MtnAdapter)
        logger.info { "Pulling #{from.url}" }
@@ -29,11 +30,12 @@
        end
 
        unless self.exist?
+         #if no branch is specified, use the wildcard
+         from.branch_name = '*' unless from.branch_name or from.branch_name == ''
+
          run "mkdir -p '#{self.url}'"
          run "rm -rf '#{self.url}'"
 
-         #if no branch is specified, use the wildcard
-         from.branch_name = '*' unless from.branch_name or from.branch_name == ''
 
          #Pulling into the database
          run "mtn pull #{db_opt} '#{from.url}?#{from.branch_name}'"

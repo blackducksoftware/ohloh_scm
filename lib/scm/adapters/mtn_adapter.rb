@@ -25,6 +25,20 @@ module Scm::Adapters
       end
       @database
     end
+
+    # this setter splits the url if a branch name is found according to regexp
+    def url=(u)
+      matchData = /^(mtn|ssh|file):\/\/\/{0,1}(\w+@)?[A-Za-z0-9_\-\.]+(:\d+)?\/[A-Za-z0-9_\-\.\/\~\+]*\?([A-Za-z0-9_\-\.\/\~\+]+)$/.match(u)
+      if matchData.nil?() == false then
+        @branch_name = $4
+        offsets = matchData.offset(4)
+        #we remove two characters because of ? character
+        @url = u[0..offsets[0] - 2]
+      else
+        @url = u
+      end
+    end
+
   end
 end
 
