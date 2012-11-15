@@ -2,7 +2,7 @@ module Scm::Adapters
   class MtnAdapter < AbstractAdapter
 
     def self.public_url_regex
-      /^(mtn|ssh):\/\/(\w+@)?[A-Za-z0-9_\-\.]+(:\d+)?\/[A-Za-z0-9_\-\.\/\~\+]*$/
+      /^(mtn|ssh):\/\/(\w+@)?[A-Za-z0-9_\-\.]+(:\d+)?\/[A-Za-z0-9_\-\.\/\~\+]*(\?[A-Za-z0-9_\-\.\/\~\+]*)+$/
     end
 
     def validate_server_connection
