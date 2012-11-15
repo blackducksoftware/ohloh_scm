@@ -1,0 +1,21 @@
+#
+#
+# add_file "NEWS"
+#  content [e86ff17788d06ed770b3f87ad8410e99ba958c2e]
+# 
+# patch "INSTALL"
+#  from [5bb6b21794257124ce40b682450a54010b7de61c]
+#    to [8a79847fb9758bc777afcae87b7165bb417360bc]
+#
+============================================================
+--- INSTALL	5bb6b21794257124ce40b682450a54010b7de61c
++++ INSTALL	8a79847fb9758bc777afcae87b7165bb417360bc
+@@ -1,2 +1,2 @@ There's nothing to install, it's a fake 
+ There's nothing to install, it's a fake project :D
+-
++See NEWS file for NEWS... Or not
+============================================================
+--- /dev/null	
++++ NEWS	e86ff17788d06ed770b3f87ad8410e99ba958c2e
+@@ -0,0 +1 @@
++No news, good news

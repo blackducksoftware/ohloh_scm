@@ -34,7 +34,7 @@ Ohloh SCM does not support Windows.
 
 Ohloh SCM targets Ruby 1.8.6 and Rake 0.8.1
 
-Ohloh SCM interfaces with CVSNT, Subversion, Git and Mercurial through the
+Ohloh SCM interfaces with CVSNT, Subversion, Git, Mercurial and Monotone through the
 shell.  In order to pass the unit tests, all three systems must be installed
 and on your path. Ohloh uses the following versions, and other versions are
 totally unsupported at this time:
@@ -43,13 +43,14 @@ cvsnt 2.5.03
 svn 1.4.2
 git 1.6.0.4
 hg 1.1.2
+mtn 1.0
 
 If you are using CVS instead of CVSNT, you can potentially try creating
 a shell alias or symlink mapping 'cvsnt' to 'cvs'.
 
 ## Running
 
-Ensure that cvsnt, svn, svnadmin, svnsync, git, and hg are all on your path. You'll also need to ensure that you have the xmloutput plugin installed for bazaar.
+Ensure that cvsnt, svn, svnadmin, svnsync, git, hg and mtn are all on your path. You'll also need to ensure that you have the xmloutput plugin installed for bazaar.
 
 ### Installing The XmlOutput Plugin
     $ cd ~
