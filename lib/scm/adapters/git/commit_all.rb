@@ -64,7 +64,7 @@ module Scm::Adapters
 
 		# True if there are pending changes to commit.
 		def anything_to_commit?
-			run("cd '#{self.url}' && git status | tail -1") =~ /nothing to commit / ? false : true
+			run("cd '#{self.url}' && git status | tail -1") =~ /nothing to commit/ ? false : true
 		end
 
 		# Ensures that the repository directory exists, and that the git database has been initialized.

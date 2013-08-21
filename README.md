@@ -39,10 +39,10 @@ shell.  In order to pass the unit tests, all three systems must be installed
 and on your path. Ohloh uses the following versions, and other versions are
 totally unsupported at this time:
 
-cvsnt 2.5.03
-svn 1.4.2
-git 1.6.0.4
-hg 1.1.2
+cvsnt 2.5.03  
+svn 1.4.2  
+git 1.8.2.1  
+hg 1.1.2  
 
 If you are using CVS instead of CVSNT, you can potentially try creating
 a shell alias or symlink mapping 'cvsnt' to 'cvs'.
