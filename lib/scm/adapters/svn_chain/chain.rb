@@ -79,7 +79,16 @@ module Scm::Adapters
 		# Returns the first commit with a revision number greater than the provided revision number
 		def next_revision_xml(after=0)
 			return "<?xml?>" if after.to_i >= head_token
-			run "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{after.to_i+1}:#{final_token || 'HEAD'} --limit 1 #{opt_auth} '#{SvnAdapter.uri_encode(File.join(self.root, self.branch_name))}@#{final_token || 'HEAD'}'"
+			back_to_front = "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{after.to_i+1}:#{final_token || 'HEAD'} --limit 1 #{opt_auth} '#{SvnAdapter.uri_encode(File.join(self.root, self.branch_name))}@#{final_token || 'HEAD'}'"
+			front_to_back = "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{final_token || 'HEAD'}:#{after.to_i+1} #{opt_auth} '#{SvnAdapter.uri_encode(File.join(self.root, self.branch_name))}@#{final_token || 'HEAD'}'"
+			# if the repository history is so extensive or
+			# the remote server so slow that the network
+			# connection times out before there is a
+			# response, use a slower and more resource
+			# intensive method that should always succeed:
+			# receive the revisions in order and extract
+			# the last entry.
+			run(back_to_front) || Scm::Parsers::SvnXmlParser.parse(run(front_to_back)).last
 		end
 
 		# If the passed diff represents the wholesale movement of the entire
