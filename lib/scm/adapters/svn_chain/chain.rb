@@ -73,7 +73,7 @@ module Scm::Adapters
 
 		def first_commit(after=0)
 			@first_commit ||={} # Poor man's memoize
-			@first_commit[after] ||= Scm::Parsers::SvnXmlParser.parse(next_revision_xml(after)).first
+			@first_commit[after] ||= Scm::Parsers::SvnXmlParser.parse(next_revision_xml(after)).last
 		end
 
 		# Returns the first commit with a revision number greater than the provided revision number
@@ -88,7 +88,7 @@ module Scm::Adapters
 			# intensive method that should always succeed:
 			# receive the revisions in order and extract
 			# the last entry.
-			run(back_to_front) || Scm::Parsers::SvnXmlParser.parse(run(front_to_back)).last
+                        run("#{back_to_front} || #{front_to_back}")
 		end
 
 		# If the passed diff represents the wholesale movement of the entire
