@@ -1,4 +1,4 @@
-require 'sha1'
+require 'digest/sha1'
 
 NULL_SHA1 = '0000000000000000000000000000000000000000' unless defined?(NULL_SHA1)
 
