@@ -1,3 +1,5 @@
+[![Ohloh SCM on Ohloh](https://www.ohloh.net/p/ohloh_scm/widgets/project_partner_badge.gif)](https://www.ohloh.net/p/ohloh_scm)
+
 # Ohloh SCM
 
 The Ohloh source control management library
