@@ -3,6 +3,15 @@ require File.dirname(__FILE__) + '/../test_helper'
 module Scm::Adapters
 	class FactoryTest < Scm::Test
 
+		def test_factory_darcs
+			Scm::ScratchDir.new do |path|
+				`cd #{path} && darcs init`
+				darcs = Factory.from_path(path)
+				assert darcs.is_a?(DarcsAdapter)
+				assert_equal darcs.url, path
+			end
+		end
+
 		def test_factory_hg
 			Scm::ScratchDir.new do |path|
 				`cd #{path} && hg init`

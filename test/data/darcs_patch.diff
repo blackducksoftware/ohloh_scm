@@ -1,0 +1,16 @@
+Wed Nov  3 15:49:53 PDT 2010  Simon Michael <simon@joyful.com>
+  * add helloworld.c
+    addfile ./helloworld.c
+    hunk ./helloworld.c 1
+    +/* Hello, World! */
+    +
+    +/*
+    + * This file is not covered by any license, especially not
+    + * the GNU General Public License (GPL). Have fun!
+    + */
+    +
+    +#include <stdio.h>
+    +main()
+    +{
+    +	printf("Hello, World!\\n");
+    +}

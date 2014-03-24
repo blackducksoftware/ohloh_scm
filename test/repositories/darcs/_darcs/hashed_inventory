@@ -1,0 +1,11 @@
+pristine:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+[add helloworld.c
+Simon Michael <simon@joyful.com>**20101103224953
+ Ignore-this: 3861470344267bb74c710a8dad01e92a
+] 
+hash: 0000000370-0f1c03b7cad1276d35b5230fe1f1d19c1432b366cc35f7eb06cd311543b4798e
+[remove helloworld.c
+Simon Michael <simon@joyful.com>**20101103225525
+ Ignore-this: c54c3cf6bebc6a9545effff28e1c785c
+] 
+hash: 0000000372-afa148a0f1772c96e99321250914ee9ad12c03e18f7acc2e30a9de83fde76a1c

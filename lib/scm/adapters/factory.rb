@@ -11,6 +11,9 @@ module Scm::Adapters
 			elsif FileTest.exist?(File.join(path, '.hg'))
 				HgAdapter.new(:url => File.expand_path(path)).normalize
 
+			elsif FileTest.exist?(File.join(path, '_darcs'))
+				DarcsAdapter.new(:url => File.expand_path(path)).normalize
+
 			elsif FileTest.exist?(File.join(path, '.bzr'))
 				BzrAdapter.new(:url => File.expand_path(path)).normalize
 

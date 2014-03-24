@@ -15,6 +15,8 @@ module Scm
 	# the near future, it is the job of the adapter to make the Git commit chain
 	# appear as much like a single array as possible.
 	#
+	# For Darcs, it is assumed the repo's patch ordering is never changed.
+	#
 	class Commit
 		# This object supports the idea of distinct authors and committers, a la
 		# Git.  However, Ohloh will retain only one of them in its database. It
@@ -32,6 +34,7 @@ module Scm
 		# For Git, the token is the commit SHA1 hash.
 		# For CVS, which does not support atomic commits with unique IDs, we use
 		# the approximate timestamp of the change.
+		# For Darcs, the token is the patch name, and it may not be unique. XXX
 		attr_accessor :token
 
 		# A pointer back to the adapter that contains this commit.

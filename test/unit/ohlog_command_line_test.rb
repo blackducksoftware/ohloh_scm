@@ -27,6 +27,9 @@ module Scm::Parsers
 		def test_hg_from_file
 		end
 
+		#def test_darcs_from_file
+		#end
+
 		def test_help
 			result = `#{File.dirname(__FILE__) + '/../../bin/ohlog'} -?`
 			assert_equal 0, $?
