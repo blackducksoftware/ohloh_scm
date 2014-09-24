@@ -153,5 +153,11 @@ module Scm::Adapters
 			cvs = CvsAdapter.new(:url => '/dev/null', :module_name => 'dummy')
 			assert_not_equal nil, cvs.validate_server_connection
 		end
+
+		#remote sourceforge.net test not supporting remote ls
+		#def test_validate_sourceforge_server_connection
+		#	cvs = CvsAdapter.new(:url => ':pserver:anonymous:@moodle.cvs.sourceforge.net:/cvsroot/moodle', :module_name => "contrib")
+		#	assert_equal nil, cvs.validate_server_connection # No errors
+		#end
 	end
 end

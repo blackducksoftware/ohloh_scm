@@ -52,6 +52,8 @@ module Scm::Adapters
 				elsif s =~ /cvs server: New directory `(#{Regexp.escape(path.to_s)}\/)?(.*)' -- ignored/
 					files << "#{$2}/"
 					error_handled = true
+				elsif s =~ /server does not support ls/
+					raise CommandNotSupportedException
 				end
 
 				ignored_error_messages.each do |m|
@@ -68,6 +70,13 @@ module Scm::Adapters
 		def log(most_recent_token=nil)
       ensure_host_key
 			run "cvsnt -d #{self.url} rlog #{opt_branch} #{opt_time(most_recent_token)} '#{self.module_name}' | #{ string_encoder }"
+		end
+
+		# check if log command works using a cheap rlog invocation
+		def log_check
+			ensure_host_key
+			stdout, stderr = run_with_err "cvsnt -d #{self.url} rlog -r1 -l -R '#{self.module_name}' >/dev/null"
+			return stderr==''
 		end
 
 		def checkout(r, local_directory)
