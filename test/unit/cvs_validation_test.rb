@@ -144,5 +144,14 @@ module Scm::Adapters
 			cvs = CvsAdapter.new(:url => ":pserver:guest:@colorchooser.dev.java.net:/cvs")
 			assert_equal 'java.net', cvs.guess_forge
 		end
+
+		def test_validate_local_server_connection
+			with_cvs_repository('cvs') do |cvs|
+				assert_equal nil, cvs.validate_server_connection # No errors
+			end
+
+			cvs = CvsAdapter.new(:url => '/dev/null', :module_name => 'dummy')
+			assert_not_equal nil, cvs.validate_server_connection
+		end
 	end
 end
