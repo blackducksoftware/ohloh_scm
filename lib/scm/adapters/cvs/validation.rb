@@ -67,6 +67,10 @@ module Scm::Adapters
 			if ls.nil?
 				@errors << [:failed, "The cvs server did not respond to an 'ls' command. Are the URL and module name correct?"]
 			end
+		rescue CommandNotSupportedException
+		  if !log_check
+			@errors << [:failed, "The cvs server did not respond to an 'ls' or 'rlog' command. Are the URL and module name correct?"]
+		  end
 		end
 
 		# Based on the URL, take a guess about which forge this code is hosted on.
