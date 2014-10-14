@@ -133,10 +133,8 @@ module OhlohScm::Adapters
 			" #{opt_password} --no-auth-cache "
 		end
 
-    class << self
-      def has_conflicts?(working_copy_url)
-        system("cd '#{ working_copy_url }' && svn status | grep 'Summary of conflicts'")
-      end
+    def self.has_conflicts?(working_copy_url)
+      system("cd '#{ working_copy_url }' && svn status | grep 'Summary of conflicts'")
     end
 	end
 end
