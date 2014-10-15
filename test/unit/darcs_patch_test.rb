@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-  class DarcsPatchTest < Scm::Test
+module OhlohScm::Adapters
+  class DarcsPatchTest < OhlohScm::Test
     def test_patch_for_commit
       with_darcs_repository('darcs') do |repo|
         commit = repo.verbose_commit('add helloworld.c')

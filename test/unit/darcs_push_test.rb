@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsPushTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsPushTest < OhlohScm::Test
 
 		def test_hostname
 			assert !DarcsAdapter.new.hostname

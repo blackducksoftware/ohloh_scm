@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsValidationTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsValidationTest < OhlohScm::Test
 		def test_rejected_urls
 			[	nil, "", "foo", "http:/", "http:://", "http://", "http://a",
 				"www.selenic.com/repo/hello", # missing a protool prefix

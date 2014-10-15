@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsMiscTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsMiscTest < OhlohScm::Test
 
 		def test_exist
 			save_darcs = nil

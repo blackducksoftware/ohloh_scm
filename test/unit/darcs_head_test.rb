@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsHeadTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsHeadTest < OhlohScm::Test
 
 		def test_head_and_parents
 			with_darcs_repository('darcs') do |darcs|

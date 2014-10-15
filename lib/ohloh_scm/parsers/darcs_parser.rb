@@ -1,4 +1,4 @@
-module Scm::Parsers
+module OhlohScm::Parsers
 	# This parser can process the default darcs changes output #, with or without the --verbose flag.
 	class DarcsParser < Parser
 		def self.scm

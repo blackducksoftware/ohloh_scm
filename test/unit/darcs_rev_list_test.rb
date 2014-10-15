@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
+module OhlohScm::Adapters
 	# Repository darcs_walk has the following structure:
 	#
 	#    A -> B -> C -> D -> E
 	#
-	class DarcsRevListTest < Scm::Test
+	class DarcsRevListTest < OhlohScm::Test
 
 		def test_rev_list
 			with_darcs_repository('darcs_walk') do |darcs|

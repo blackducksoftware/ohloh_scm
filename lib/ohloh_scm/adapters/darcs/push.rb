@@ -1,4 +1,4 @@
-module Scm::Adapters
+module OhlohScm::Adapters
 	class DarcsAdapter < AbstractAdapter
 
 		def push(to, &block)

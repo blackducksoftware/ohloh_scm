@@ -1,4 +1,4 @@
-module Scm::Adapters
+module OhlohScm::Adapters
 	class DarcsAdapter < AbstractAdapter
 		def self.url_regex
 			/^((http|https|ssh|file):\/\/((\w+@)?[A-Za-z0-9_\-\.]+(:\d+)?\/)?)?[A-Za-z0-9_\-\.\/\~\+]*$/

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsCatFileTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsCatFileTest < OhlohScm::Test
 
 		def test_cat_file
 			with_darcs_repository('darcs') do |darcs|

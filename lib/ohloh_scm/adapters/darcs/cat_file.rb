@@ -1,4 +1,4 @@
-module Scm::Adapters
+module OhlohScm::Adapters
 	class DarcsAdapter < AbstractAdapter
 		def cat_file(commit, diff)
 			cat(commit.token, diff.path)

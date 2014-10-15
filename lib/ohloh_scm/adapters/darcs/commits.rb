@@ -1,4 +1,4 @@
-module Scm::Adapters
+module OhlohScm::Adapters
 	class DarcsAdapter < AbstractAdapter
 
 		# Return the number of commits in the repository following +since+.
@@ -28,7 +28,7 @@ module Scm::Adapters
 		def commits(since=nil)
 			from = since ? " --from-patch #{since}" : ""
 			log = run("cd '#{self.url}' && darcs changes#{from} --reverse")
-			a = Scm::Parsers::DarcsParser.parse(log)
+			a = OhlohScm::Parsers::DarcsParser.parse(log)
 			if a.any? && a.first.token == since
 				a[1..-1]
 			else
@@ -39,7 +39,7 @@ module Scm::Adapters
 		# Returns a single commit, including its diffs
 		def verbose_commit(token)
 			log = run("cd '#{self.url}' && darcs changes -v -p '#{token}'")
-			Scm::Parsers::DarcsParser.parse(log).first
+			OhlohScm::Parsers::DarcsParser.parse(log).first
 		end
 
 		# Yields each commit after +since+, including its diffs.
@@ -48,7 +48,7 @@ module Scm::Adapters
 		# Only a single commit is ever held in memory at once.
 		def each_commit(since=nil)
 			open_log_file(since) do |io|
-				Scm::Parsers::DarcsParser.parse(io) do |commit|
+				OhlohScm::Parsers::DarcsParser.parse(io) do |commit|
 					yield commit if block_given? && commit.token != since
 				end
 			end

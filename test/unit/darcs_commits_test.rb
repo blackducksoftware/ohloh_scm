@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsCommitsTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsCommitsTest < OhlohScm::Test
 
 		def test_commit
 			with_darcs_repository('darcs') do |darcs|

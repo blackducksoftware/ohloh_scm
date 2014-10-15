@@ -1,4 +1,4 @@
-module Scm::Adapters
+module OhlohScm::Adapters
 	class DarcsAdapter < AbstractAdapter
 		def head_token
 		  string_to_patch_names(run("cd '#{url}' && darcs changes --last 1"))[0]

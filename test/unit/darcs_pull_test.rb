@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-module Scm::Adapters
-	class DarcsPullTest < Scm::Test
+module OhlohScm::Adapters
+	class DarcsPullTest < OhlohScm::Test
 
 		def test_pull
 			with_darcs_repository('darcs') do |src|
