@@ -9,12 +9,15 @@ module OhlohScm::Parsers
 
 		def test_log_parser_default
 sample_log = <<SAMPLE
-Wed Nov  3 15:55:25 PDT 2010  Simon Michael <simon@joyful.com>
+patch 1007b5ad4831769283213d47e1fd5f6d30ac97f0
+Author: Simon Michael <simon@joyful.com>
+Date:   Wed Nov  3 18:55:25 EDT 2010
   * remove helloworld.c
 
-Wed Nov  3 15:49:53 PDT 2010  Simon Michael <simon@joyful.com>
+patch bd7e455d648b784ce4be2db26a4e62dfe734dd66
+Author: Simon Michael <simon@joyful.com>
+Date:   Wed Nov  3 18:49:53 EDT 2010
   * add helloworld.c
-
 SAMPLE
 
 			commits = DarcsParser.parse(sample_log)
@@ -22,29 +25,32 @@ SAMPLE
 			assert commits
 			assert_equal 2, commits.size
 
-			assert_equal 'remove helloworld.c', commits[0].token
+			assert_equal '1007b5ad4831769283213d47e1fd5f6d30ac97f0', commits[0].token
 			assert_equal 'Simon Michael', commits[0].author_name
 			assert_equal 'simon@joyful.com', commits[0].author_email
-			assert_equal nil, commits[0].message # Note \n at end of comment
+			assert_equal 'remove helloworld.c', commits[0].message # Note \n at end of comment
 			assert_equal Time.utc(2010,11,3,22,55,25), commits[0].author_date
 			assert_equal 0, commits[0].diffs.size
 
-			assert_equal 'add helloworld.c', commits[1].token
+			assert_equal 'bd7e455d648b784ce4be2db26a4e62dfe734dd66', commits[1].token
 			assert_equal 'Simon Michael', commits[1].author_name
 			assert_equal 'simon@joyful.com', commits[1].author_email
-			assert_equal nil, commits[1].message # Note \n at end of comment
+			assert_equal 'add helloworld.c', commits[1].message # Note \n at end of comment
 			assert_equal Time.utc(2010,11,3,22,49,53), commits[1].author_date
 			assert_equal 0, commits[1].diffs.size
 		end
 
 		def test_log_parser_default_partial_user_name
 sample_log = <<SAMPLE
-Wed Nov  3 15:55:25 PDT 2010  Simon Michael
+patch 1007b5ad4831769283213d47e1fd5f6d30ac97f0
+Author: Simon Michael
+Date:   Wed Nov  3 18:55:25 EDT 2010
   * name only
 
-Wed Nov  3 15:49:53 PDT 2010  simon@joyful.com
+patch bd7e455d648b784ce4be2db26a4e62dfe734dd66
+Author: simon@joyful.com
+Date:   Wed Nov  3 18:49:53 EDT 2010
   * email only
-
 SAMPLE
 
 			commits = DarcsParser.parse(sample_log)
@@ -52,18 +58,20 @@ SAMPLE
 			assert commits
 			assert_equal 2, commits.size
 
-			assert_equal 'name only', commits[0].token
+			assert_equal '1007b5ad4831769283213d47e1fd5f6d30ac97f0', commits[0].token
 			assert_equal 'Simon Michael', commits[0].author_name
-			assert !commits[0].author_email
+			assert_nil commits[0].author_email
 
-			assert_equal 'email only', commits[1].token
-			assert !commits[1].author_name
+			assert_equal 'bd7e455d648b784ce4be2db26a4e62dfe734dd66', commits[1].token
+			assert_nil commits[1].author_name
 			assert_equal 'simon@joyful.com', commits[1].author_email
 		end
 
 		def test_log_parser_verbose
 sample_log = <<SAMPLE
-Wed Nov  3 15:55:25 PDT 2010  Simon Michael <simon@joyful.com>
+patch 1007b5ad4831769283213d47e1fd5f6d30ac97f0
+Author: Simon Michael <simon@joyful.com>
+Date:   Wed Nov  3 18:55:25 EDT 2010
   * remove helloworld.c
     hunk ./helloworld.c 1
     -/* Hello, World! */
@@ -80,7 +88,9 @@ Wed Nov  3 15:55:25 PDT 2010  Simon Michael <simon@joyful.com>
     -}
     rmfile ./helloworld.c
 
-Wed Nov  3 15:49:53 PDT 2010  Simon Michael <simon@joyful.com>
+patch bd7e455d648b784ce4be2db26a4e62dfe734dd66
+Author: Simon Michael <simon@joyful.com>
+Date:   Wed Nov  3 18:49:53 EDT 2010
   * add helloworld.c
     addfile ./helloworld.c
     hunk ./helloworld.c 1
@@ -103,19 +113,19 @@ SAMPLE
 			assert commits
 			assert_equal 2, commits.size
 
-			assert_equal 'remove helloworld.c', commits[0].token
+			assert_equal '1007b5ad4831769283213d47e1fd5f6d30ac97f0', commits[0].token
 			assert_equal 'Simon Michael', commits[0].author_name
 			assert_equal 'simon@joyful.com', commits[0].author_email
-			assert_equal nil, commits[0].message # Note \n at end of comment
+			assert_equal 'remove helloworld.c', commits[0].message # Note \n at end of comment
 			assert_equal Time.utc(2010,11,3,22,55,25), commits[0].author_date
 			assert_equal 2, commits[0].diffs.size
 			assert_equal './helloworld.c', commits[0].diffs[0].path
 			assert_equal './helloworld.c', commits[0].diffs[1].path
 
-			assert_equal 'add helloworld.c', commits[1].token
+			assert_equal 'bd7e455d648b784ce4be2db26a4e62dfe734dd66', commits[1].token
 			assert_equal 'Simon Michael', commits[1].author_name
 			assert_equal 'simon@joyful.com', commits[1].author_email
-			assert_equal nil, commits[1].message # Note \n at end of comment
+			assert_equal 'add helloworld.c', commits[1].message # Note \n at end of comment
 			assert_equal Time.utc(2010,11,3,22,49,53), commits[1].author_date
 			assert_equal 2, commits[0].diffs.size
 			assert_equal './helloworld.c', commits[0].diffs[0].path
