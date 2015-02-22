@@ -47,7 +47,7 @@ module OhlohScm::Adapters
 
 					# Commit some new code on the original and pull again
 					src.run "cd '#{src.url}' && touch foo && darcs add foo && darcs record -a -m test"
-					assert_equal "test", src.commits.last.token
+					assert_equal "test", src.commits.last.message
 
 					src.push(dest)
 					assert_equal src.log, dest.log
