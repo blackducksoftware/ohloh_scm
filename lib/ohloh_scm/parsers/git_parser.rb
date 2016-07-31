@@ -27,7 +27,7 @@ module OhlohScm::Parsers
 					when /^commit ([a-z0-9]{40,40})$/
 						sha1 = $1
 						yield e if e
-						e = Scm::Commit.new
+						e = OhlohScm::Commit.new
 						e.diffs = []
 						e.token = sha1
 						e.author_name = ANONYMOUS
@@ -53,7 +53,7 @@ module OhlohScm::Parsers
 
 				elsif state == :diffs
 					if line =~ /^([ADM])\t(.+)$/
-						e.diffs << Scm::Diff.new( :action => $1, :path => $2)
+						e.diffs << OhlohScm::Diff.new( :action => $1, :path => $2)
 					end
 
 				else

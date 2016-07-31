@@ -32,8 +32,8 @@ module OhlohScm::Adapters
 		# Given a commit with diffs, fill in all of the SHA1 values.
 		def test_populate_sha1
 			with_svn_repository('svn') do |svn|
-				c = Scm::Commit.new(:token => 3)
-				c.diffs = [Scm::Diff.new(:path => "/trunk/helloworld.c", :action => "M")]
+				c = OhlohScm::Commit.new(:token => 3)
+				c.diffs = [OhlohScm::Diff.new(:path => "/trunk/helloworld.c", :action => "M")]
 				svn.populate_commit_sha1s!(c)
 				assert_equal 'f6adcae4447809b651c787c078d255b2b4e963c5', c.diffs.first.sha1
 				assert_equal '4c734ad53b272c9b3d719f214372ac497ff6c068', c.diffs.first.parent_sha1
@@ -42,7 +42,7 @@ module OhlohScm::Adapters
 
 		def test_strip_commit_branch
 			svn = SvnAdapter.new(:branch_name => "/trunk")
-			commit = Scm::Commit.new
+			commit = OhlohScm::Commit.new
 
 			# nil diffs before => nil diffs after
 			assert !svn.strip_commit_branch(commit).diffs
@@ -52,19 +52,19 @@ module OhlohScm::Adapters
 			assert_equal [], svn.strip_commit_branch(commit).diffs
 
 			commit.diffs = [
-				Scm::Diff.new(:path => "/trunk"),
-				Scm::Diff.new(:path => "/trunk/helloworld.c"),
-				Scm::Diff.new(:path => "/branches/a")
+				OhlohScm::Diff.new(:path => "/trunk"),
+				OhlohScm::Diff.new(:path => "/trunk/helloworld.c"),
+				OhlohScm::Diff.new(:path => "/branches/a")
 			]
 			assert_equal ['', '/helloworld.c'], svn.strip_commit_branch(commit).diffs.collect { |d| d.path }.sort
 		end
 
 		def test_strip_diff_branch
 			svn = SvnAdapter.new(:branch_name => "/trunk")
-			assert !svn.strip_diff_branch(Scm::Diff.new)
-			assert !svn.strip_diff_branch(Scm::Diff.new(:path => "/branches/b"))
-			assert_equal '', svn.strip_diff_branch(Scm::Diff.new(:path => "/trunk")).path
-			assert_equal '/helloworld.c', svn.strip_diff_branch(Scm::Diff.new(:path => "/trunk/helloworld.c")).path
+			assert !svn.strip_diff_branch(OhlohScm::Diff.new)
+			assert !svn.strip_diff_branch(OhlohScm::Diff.new(:path => "/branches/b"))
+			assert_equal '', svn.strip_diff_branch(OhlohScm::Diff.new(:path => "/trunk")).path
+			assert_equal '/helloworld.c', svn.strip_diff_branch(OhlohScm::Diff.new(:path => "/trunk/helloworld.c")).path
 		end
 
 		def test_strip_path_branch
@@ -88,8 +88,8 @@ module OhlohScm::Adapters
 
 		def test_remove_dupes_add_modify
 			svn = SvnAdapter.new
-			c = Scm::Commit.new(:diffs => [ Scm::Diff.new(:action => "A", :path => "foo"),
-																			Scm::Diff.new(:action => "M", :path => "foo") ])
+			c = OhlohScm::Commit.new(:diffs => [ OhlohScm::Diff.new(:action => "A", :path => "foo"),
+																			OhlohScm::Diff.new(:action => "M", :path => "foo") ])
 
 			svn.remove_dupes(c)
 			assert_equal 1, c.diffs.size
@@ -98,8 +98,8 @@ module OhlohScm::Adapters
 
 		def test_remove_dupes_add_replace
 			svn = SvnAdapter.new
-			c = Scm::Commit.new(:diffs => [ Scm::Diff.new(:action => "R", :path => "foo"),
-																			Scm::Diff.new(:action => "A", :path => "foo") ])
+			c = OhlohScm::Commit.new(:diffs => [ OhlohScm::Diff.new(:action => "R", :path => "foo"),
+																			OhlohScm::Diff.new(:action => "A", :path => "foo") ])
 
 			svn.remove_dupes(c)
 			assert_equal 1, c.diffs.size

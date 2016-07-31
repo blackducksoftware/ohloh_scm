@@ -1,4 +1,4 @@
-module Scm
+module OhlohScm
 	# A commit is a collection of diffs united by a single timestamp, author, and
 	# message.
 	#

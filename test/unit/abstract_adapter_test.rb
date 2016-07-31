@@ -74,7 +74,7 @@ module OhlohScm::Adapters
       stdout = AbstractAdapter.run(cmd)
       assert_equal "Hello World\n", stdout
     end
-    
+
     def test_shellout_with_stderr
       cmd = %q( ruby -e"  t = 'Hello World'; STDOUT.puts t; STDERR.puts t  " )
       stdout, stderr, status = AbstractAdapter.run_with_err(cmd)
@@ -82,7 +82,7 @@ module OhlohScm::Adapters
       assert_equal "Hello World\n", stdout
       assert_equal "Hello World\n", stderr
     end
-    
+
     def test_shellout_large_output
       cat = 'ruby -e"  puts Array.new(65536){ 42 }  "'
       stdout = AbstractAdapter.run(cat)
@@ -91,7 +91,7 @@ module OhlohScm::Adapters
 
     def test_shellout_error
       cmd = "false"
-      assert_raise RuntimeError do 
+      assert_raise RuntimeError do
         stdout = AbstractAdapter.run(cmd)
       end
     end

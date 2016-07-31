@@ -21,8 +21,8 @@ module OhlohScm::Adapters
 				"http://www.selenic.com:80/repo/hello",
 				"https://www.selenic.com/repo/hello",
 				"bzr://www.selenic.com/repo/hello",
-				"lp:foobar", 
-				"lp:~foobar/bar", 
+				"lp:foobar",
+				"lp:~foobar/bar",
 			].each do |url|
 				bzr = BzrAdapter.new(:url => url, :public_urls_only => true)
 				assert !bzr.validate_url

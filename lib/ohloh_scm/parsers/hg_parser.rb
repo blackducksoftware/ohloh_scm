@@ -17,7 +17,7 @@ module OhlohScm::Parsers
 					case l
 					when /^changeset:\s+\d+:([0-9a-f]+)/
 						yield e if e && block_given?
-						e = Scm::Commit.new
+						e = OhlohScm::Commit.new
 						e.diffs = []
 						e.token = $1
 					when /^user:\s+(.+?)(\s+<(.+)>)?$/
@@ -27,7 +27,7 @@ module OhlohScm::Parsers
 						e.committer_date = Time.parse($1).utc
 					when /^files:\s+(.+)/
 						($1 || '').split(' ').each do |file|
-							e.diffs << Scm::Diff.new(:action => '?', :path => file)
+							e.diffs << OhlohScm::Diff.new(:action => '?', :path => file)
 						end
 					when /^summary:\s+(.+)/
 						e.message = $1

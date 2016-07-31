@@ -1,4 +1,4 @@
-[![Ohloh SCM on Ohloh](https://www.ohloh.net/p/ohloh_scm/widgets/project_partner_badge.gif)](https://www.ohloh.net/p/ohloh_scm)
+[![Ohloh SCM on Ohloh](https://www.ohloh.net/p/ohloh_scm/widgets/project_partner_badge.gif)](https://www.ohloh.net/p/ohloh_scm) [![Build Status](https://travis-ci.org/blackducksoftware/ohloh_scm.svg?branch=master)](https://travis-ci.org/blackducksoftware/ohloh_scm)
 
 # Ohloh SCM
 
@@ -49,10 +49,17 @@ hg 1.1.2
 If you are using CVS instead of CVSNT, you can potentially try creating
 a shell alias or symlink mapping 'cvsnt' to 'cvs'.
 
+Ohloh SCM uses [posix-spawn](https://github.com/rtomayko/posix-spawn) to
+execute commands so ensure *posix-spawn* gem is installed
+
+``gem install posix-spawn``
+
+
 ## Usage with Bundler
 
 ```
 gem 'ohloh_scm', git: 'https://github.com/blackducksw/ohloh_scm/', require: 'scm'
+gem 'posix-spawn'
 ```
 ## Running
 

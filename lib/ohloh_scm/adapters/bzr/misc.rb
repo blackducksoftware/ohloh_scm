@@ -10,7 +10,7 @@ module OhlohScm::Adapters
 		end
 
 		def ls_tree(token)
-			run("cd #{path} && bzr ls -V -r #{to_rev_param(token)}").split("\n")
+      run("cd #{path} && bzr ls -V -r #{to_rev_param(token)}").split("\n")
 		end
 
 		def to_rev_param(r=nil)

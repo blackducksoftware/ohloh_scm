@@ -35,7 +35,7 @@ module OhlohScm::Parsers
 					if line =~ /^Commit: ([a-z0-9]+)$/
 						sha1 = $1
 						yield e if e
-						e = Scm::Commit.new
+						e = OhlohScm::Commit.new
 						e.diffs = []
 						e.token = sha1
 						e.author_name = ANONYMOUS
@@ -70,7 +70,7 @@ module OhlohScm::Parsers
 					elsif line =~ /:([0-9]+) ([0-9]+) ([a-z0-9]+) ([a-z0-9]+) ([A-Z])\t"?(.+[^"])"?$/
 						# Submodules have a file mode of '160000', which indicates a "gitlink"
 						# We ignore submodules completely.
-						e.diffs << Scm::Diff.new( :action => $5, :path => $6, :sha1 => $4, :parent_sha1 => $3 ) unless $1=='160000' || $2=='160000'
+						e.diffs << OhlohScm::Diff.new( :action => $5, :path => $6, :sha1 => $4, :parent_sha1 => $3 ) unless $1=='160000' || $2=='160000'
 					end
 
 				else

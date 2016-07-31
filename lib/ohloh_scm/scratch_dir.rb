@@ -1,7 +1,7 @@
 require 'fileutils'
 
 # A utility class to manage the creation and automatic cleanup of temporary directories.
-module Scm
+module OhlohScm
   class ScratchDir
     attr_reader :path
 

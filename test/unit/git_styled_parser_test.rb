@@ -13,13 +13,13 @@ __BEGIN_COMMIT__
 Commit: 1df547800dcd168e589bb9b26b4039bff3a7f7e4
 Author: Jason Allen
 AuthorEmail: jason@ohloh.net
-Date:   
+Date: 
 __BEGIN_COMMENT__
     moving COPYING
 
 __END_COMMENT__
 SAMPLE
-      
+
 			commits = GitStyledParser.parse(sample_log)
 			assert_equal 1, commits.size
 			assert_equal Time.utc(1970,1,1,0,0,0), commits[0].author_date
@@ -37,7 +37,7 @@ __BEGIN_COMMENT__
 
 __END_COMMENT__
 SAMPLE
-      
+
 			commits = GitStyledParser.parse(sample_log)
 			assert_equal 1, commits.size
 			assert_equal Time.utc(1970,1,1,0,0,0), commits[0].author_date

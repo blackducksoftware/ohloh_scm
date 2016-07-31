@@ -5,7 +5,7 @@ module OhlohScm::Adapters
 
 		def test_pull
 			with_bzr_repository('bzr') do |src|
-				Scm::ScratchDir.new do |dest_dir|
+				OhlohScm::ScratchDir.new do |dest_dir|
 
 					dest = BzrAdapter.new(:url => dest_dir).normalize
 					assert !dest.exist?

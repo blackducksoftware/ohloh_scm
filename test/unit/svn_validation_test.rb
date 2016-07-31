@@ -7,7 +7,7 @@ module OhlohScm::Adapters
 				assert !SvnAdapter.new(:username => username).validate_username
 			end
 		end
-		
+
 		def test_for_blank_svn_urls
 			svn = SvnAdapter.new(:url =>"")
 			assert_nil svn.path_to_file_url(svn.url)
@@ -167,7 +167,7 @@ module OhlohScm::Adapters
     end
 
     def test_empty_branch_name_with_file_system
-      Scm::ScratchDir.new do |dir|
+      OhlohScm::ScratchDir.new do |dir|
         svn = SvnAdapter.new(:url => dir).normalize
         assert_equal '', svn.branch_name
       end

@@ -25,7 +25,7 @@ module OhlohScm::Parsers
 				if state == :data
 					case l
 					when /^changeset:\s+([0-9a-f]+)/
-						e = Scm::Commit.new
+						e = OhlohScm::Commit.new
 						e.diffs = []
 						e.token = $1
 					when /^user:\s+(.+?)(\s+<(.+)>)?$/
@@ -46,7 +46,7 @@ module OhlohScm::Parsers
 					if l == "__END_FILES__\n"
 						next_state = :data
 					elsif l =~ /^([MAD]) (.+)$/
-						e.diffs << Scm::Diff.new(:action => $1, :path => $2)
+						e.diffs << OhlohScm::Diff.new(:action => $1, :path => $2)
 					end
 
 				elsif state == :long_comment

@@ -1,3 +1,5 @@
+require 'shellwords'
+
 module OhlohScm::Adapters
 	class HgAdapter < AbstractAdapter
 		def cat_file(commit, diff)
@@ -20,7 +22,7 @@ module OhlohScm::Adapters
 		# Example:
 		#     "Foo Bar & Baz" => "Foo\ Bar\ \&\ Baz"
 		def escape(path)
-			path.gsub(/[ `'"&()<>|#\$]/) { |c| '\\' + c }
+			path.shellescape
 		end
 	end
 end

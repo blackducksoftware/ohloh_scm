@@ -5,7 +5,7 @@ module OhlohScm::Adapters
 
 		def test_pull
 			with_hg_repository('hg') do |src|
-				Scm::ScratchDir.new do |dest_dir|
+				OhlohScm::ScratchDir.new do |dest_dir|
 
 					dest = HgAdapter.new(:url => dest_dir).normalize
 					assert !dest.exist?

@@ -54,7 +54,7 @@ module OhlohScm::Parsers
 		def test_parent_branch_name
 			svn = OhlohScm::Adapters::SvnChainAdapter.new(:branch_name => "/trunk")
 
-			assert_equal "/branches/b", svn.parent_branch_name(Scm::Diff.new(:action => 'A',
+			assert_equal "/branches/b", svn.parent_branch_name(OhlohScm::Diff.new(:action => 'A',
 					:path => "/trunk", :from_revision => 1, :from_path => "/branches/b"))
 		end
 

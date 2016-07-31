@@ -305,8 +305,8 @@ renamed:
 		end
 
 		def test_remove_dupes_add_remove
-			diffs = BzrParser.remove_dupes([ Scm::Diff.new(:action => "A", :path => "foo"),
-																				Scm::Diff.new(:action => "D", :path => "foo") ])
+			diffs = BzrParser.remove_dupes([ OhlohScm::Diff.new(:action => "A", :path => "foo"),
+																				OhlohScm::Diff.new(:action => "D", :path => "foo") ])
 			assert_equal 1, diffs.size
 			assert_equal 'M', diffs.first.action
 			assert_equal 'foo', diffs.first.path
@@ -378,9 +378,9 @@ message:
   This is a tricky commit message to confirm fix
   to Ticket 5. We're including a line of dashes in
   the message that resembles a log delimiter.
-  
+
   ------------------------------------------------------------
-  
+
 	Happy parsing!
 added:
   goodbyeworld.c
