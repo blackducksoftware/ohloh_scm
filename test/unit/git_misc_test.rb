@@ -5,7 +5,7 @@ module OhlohScm::Adapters
 
 		def test_export
 			with_git_repository('git') do |git|
-				Scm::ScratchDir.new do |dir|
+				OhlohScm::ScratchDir.new do |dir|
 					git.export(dir)
 					assert_equal ['.','..','.gitignore','COPYING','README','helloworld.c','makefile','ohloh_token'], Dir.entries(dir).sort
 				end
@@ -27,8 +27,8 @@ module OhlohScm::Adapters
 
 		def test_is_merge_commit
 			with_git_repository('git_walk') do |git|
-				assert git.is_merge_commit?(Scm::Commit.new(:token => 'f264fb40c340a415b305ac1f0b8f12502aa2788f'))
-				assert !git.is_merge_commit?(Scm::Commit.new(:token => 'd067161caae2eeedbd74976aeff5c4d8f1ccc946'))
+				assert git.is_merge_commit?(OhlohScm::Commit.new(:token => 'f264fb40c340a415b305ac1f0b8f12502aa2788f'))
+				assert !git.is_merge_commit?(OhlohScm::Commit.new(:token => 'd067161caae2eeedbd74976aeff5c4d8f1ccc946'))
 			end
 		end
 

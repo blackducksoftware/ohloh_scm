@@ -20,13 +20,14 @@ module OhlohScm::Adapters
 					      'file3.txt',
 					      'file4.txt',
 					      'file5.txt'],
-					     bzr.ls_tree(bzr.head_token).sort
+              bzr.ls_tree(bzr.head_token).sort.map { |filename|
+                filename.force_encoding(Encoding::UTF_8) }
 			end
 		end
 
 		def test_export
 			with_bzr_repository('bzr') do |bzr|
-				Scm::ScratchDir.new do |dir|
+				OhlohScm::ScratchDir.new do |dir|
 					bzr.export(dir)
 					assert_equal ['.', '..', 'Cédric.txt', 'file1.txt', 'file3.txt', 'file4.txt', 'file5.txt'], Dir.entries(dir).sort
 				end

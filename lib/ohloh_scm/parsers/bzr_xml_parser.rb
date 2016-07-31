@@ -18,7 +18,7 @@ module OhlohScm::Parsers
 		def tag_start(name, attrs)
       case name
       when 'log'
-				@commit = Scm::Commit.new
+				@commit = OhlohScm::Commit.new
 				@commit.diffs = []
       when 'affected-files'
         @diffs = []
@@ -87,18 +87,18 @@ module OhlohScm::Parsers
       case action
         # A rename action requires two diffs: one to remove the old filename,
         # another to add the new filename.
-        #   
+        #
         # Note that is possible to be renamed to the empty string!
         # This happens when a subdirectory is moved to become the root.
       when 'renamed'
-        diffs = [ Scm::Diff.new(:action => 'D', :path => before_path),
-                  Scm::Diff.new(:action => 'A', :path => path || '')]
+        diffs = [ OhlohScm::Diff.new(:action => 'D', :path => before_path),
+                  OhlohScm::Diff.new(:action => 'A', :path => path || '')]
       when 'added'
-        diffs = [Scm::Diff.new(:action => 'A', :path => path)]
+        diffs = [OhlohScm::Diff.new(:action => 'A', :path => path)]
       when 'modified'
-        diffs = [Scm::Diff.new(:action => 'M', :path => path)]
+        diffs = [OhlohScm::Diff.new(:action => 'M', :path => path)]
       when 'removed'
-        diffs = [Scm::Diff.new(:action => 'D', :path => path)]
+        diffs = [OhlohScm::Diff.new(:action => 'D', :path => path)]
       end
       diffs.each do |d|
         d.path = strip_trailing_asterisk(d.path)
@@ -108,11 +108,11 @@ module OhlohScm::Parsers
 
     def strip_trailing_asterisk(path)
       path[-1..-1] == '*' ? path[0..-2] : path
-    end 
+    end
 
     def remove_dupes(diffs)
       BzrXmlParser.remove_dupes(diffs)
-    end 
+    end
 
 	end
 
@@ -133,14 +133,14 @@ module OhlohScm::Parsers
     def self.remove_dupes(diffs)
       # Bazaar may report that a file was added and modified in a single commit.
       # Reduce these cases to a single 'A' action.
-      diffs.delete_if do |d| 
+      diffs.delete_if do |d|
         d.action == 'M' && diffs.select { |x| x.path == d.path && x.action == 'A' }.any?
-      end 
+      end
 
       # Bazaar may report that a file was both deleted and added in a single commit.
       # Reduce these cases to a single 'M' action.
-      diffs.each do |d| 
-        d.action = 'M' if diffs.select { |x| x.path == d.path }.size > 1 
+      diffs.each do |d|
+        d.action = 'M' if diffs.select { |x| x.path == d.path }.size > 1
       end.uniq
     end
 

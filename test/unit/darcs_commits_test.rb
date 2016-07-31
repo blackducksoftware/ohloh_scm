@@ -6,17 +6,17 @@ module OhlohScm::Adapters
 		def test_commit
 			with_darcs_repository('darcs') do |darcs|
 				assert_equal 2, darcs.commit_count
-				assert_equal 1, darcs.commit_count('add helloworld.c')
-				assert_equal 0, darcs.commit_count('remove helloworld.c')
-				assert_equal ['add helloworld.c', 'remove helloworld.c'], darcs.commit_tokens
-				assert_equal ['remove helloworld.c'], darcs.commit_tokens('add helloworld.c')
-				assert_equal [], darcs.commit_tokens('remove helloworld.c')
-				assert_equal ['add helloworld.c',
-											'remove helloworld.c'], darcs.commits.collect { |c| c.token }
-				assert_equal ['remove helloworld.c'], darcs.commits('add helloworld.c').collect { |c| c.token }
+				assert_equal 1, darcs.commit_count(:after => 'bd7e455d648b784ce4be2db26a4e62dfe734dd66')
+				assert_equal 0, darcs.commit_count(:after => '1007b5ad4831769283213d47e1fd5f6d30ac97f0')
+				assert_equal ['bd7e455d648b784ce4be2db26a4e62dfe734dd66', '1007b5ad4831769283213d47e1fd5f6d30ac97f0'], darcs.commit_tokens
+				assert_equal ['1007b5ad4831769283213d47e1fd5f6d30ac97f0'], darcs.commit_tokens(:after => 'bd7e455d648b784ce4be2db26a4e62dfe734dd66')
+				assert_equal [], darcs.commit_tokens(:after => '1007b5ad4831769283213d47e1fd5f6d30ac97f0')
+				assert_equal ['bd7e455d648b784ce4be2db26a4e62dfe734dd66',
+											'1007b5ad4831769283213d47e1fd5f6d30ac97f0'], darcs.commits.collect { |c| c.token }
+				assert_equal ['1007b5ad4831769283213d47e1fd5f6d30ac97f0'], darcs.commits(:after => 'bd7e455d648b784ce4be2db26a4e62dfe734dd66').collect { |c| c.token }
 				# Check that the diffs are not populated
-				assert_equal [], darcs.commits('add helloworld.c').first.diffs
-				assert_equal [], darcs.commits('remove helloworld.c')
+				assert_equal [], darcs.commits(:after => 'bd7e455d648b784ce4be2db26a4e62dfe734dd66').first.diffs
+				assert_equal [], darcs.commits(:after => '1007b5ad4831769283213d47e1fd5f6d30ac97f0')
 			end
 		end
 
@@ -37,8 +37,8 @@ module OhlohScm::Adapters
 				assert !FileTest.exist?(darcs.log_filename) # Make sure we cleaned up after ourselves
 
 				# Verify that we got the commits in forward chronological order
-				assert_equal ['add helloworld.c',
-											'remove helloworld.c'], commits.map {|c| c.token}
+				assert_equal ['bd7e455d648b784ce4be2db26a4e62dfe734dd66',
+											'1007b5ad4831769283213d47e1fd5f6d30ac97f0'], commits.map {|c| c.token}
 			end
 		end
 	end

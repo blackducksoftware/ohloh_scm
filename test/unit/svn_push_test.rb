@@ -6,7 +6,7 @@ module OhlohScm::Adapters
 
 		def test_basic_push_using_svnsync
 			with_svn_repository('svn') do |src|
-				Scm::ScratchDir.new do |dest_dir|
+				OhlohScm::ScratchDir.new do |dest_dir|
 
 					dest = SvnAdapter.new(:url => dest_dir).normalize
 					assert !dest.exist?
@@ -23,7 +23,7 @@ module OhlohScm::Adapters
 		# Simulates pushing to another server in our cluster.
 		def test_ssh_push_using_svnsync
 			with_svn_repository('svn') do |src|
-				Scm::ScratchDir.new do |dest_dir|
+				OhlohScm::ScratchDir.new do |dest_dir|
 
 					dest = SvnAdapter.new(:url => "svn+ssh://#{Socket.gethostname}#{File.expand_path(dest_dir)}").normalize
 					assert !dest.exist?

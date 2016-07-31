@@ -21,5 +21,5 @@ module OhlohScm::Adapters
 	end
 end
 
-require_relative 'hglib/cat_file'
 require_relative 'hglib/head'
+require_relative 'hglib/cat_file'

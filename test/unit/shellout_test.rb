@@ -1,4 +1,5 @@
 require_relative '../test_helper'
+require 'timeout'
 
 class ShelloutTest < OhlohScm::Test
   def test_execute_must_pipe_the_results_accurately

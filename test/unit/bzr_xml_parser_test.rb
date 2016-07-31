@@ -10,7 +10,7 @@ module OhlohScm::Parsers
 		def test_empty_xml
 			assert_equal("<?xml version=\"1.0\"?>\n<ohloh_log scm=\"bzr\">\n</ohloh_log>\n", BzrXmlParser.parse('', :writer => XmlWriter.new))
 		end
-	
+
     def test_basic_xml
       xml = <<-XML
 <?xml version="1.0" encoding="UTF-8"?>
@@ -31,7 +31,7 @@ module OhlohScm::Parsers
 			commits = BzrXmlParser.parse(xml)
 			assert_equal 1, commits.size
       c = commits.first
-			assert_equal 0, c.diffs.size 
+			assert_equal 0, c.diffs.size
       assert_equal "Renamed test1.txt to subdir/test_b.txt, removed test2.txt and added test_a.txt.", c.message
       assert_equal "test@example.com-20110725174345-brbpkwumeh07aoh8", c.token
     end
@@ -71,7 +71,7 @@ module OhlohScm::Parsers
 
 			assert_equal "test2.txt", c.diffs[0].path
       assert_equal "D", c.diffs[0].action
-			
+
 			assert_equal "test_a.txt", c.diffs[1].path
       assert_equal "A", c.diffs[1].action
 
@@ -83,9 +83,9 @@ module OhlohScm::Parsers
 		end
 
     # When an directory is deleted, bzr outputs one delete entry
-    # per file and one for the directory. For empty dirs, there 
-    # is only one directory remove entry. 
-    # Ohloh keeps file delete entries but ignores directory 
+    # per file and one for the directory. For empty dirs, there
+    # is only one directory remove entry.
+    # Ohloh keeps file delete entries but ignores directory
     # delete entry.
     def test_ignore_dir_delete_xml
       xml = <<-XML
@@ -114,7 +114,7 @@ module OhlohScm::Parsers
     XML
       commits = BzrXmlParser.parse(xml)
       assert_equal 1, commits.size
-    
+
       c = commits.first
       assert_equal 1, c.diffs.size
       assert_equal "uspace/lib/net/include/nil_interface.h", c.diffs.first.path
@@ -243,12 +243,12 @@ module OhlohScm::Parsers
       assert_equal "test", c.committer_name
       assert_equal "test@example.com", c.committer_email
       assert_equal nil, c.author_name
-      assert_equal nil, c.author_email      
+      assert_equal nil, c.author_email
     end
 
     def test_rename
       xml = <<-XML
-<logs>    
+<logs>
   <log>
     <revno>10</revno>
     <revisionid>test@example.com-20110725174345-brbpkwumeh07aoh8</revisionid>
@@ -265,7 +265,7 @@ module OhlohScm::Parsers
       </renamed>
     </affected-files>
   </log>
-</logs>    
+</logs>
       XML
       commits = BzrXmlParser.parse(xml)
       assert_equal 1, commits.size
@@ -278,21 +278,21 @@ module OhlohScm::Parsers
     end
 
     def test_remove_dupes_add_remove
-      diffs = BzrXmlParser.remove_dupes([ Scm::Diff.new(:action => "A", :path => "foo"),
-                                        Scm::Diff.new(:action => "D", :path => "foo") ])
+      diffs = BzrXmlParser.remove_dupes([ OhlohScm::Diff.new(:action => "A", :path => "foo"),
+                                        OhlohScm::Diff.new(:action => "D", :path => "foo") ])
       assert_equal 1, diffs.size
       assert_equal 'M', diffs.first.action
       assert_equal 'foo', diffs.first.path
-    end    
+    end
 
-    # A complex delete/rename/modify test. 
-    # Removed test_a.txt, Renamed test3.txt to test_a.txt, edited test_a.txt 
-    #   
+    # A complex delete/rename/modify test.
+    # Removed test_a.txt, Renamed test3.txt to test_a.txt, edited test_a.txt
+    #
     # This is what Ohloh expects to see:
-    #   
-    #   D  test3.txt 
+    #
+    #   D  test3.txt
     #   M  test_a.txt
-    #   
+    #
     def test_complex_rename
       xml = <<-XML
 <logs>

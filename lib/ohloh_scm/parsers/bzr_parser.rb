@@ -30,7 +30,7 @@ module OhlohScm::Parsers
 						e.diffs = remove_dupes(e.diffs)
 						yield e
 					end
-					e = Scm::Commit.new
+					e = OhlohScm::Commit.new
 					e.diffs = []
 					next_state = :data
 				when /^#{indent}revno:\s+(\d+)$/
@@ -98,10 +98,10 @@ module OhlohScm::Parsers
 				# Note that is possible to be renamed to the empty string!
 				# This happens when a subdirectory is moved to become the root.
 				before, after = line.scan(/(.+) => ?(.*)/).first
-				[ Scm::Diff.new(:action => 'D', :path => before),
-					Scm::Diff.new(:action => 'A', :path => after || '' )]
+				[ OhlohScm::Diff.new(:action => 'D', :path => before),
+					OhlohScm::Diff.new(:action => 'A', :path => after || '' )]
 			else
-				[Scm::Diff.new(:action => action, :path => line)]
+				[OhlohScm::Diff.new(:action => action, :path => line)]
 			end.each do |d|
 				d.path = strip_trailing_asterisk(d.path)
 			end

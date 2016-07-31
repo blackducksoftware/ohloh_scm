@@ -5,7 +5,7 @@ module OhlohScm::Adapters
 	class SvnPullTest < OhlohScm::Test
 
 		def test_svnadmin_create
-			Scm::ScratchDir.new do |dir|
+			OhlohScm::ScratchDir.new do |dir|
 				url = File.join(dir, "my_svn_repo")
 				svn = SvnAdapter.new(:url => url).normalize
 
@@ -22,7 +22,7 @@ module OhlohScm::Adapters
 
 		def test_basic_pull_using_svnsync
 			with_svn_repository('svn') do |src|
-				Scm::ScratchDir.new do |dest_dir|
+				OhlohScm::ScratchDir.new do |dest_dir|
 
 					dest = SvnAdapter.new(:url => dest_dir).normalize
 					assert !dest.exist?
@@ -36,7 +36,7 @@ module OhlohScm::Adapters
 		end
 
 		def test_svnadmin_create_local
-			Scm::ScratchDir.new do |dir|
+			OhlohScm::ScratchDir.new do |dir|
 				svn = SvnAdapter.new(:url => "file://#{dir}")
 				svn.svnadmin_create_local
 				assert svn.exist?
@@ -47,7 +47,7 @@ module OhlohScm::Adapters
 		end
 
 		def test_svnadmin_create_remote
-			Scm::ScratchDir.new do |dir|
+			OhlohScm::ScratchDir.new do |dir|
 				svn = SvnAdapter.new(:url => "svn+ssh://#{Socket.gethostname}#{dir}")
 				svn.svnadmin_create_remote
 				assert svn.exist?

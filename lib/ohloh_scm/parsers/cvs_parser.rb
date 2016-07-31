@@ -139,7 +139,7 @@ module OhlohScm::Parsers
 					should_yield = false if commit_number == '1.1' and state == 'dead'
 					message = read_message(io)
 					if should_yield
-						commit = Scm::Commit.new
+						commit = OhlohScm::Commit.new
 						commit.token = committer_date[0..18]
 						commit.committer_date = Time.parse(committer_date[0..18] + ' +0000').utc
 						commit.committer_name = committer_name

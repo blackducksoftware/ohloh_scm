@@ -1,4 +1,4 @@
-module Scm
+module OhlohScm
 	# A commit is a collection of diffs united by a single timestamp, author, and
 	# message.
 	#
@@ -34,7 +34,7 @@ module Scm
 		# For Git, the token is the commit SHA1 hash.
 		# For CVS, which does not support atomic commits with unique IDs, we use
 		# the approximate timestamp of the change.
-		# For Darcs, the token is the patch name, and it may not be unique. XXX
+		# For Darcs, the hash will be used as the token here.
 		attr_accessor :token
 
 		# A pointer back to the adapter that contains this commit.

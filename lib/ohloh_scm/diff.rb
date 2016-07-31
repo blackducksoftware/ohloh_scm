@@ -1,10 +1,10 @@
-module Scm
+module OhlohScm
 	# A +Diff+ represents a change to a single file. It can represent the addition or
 	# deletion of a file, or it can represent a modification of the file contents.
-	# 
+	#
 	# Ohloh does not track filename changes. If a file is renamed, Ohloh treats this
 	# as the deletion of one file and the creation of another.
-	# 
+	#
 	# Ohloh does not track directories, only the files within directories.
 	#
 	# Don't confuse our use of the word "Diff" with a patch file or the output of the
@@ -22,7 +22,7 @@ module Scm
 		#   'M' modified
 		#   'D' deleted
 		attr_accessor :action
-		
+
 		# The SHA1 hash of the file contents both before and after the change.
 		# These must be computed using the same method as Git.
 		attr_accessor :parent_sha1, :sha1

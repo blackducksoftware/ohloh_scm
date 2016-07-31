@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'stringio'
-require 'open3'
+require 'posix/spawn'
 
 class Shellout
 
@@ -9,9 +9,9 @@ class Shellout
   end 
 
   def self.execute(cmd)
-    out, err, exit_status = Open3.capture3(cmd)
+    posix_spawn = POSIX::Spawn::Child.new(cmd)
 
-    return exit_status, out, err
+    return posix_spawn.status, posix_spawn.out, posix_spawn.err
   end
 
   def run(cmd)

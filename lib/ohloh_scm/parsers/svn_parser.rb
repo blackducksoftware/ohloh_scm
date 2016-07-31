@@ -13,7 +13,7 @@ module OhlohScm::Parsers
 				next_state = state
 				if state == :data
 					if l =~ /^r(\d+) \| (.*) \| (\d+-\d+-\d+ .*) \(.*\) \| .*/
-						e = Scm::Commit.new
+						e = OhlohScm::Commit.new
 						e.token = $1.to_i
 						e.committer_name = $2
 						e.committer_date = Time.parse($3).utc
@@ -26,7 +26,7 @@ module OhlohScm::Parsers
 				elsif state == :diffs
 					if l =~ /^   (\w) ([^\(\)]+)( \(from (.+):(\d+)\))?$/
 						e.diffs ||= []
-						e.diffs << Scm::Diff.new(:action => $1, :path => $2, :from_path => $4, :from_revision => $5.to_i)
+						e.diffs << OhlohScm::Diff.new(:action => $1, :path => $2, :from_path => $4, :from_revision => $5.to_i)
 					else
 						next_state = :comment
 					end

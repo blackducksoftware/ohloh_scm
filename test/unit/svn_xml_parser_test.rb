@@ -14,7 +14,7 @@ module OhlohScm::Parsers
 		def test_empty_xml
 			assert_equal("<?xml version=\"1.0\"?>\n<ohloh_log scm=\"svn\">\n</ohloh_log>\n", SvnXmlParser.parse('', :writer => XmlWriter.new))
 		end
-		
+
 		def test_copy_from
 			xml = <<-XML
 <?xml version="1.0"?>

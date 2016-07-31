@@ -187,7 +187,7 @@ __END_COMMENT__
 
 __BEGIN_COMMIT__
 Commit: fa3ee9d4cefc2db81adadf36da9cacbe92ce96f1
-Author: 
+Author:
 AuthorEmail: mickeyl@openembedded.org
 Date: Wed, 11 Jun 2008 00:37:06 +0000
 __BEGIN_COMMENT__

@@ -48,7 +48,7 @@ class OhlohScm::Test < Test::Unit::TestCase
 	end
 
 	def with_repository(type, name)
-		Scm::ScratchDir.new do |dir|
+		OhlohScm::ScratchDir.new do |dir|
 			if Dir.entries(REPO_DIR).include?(name)
 				`cp -R #{File.join(REPO_DIR, name)} #{dir}`
 			elsif Dir.entries(REPO_DIR).include?(name + '.tgz')

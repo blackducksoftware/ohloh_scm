@@ -1,0 +1,12 @@
+language: ruby
+env:
+  - TRAVIS_CONFIG_DIR=.travis
+before_install:
+  - cd $TRAVIS_CONFIG_DIR
+  - sh .travis_ssh_setup.sh
+install:
+  - sh .install_multiple_scms.sh
+  - sh .install_dependencies.sh
+  - gem install posix-spawn
+before_script:
+  - cd $TRAVIS_BUILD_DIR

@@ -23,8 +23,7 @@ module OhlohScm::Adapters
 
 		def test_basic_push
 			with_git_repository('git') do |src|
-				Scm::ScratchDir.new do |dest_dir|
-
+				OhlohScm::ScratchDir.new do |dest_dir|
 					dest = GitAdapter.new(:url => dest_dir).normalize
 					assert !dest.exist?
 
@@ -34,12 +33,12 @@ module OhlohScm::Adapters
 
 					# Now push again. This tests a different code path!
 					File.open(File.join(src.url, 'foo'), 'w') { }
-					src.commit_all(Scm::Commit.new)
+					src.commit_all(OhlohScm::Commit.new)
 
+          system("cd #{ dest_dir } && git config --bool core.bare true && git config receive.denyCurrentBranch refuse")
 					src.push(dest)
 					assert dest.exist?
 					assert_equal src.log, dest.log
-
 				end
 			end
 		end
