@@ -17,7 +17,7 @@ module OhlohScm::Parsers
 					case l
 					when /^patch ([0-9a-f]*)/
 						yield e if e && block_given?
-						e = Scm::Commit.new
+						e = OhlohScm::Commit.new
 						e.diffs = []
 						e.token = $1
 					when /^Author: (.*)/
@@ -42,13 +42,13 @@ module OhlohScm::Parsers
 				elsif state == :long_comment_or_prims
 					case l
 					when /^    addfile\s+(.+)/
-						e.diffs << Scm::Diff.new(:action => 'A', :path => $1)
+						e.diffs << OhlohScm::Diff.new(:action => 'A', :path => $1)
 						next_state = :prims
 					when /^    rmfile\s+(.+)/
-						e.diffs << Scm::Diff.new(:action => 'D', :path => $1)
+						e.diffs << OhlohScm::Diff.new(:action => 'D', :path => $1)
 						next_state = :prims
 					when /^    hunk\s+(.+)\s+([0-9]+)$/
-						e.diffs << Scm::Diff.new(:action => 'M', :path => $1)
+						e.diffs << OhlohScm::Diff.new(:action => 'M', :path => $1)
 						# e.sha1, e.parent_sha1 = ...
 						next_state = :prims
 					when /^$/
@@ -61,11 +61,11 @@ module OhlohScm::Parsers
 				elsif state == :prims
 					case l
 					when /^    addfile\s+(.+)/
-						e.diffs << Scm::Diff.new(:action => 'A', :path => $1)
+						e.diffs << OhlohScm::Diff.new(:action => 'A', :path => $1)
 					when /^    rmfile\s+(.+)/
-						e.diffs << Scm::Diff.new(:action => 'D', :path => $1)
+						e.diffs << OhlohScm::Diff.new(:action => 'D', :path => $1)
 					when /^    hunk\s+(.+)\s+([0-9]+)$/
-						e.diffs << Scm::Diff.new(:action => 'M', :path => $1)
+						e.diffs << OhlohScm::Diff.new(:action => 'M', :path => $1)
 						# e.sha1, e.parent_sha1 = ...
 					when /^$/
 						next_state = :patch
