@@ -85,5 +85,17 @@ module OhlohScm::Adapters
 				assert_equal "/trunk", svn.branch_name
 			end
 		end
+
+    def test_tags
+      with_svn_repository('svn', 'trunk') do |source_scm|
+        OhlohScm::ScratchDir.new do |svn_working_folder|
+          folder_name = source_scm.root.slice(/[^\/]+\/?\Z/)
+          system "cd #{ svn_working_folder } && svn co #{ source_scm.root } && cd #{ folder_name } &&
+                  svn copy trunk tags/2.0 && svn commit -m 'v2.0' && svn update"
+
+           assert_equal({ '2.0' => source_scm.head_token.to_s }, source_scm.tags)
+        end
+      end
+    end
 	end
 end

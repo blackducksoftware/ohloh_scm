@@ -133,6 +133,21 @@ module OhlohScm::Adapters
 			" #{opt_password} --no-auth-cache "
 		end
 
+    # Svn root is not usable here since several projects are nested in subfolders.
+    # e.g. https://svn.apache.org/repos/asf/openoffice/ooo-site/trunk/ 
+    #      http://svn.apache.org/repos/asf/httpd/httpd/trunk
+    #      http://svn.apache.org/repos/asf/maven/plugin-testing/trunk
+    #      all have the same root value(https://svn.apache.org/repos/asf)
+    def tags
+      base_url = url.sub(/\/(trunk|branches)\/?.*$/, '').chomp('/')
+      tag_strings = `svn log -v #{ base_url }/tags | grep 'tags.\\+(from.\\+:[0-9]\\+)$'`.split(/\n/)
+      tags_and_revs = tag_strings.map do |tag_string|
+        tag_string.match(/\/tags\/(.+) \(from .+:(\d+)\)\Z/)[1..2]
+      end
+
+      Hash[tags_and_revs]
+    end
+
     class << self
       def has_conflicts?(working_copy_url)
         system("cd '#{ working_copy_url }' && svn status | grep 'Summary of conflicts'")

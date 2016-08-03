@@ -36,5 +36,11 @@ module OhlohScm::Adapters
         end
       end
     end
+
+    def test_tags
+      with_hg_repository('hg') do |hg|
+        assert_equal hg.tags, {'tip' => '5'}
+      end
+    end
 	end
 end
