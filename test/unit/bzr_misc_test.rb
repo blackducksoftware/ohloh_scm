@@ -34,5 +34,10 @@ module OhlohScm::Adapters
 			end
 		end
 
+    def test_tags
+      with_bzr_repository('bzr') do |bzr|
+        assert_equal bzr.tags, {"v1.0.0" => "5", "v2.0.0" => "7"}
+      end
+    end
 	end
 end

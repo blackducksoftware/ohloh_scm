@@ -69,5 +69,16 @@ module OhlohScm::Adapters
 		def is_merge_commit?(commit)
 			parent_tokens(commit).size > 1
 		end
+
+    def tags
+      tag_strings = run("cd #{url} && git show-ref --tags").split(/\n/)
+      tags_and_revs = tag_strings.map do |tag_string|
+        commit_hash, tag_path = tag_string.split(/\s/)
+        tag_name = tag_path.gsub('refs/tags/', '')
+        [tag_name, commit_hash]
+      end
+
+      Hash[tags_and_revs]
+    end
 	end
 end

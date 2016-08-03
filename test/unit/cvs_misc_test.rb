@@ -62,5 +62,11 @@ module OhlohScm::Adapters
         assert_equal true, cvs.log.valid_encoding?
       end
     end
+
+    def test_tags
+      with_cvs_repository('cvs', 'simple') do |cvs|
+        assert_equal({'simple_release_tag' => '1.1.1.1', 'simple_vendor_tag' => '1.1.1'}, cvs.tags)
+      end
+    end
 	end
 end

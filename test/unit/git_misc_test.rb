@@ -44,5 +44,12 @@ module OhlohScm::Adapters
         assert_equal true, git.ls_tree.all? { |filename| filename.valid_encoding? }
       end
     end
+
+    def test_tags
+      with_git_repository('git') do |git|
+        assert_equal git.tags, {"v1.0.0" => "f6e5a894ac4173f8f2a200f2c36df38a1e61121a",
+                                "v2.1.0" => "1df547800dcd168e589bb9b26b4039bff3a7f7e4"}
+      end
+    end
 	end
 end
