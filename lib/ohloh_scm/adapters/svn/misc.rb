@@ -1,4 +1,6 @@
 require 'open-uri'
+require 'nori'
+require 'nokogiri'
 
 module OhlohScm::Adapters
 	class SvnAdapter < AbstractAdapter
@@ -144,9 +146,11 @@ module OhlohScm::Adapters
     #      http://svn.apache.org/repos/asf/maven/plugin-testing/trunk
     #      all have the same root value(https://svn.apache.org/repos/asf)
     def tags
-      tag_strings = `svn log -v #{ base_path}/tags | grep 'tags.\\+(from.\\+:[0-9]\\+)$'`.split(/\n/)
-      tag_strings.map do |tag_string|
-        tag_string.match(/\/tags\/(.+) \(from .+:(\d+)\)\Z/)[1..2]
+      tag_string = `svn ls --xml #{ base_path}/tags`
+      entries = Nori.new.parse(tag_string).fetch('lists', {}).fetch('list', {}).fetch('entry', {})
+      return [] if entries.empty?
+      entries.map do |tag|
+        [tag['name'], tag['commit']['@revision']]
       end
     end
 
