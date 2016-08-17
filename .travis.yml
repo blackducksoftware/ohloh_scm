@@ -8,5 +8,7 @@ install:
   - sh .install_multiple_scms.sh
   - sh .install_dependencies.sh
   - gem install posix-spawn
+  - gem install nori
+  - gem install nokogiri
 before_script:
   - cd $TRAVIS_BUILD_DIR
