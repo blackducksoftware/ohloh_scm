@@ -72,7 +72,8 @@ module OhlohScm::Adapters
 			yield(0,1) if block_given? # Progress bar callback
 
 			# Any new work to be done since the last time we were here?
-			commits = source_scm.commits(:after => read_token)
+      ohloh_token = read_token if git_folder_exists?
+      commits = source_scm.commits(:after => ohloh_token.to_i)
 			if commits and commits.size > 0
 				# Start by making sure we are in a known good state. Set up our working directory.
 				clean_up_disk
@@ -117,5 +118,11 @@ module OhlohScm::Adapters
 				run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0 | xargs -0 rm -rf --"
 			end
 		end
+
+    private
+
+    def git_folder_exists?
+      FileTest.exists?("#{ url }/.git")
+    end
 	end
 end
