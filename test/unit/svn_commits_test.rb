@@ -5,16 +5,16 @@ module OhlohScm::Adapters
 
 		def test_commits
 			with_svn_repository('svn') do |svn|
-				assert_equal 5, svn.commit_count
-				assert_equal 3, svn.commit_count(:after => 2)
+				assert_equal 6, svn.commit_count
+				assert_equal 4, svn.commit_count(:after => 2)
 				assert_equal 0, svn.commit_count(:after => 1000)
 
-				assert_equal [1,2,3,4,5], svn.commit_tokens
-				assert_equal [3,4,5], svn.commit_tokens(:after => 2)
+				assert_equal [1,2,3,4,5,6], svn.commit_tokens
+				assert_equal [3,4,5,6], svn.commit_tokens(:after => 2)
 				assert_equal [], svn.commit_tokens(:after => 1000)
 
-				assert_equal [1,2,3,4,5], svn.commits.collect { |c| c.token }
-				assert_equal [3,4,5], svn.commits(:after => 2).collect { |c| c.token }
+				assert_equal [1,2,3,4,5,6], svn.commits.collect { |c| c.token }
+				assert_equal [3,4,5,6], svn.commits(:after => 2).collect { |c| c.token }
 				assert_equal [], svn.commits(:after => 1000)
 				assert !FileTest.exist?(svn.log_filename)
 			end
@@ -204,8 +204,8 @@ module OhlohScm::Adapters
 				assert !FileTest.exist?(svn.log_filename) # Make sure we cleaned up after ourselves
 			end
 
-			assert_equal [1, 2, 3, 4, 5], commits.collect { |c| c.token }
-			assert_equal ['robin','robin','robin','jason','jason'], commits.collect { |c| c.committer_name }
+			assert_equal [1, 2, 3, 4, 5,6], commits.collect { |c| c.token }
+			assert_equal ['robin','robin','robin','jason','jason', 'alex'], commits.collect { |c| c.committer_name }
 
 			assert_equal Time.utc(2006,6,11,18,28, 0), commits[0].committer_date
 			assert_equal Time.utc(2006,6,11,18,32,14), commits[1].committer_date
