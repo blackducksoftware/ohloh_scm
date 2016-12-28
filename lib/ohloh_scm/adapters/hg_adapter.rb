@@ -5,7 +5,7 @@ module OhlohScm::Adapters
     end
 
     def branch_name=(branch_name)
-      branch_name = nil if branch_name.to_s.empty?
+      branch_name = nil if branch_name.blank?
       super
     end
   end
