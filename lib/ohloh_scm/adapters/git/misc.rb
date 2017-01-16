@@ -79,6 +79,7 @@ module OhlohScm::Adapters
       tag_strings = run("cd #{url} && git tag --format='%(creatordate:iso-strict) %(objectname) %(refname)'").split(/\n/)
       tag_strings.map do |tag_string|
         timestamp_string, commit_hash, tag_path = tag_string.split(/\s/)
+        timestamp_string = '1970-01-01' if timestamp_string.blank?
         timestamp = Time.parse(timestamp_string)
         tag_name = tag_path.gsub('refs/tags/', '')
         [tag_name, commit_hash, timestamp]
