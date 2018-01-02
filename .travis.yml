@@ -11,4 +11,6 @@ install:
   - gem install nokogiri -v 1.8.1
 before_script:
   - cd $TRAVIS_BUILD_DIR
-dist: precise
+sudo: required
+services:
+  - docker
