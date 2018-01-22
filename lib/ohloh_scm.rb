@@ -19,6 +19,7 @@ require_relative 'ohloh_scm/adapters/hg_adapter'
 require_relative 'ohloh_scm/adapters/hglib_adapter'
 require_relative 'ohloh_scm/adapters/bzr_adapter'
 require_relative 'ohloh_scm/adapters/bzrlib_adapter'
+require_relative 'ohloh_scm/adapters/svn_to_git_adapter'
 require_relative 'ohloh_scm/adapters/factory'
 
 require_relative 'ohloh_scm/parsers/parser'
