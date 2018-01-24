@@ -1,5 +1,5 @@
 module OhlohScm::Adapters
-  class SvnToGitAdapter < GitAdapter
+  class GitSvnAdapter < AbstractAdapter
     def pull(from, &block)
       case from
       when SvnAdapter
@@ -16,7 +16,7 @@ module OhlohScm::Adapters
     private
 
     def convertToGit(source_scm)
-      yield(0, 1) if block_given?
+      yield(1, 2) if block_given?
 
       if FileTest.exist?(git_path)
         fetch
@@ -24,7 +24,7 @@ module OhlohScm::Adapters
         clone(source_scm)
       end
 
-      yield(1, 1) if block_given?
+      yield(2, 2) if block_given?
     end
 
     def clone(source_scm)
