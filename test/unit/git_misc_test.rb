@@ -12,6 +12,24 @@ module OhlohScm::Adapters
 			end
 		end
 
+    def test_export_works_identically_for_tag_or_commit_sha
+      with_git_repository('git') do |git|
+        tag_sha = 'f6e5a894ac4173f8f2a200f2c36df38a1e61121a'
+        commit_sha = `cd #{ git.url } && git show #{ tag_sha }`.slice(/commit (.+)$/, 1)
+
+        OhlohScm::ScratchDir.new do |tag_dir|
+          git.export(tag_dir, tag_sha)
+
+          OhlohScm::ScratchDir.new do |commit_dir|
+            git.export(commit_dir, commit_sha)
+
+            assert_equal '', `diff -rq #{ tag_dir } #{ commit_dir }`
+            assert_equal ['.','..','.gitignore','helloworld.c','makefile','ohloh_token'], Dir.entries(commit_dir).sort
+          end
+        end
+      end
+    end
+
 		def test_branches
 			with_git_repository('git') do |git|
 				assert_equal ['develop', 'master'], git.branches
