@@ -6,3 +6,6 @@ module OhlohScm::Adapters
 end
 
 require_relative 'git_svn/pull'
+require_relative 'git_svn/commits'
+require_relative 'git_svn/misc'
+require_relative 'git_svn/cat_file'

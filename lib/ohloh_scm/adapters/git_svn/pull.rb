@@ -43,5 +43,9 @@ module OhlohScm::Adapters
       run "cd #{self.url} && git svn fetch"
       run "cd #{self.url} && git svn rebase"
     end
+
+    def git_path
+      File.join(self.url, '/.git')
+    end
   end
 end
