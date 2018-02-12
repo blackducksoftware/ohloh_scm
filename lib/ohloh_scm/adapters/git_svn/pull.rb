@@ -1,12 +1,8 @@
 module OhlohScm::Adapters
   class GitSvnAdapter < AbstractAdapter
-    def pull(from, &block)
-      case from
-      when SvnAdapter
-        convertToGit(from, &block)
-      else
-        logger.error { "Cannot convert #{from.english_name}/#{from.class_name} repository to git" }
-      end
+    def pull(source_scm, &block)
+      @source_scm = source_scm
+      convertToGit(&block)
     end
 
     def branch_name
@@ -15,23 +11,40 @@ module OhlohScm::Adapters
 
     private
 
-    def convertToGit(source_scm)
+    def convertToGit
       yield(1, 2) if block_given?
 
       if FileTest.exist?(git_path)
         fetch
       else
-        clone(source_scm)
+        clone
       end
 
       yield(2, 2) if block_given?
     end
 
-    def clone(source_scm)
+    def clone
+      prepare_dest_dir
+      accept_certificate_if_prompted
+      run "#{password_prompt} git svn clone #{username_opts} '#{@source_scm.url}' '#{self.url}'"
+    end
+
+    def accept_certificate_if_prompted
       # git svn does not support non iteractive and serv-certificate options
       # Permenently accept svn certificate when it prompts
-      prepare_dest_dir
-      run "yes p | git svn clone '#{source_scm.url}' '#{self.url}' > /dev/null 2>&1"
+      run "echo p | svn info #{username_opts} #{password_opts} '#{ @source_scm.url }'"
+    end
+
+    def password_prompt
+      @source_scm.password.to_s.empty? ? '' : "echo #{ @source_scm.password } |"
+    end
+
+    def password_opts
+      @source_scm.password.to_s.empty? ? '' : "--password='#{@source_scm.password}'"
+    end
+
+    def username_opts
+      @source_scm.username.to_s.empty? ? '' : "--username #{ @source_scm.username }"
     end
 
     def prepare_dest_dir

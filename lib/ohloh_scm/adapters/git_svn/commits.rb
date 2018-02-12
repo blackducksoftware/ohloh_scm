@@ -21,7 +21,7 @@ module OhlohScm::Adapters
     end
 
     def each_commit(opts={})
-      commits(opts).each do |commit|
+      commits(opts).reverse_each do |commit|
         yield commit
       end
     end
@@ -29,7 +29,7 @@ module OhlohScm::Adapters
     private
 
     def open_log_file(opts={})
-      cmd = "-v | #{string_encoder} > #{log_filename}"
+      cmd = "-v #{ after_revision(opts) } | #{string_encoder} > #{log_filename}"
       git_svn_log(cmd: cmd, oneline: false)
       File.open(log_filename, 'r') { |io| yield io }
     end
@@ -40,12 +40,7 @@ module OhlohScm::Adapters
 
     def after_revision(opts)
       after_token = (opts[:after] || 0).to_i
-      "-r#{after_token}:#{head_token}"
-    end
-
-    def head_token
-      cmd = "--limit=1 | #{extract_revision_number}"
-      git_svn_log(cmd: cmd, oneline: true)
+      "-r#{after_token + 1}:#{head_token}"
     end
 
     def extract_revision_number
