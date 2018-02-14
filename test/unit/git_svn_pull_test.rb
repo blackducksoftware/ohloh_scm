@@ -6,10 +6,8 @@ module OhlohScm::Adapters
       with_svn_repository('svn', 'trunk') do |src|
         OhlohScm::ScratchDir.new do |dest_dir|
           dest = GitSvnAdapter.new(:url => dest_dir).normalize
-          assert !dest.exist?
 
           dest.pull(src)
-          assert dest.exist?
 
           dest_commits = dest.commits
           assert_equal dest_commits.map(&:diffs).flatten.map(&:path),

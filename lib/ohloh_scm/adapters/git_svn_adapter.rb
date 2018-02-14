@@ -1,6 +1,7 @@
 module OhlohScm::Adapters
   class GitSvnAdapter < AbstractAdapter
     def english_name
+      'Subversion'
     end
   end
 end
