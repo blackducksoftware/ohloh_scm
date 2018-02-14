@@ -105,6 +105,10 @@ class OhlohScm::Test < Test::Unit::TestCase
     with_repository(OhlohScm::Adapters::GitAdapter, name, branch_name) { |git| yield git }
   end
 
+  def with_git_svn_repository(name)
+    with_repository(OhlohScm::Adapters::GitSvnAdapter, name) { |svn| yield svn }
+  end
+
   def with_hg_repository(name, branch_name = nil)
     with_repository(OhlohScm::Adapters::HgAdapter, name, branch_name) { |hg| yield hg }
   end

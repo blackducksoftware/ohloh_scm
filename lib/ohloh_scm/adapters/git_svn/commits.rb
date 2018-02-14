@@ -10,18 +10,17 @@ module OhlohScm::Adapters
       open_log_file(opts) do |io|
         parsed_commits = OhlohScm::Parsers::SvnParser.parse(io)
       end
-      parsed_commits.reverse
+      parsed_commits
     end
 
     def commit_tokens(opts={})
       cmd = "#{after_revision(opts)} | #{extract_revision_number}"
-      git_svn_log(cmd: cmd, oneline: true).split
+      git_svn_log(cmd: cmd, oneline: false).split
         .map(&:to_i)
-        .reverse
     end
 
     def each_commit(opts={})
-      commits(opts).reverse_each do |commit|
+      commits(opts).each do |commit|
         yield commit
       end
     end
@@ -39,12 +38,13 @@ module OhlohScm::Adapters
     end
 
     def after_revision(opts)
-      after_token = (opts[:after] || 0).to_i
-      "-r#{after_token + 1}:#{head_token}"
+      next_token = opts[:after].to_i + 1
+      next_head_token = head_token.to_i + 1
+      "-r#{ next_token }:#{ next_head_token }"
     end
 
     def extract_revision_number
-      "cut -d '|' -f1 | cut -c 2-"
+      "grep '^r[0-9].*|' | awk -F'|' '{print $1}' | cut -c 2-"
     end
   end
 end
