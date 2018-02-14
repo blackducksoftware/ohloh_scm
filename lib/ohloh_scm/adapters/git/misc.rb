@@ -36,8 +36,8 @@ module OhlohScm::Adapters
 			if FileTest.exist? git_path
 				run "cd '#{url}' && git clean -f -d -x"
 				if self.has_branch?
-					run "cd '#{url}' && git reset --hard #{self.branch_name} --"
-					run "cd '#{url}' && git checkout #{self.branch_name} --"
+                                  run "cd '#{url}' && git reset --hard heads/#{self.branch_name} --"
+                                  run "cd '#{url}' && git checkout #{self.branch_name} --"
 				end
 			end
 		end

@@ -112,11 +112,10 @@ module OhlohScm::Adapters
     end 
 
 		def rev_list_command(opts={})
-      up_to = opts[:up_to] || branch_name
+      up_to = opts[:up_to] || "heads/#{branch_name}"
 			range = opts[:after] ? "#{opts[:after]}..#{up_to}" : up_to
 
       trunk_only = opts[:trunk_only] ? "--first-parent" : ""
-
 			"cd '#{url}' && git rev-list --topo-order --reverse #{trunk_only} #{range}"
 		end
 	end

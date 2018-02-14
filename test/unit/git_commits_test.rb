@@ -161,5 +161,19 @@ module OhlohScm::Adapters
         end
       end
     end
+
+    def test_commit_count_having_tagname_master
+      with_git_repository('git_with_master_tag') do |git|
+	assert_equal 3, git.commit_count
+      end
+    end
+    
+    def test_commit_tokens_having_tagname_master
+      with_git_repository('git_with_master_tag') do |git|
+	assert_equal ['57b2bd30b7bae970cb3b374a0c05fd6ec3088ebf',
+		      '4e95717ac8cff8cdb10d83398d3ac667a2cca341',
+                      '34b8a99e6e5dd39bc36893f71e0ab1685668731f'], git.commit_tokens
+      end
+    end
 	end
 end

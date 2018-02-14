@@ -90,5 +90,11 @@ module OhlohScm::Adapters
         assert_equal git.tags, []
       end
     end
+
+    def test_tags_having_tagname_master
+      with_git_repository('git_with_master_tag') do |git|
+        assert_equal git.tags, [['master', '4e95717ac8cff8cdb10d83398d3ac667a2cca341', Time.parse('2018-02-01T12:56:48+0530')]]
+      end
+    end
 	end
 end
