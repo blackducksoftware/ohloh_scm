@@ -9,5 +9,8 @@ module OhlohScm::Adapters
       []
     end
 
+    def escape_single_quote(str)
+      str.to_s.gsub("'", "'\''")
+    end
   end
 end
