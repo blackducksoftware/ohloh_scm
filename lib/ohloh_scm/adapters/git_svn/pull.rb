@@ -45,7 +45,7 @@ module OhlohScm::Adapters
       # git svn does not support non iteractive and serv-certificate options
       # Permanently accept svn certificate when it prompts
       opts = "#{username_opts} #{password_opts}"
-      opts = '--no-auth-cache' if opts.strip.empty?
+      opts = '--xml' if opts.strip.empty?
       run "#{accept_ssl_certificate_cmd} '#{opts}' '#{@source_scm.url}'"
     end
 

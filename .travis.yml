@@ -10,5 +10,6 @@ install:
   - gem install posix-spawn
   - gem install nokogiri -v 1.8.1
   - gem install test-unit -v 3.2.7
+  - sudo apt-get install expect
 before_script:
   - cd $TRAVIS_BUILD_DIR
