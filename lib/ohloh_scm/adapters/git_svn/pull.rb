@@ -15,6 +15,7 @@ module OhlohScm::Adapters
       yield(0, 1) if block_given?
 
       if FileTest.exist?(git_path)
+        accept_certificate_if_prompted
         fetch(&block)
       else
         clone(&block)
@@ -43,7 +44,13 @@ module OhlohScm::Adapters
     def accept_certificate_if_prompted
       # git svn does not support non iteractive and serv-certificate options
       # Permanently accept svn certificate when it prompts
-      run "echo p | svn info #{username_opts} #{password_opts} '#{ @source_scm.url }'"
+      opts = "#{username_opts} #{password_opts}"
+      opts = '--xml' if opts.blank?
+      run "#{accept_ssl_certificate_cmd} '#{opts}' '#{@source_scm.url}'"
+    end
+
+    def accept_ssl_certificate_cmd
+      File.expand_path('../../../../../bin/accept_svn_ssl_certificate', __FILE__)
     end
 
     def password_prompt

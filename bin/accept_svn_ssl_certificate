@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+
+set OPTS [lindex $argv 0]
+set URL [lindex $argv 1]
+
+set timeout 10
+
+spawn svn info "$OPTS" "$URL"
+
+expect {
+  "(R)eject, accept (t)emporarily or accept (p)ermanently? " { send "p\r"; }
+}
