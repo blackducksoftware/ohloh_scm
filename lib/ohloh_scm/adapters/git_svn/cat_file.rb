@@ -11,7 +11,7 @@ module OhlohScm::Adapters
     private
 
     def cat(revision, file_path)
-      run("cd #{self.url} && git show #{ revision }:'#{ file_path }'").strip
+      run("cd #{self.url} && git show #{ revision }:'#{ escape_single_quote(file_path) }'").strip
     end
 
     def git_commit(commit)
