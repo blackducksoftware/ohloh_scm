@@ -22,7 +22,9 @@ module OhlohScm::Adapters
     def tags
       tag_strings = run("cd '#{path}' && hg tags").split(/\n/)
       tag_strings.map do |tag_string|
-        tag_name, rev_number_and_hash = tag_string.split(/\s+/)
+        parsed_str = tag_string.split(' ')
+        rev_number_and_hash = parsed_str.pop
+        tag_name = parsed_str.join(' ')
         rev = rev_number_and_hash.slice(/\A\d+/)
         time_string = run("cd '#{ path }' && hg log -r #{ rev } | grep 'date:' | sed 's/date://'")
         [tag_name, rev, Time.parse(time_string)]

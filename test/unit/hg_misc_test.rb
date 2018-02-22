@@ -40,7 +40,8 @@ module OhlohScm::Adapters
     def test_tags
       with_hg_repository('hg') do |hg|
         time = Time.parse('Fri Jul 22 18:00:18 2016 +0530')
-        assert_equal  [['tip', '5', time]], hg.tags
+        assert_equal  ['tip', '5', time], hg.tags.first
+        assert_equal  ['tagname with space', '2'], hg.tags.last.first(2)
       end
     end
 	end
