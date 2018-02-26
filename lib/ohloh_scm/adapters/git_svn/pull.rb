@@ -28,7 +28,7 @@ module OhlohScm::Adapters
       prepare_dest_dir
       accept_certificate_if_prompted
 
-      max_step = @source_scm.commit_count(after: 0)
+      max_step = commit_count(after: 0)
       cmd = "#{password_prompt} git svn clone --quiet #{username_opts} '#{@source_scm.url}' '#{self.url}'"
       track_conversion(cmd, max_step, &block)
     end
@@ -71,7 +71,7 @@ module OhlohScm::Adapters
     end
 
     def fetch(&block)
-      max_step = @source_scm.commit_count(after: head_token)
+      max_step = commit_count(after: head_token)
       cmd = "cd #{self.url} && git svn fetch"
       track_conversion(cmd, max_step, &block)
     end
