@@ -48,7 +48,7 @@ module OhlohScm::Adapters
 
 		# Returns an array of all branch names
 		def branches
-			run("cd '#{self.url}' && git branch | #{ string_encoder }").split.collect { |b| b =~ /\b(.+)$/ ; $1 }.compact
+			run("cd '#{self.url}' && git branch").split.collect { |b| b =~ /\b(.+)$/ ; $1 }.compact
 		end
 
 		def has_branch?(name=self.branch_name)

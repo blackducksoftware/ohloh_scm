@@ -358,17 +358,7 @@ module OhlohScm::Adapters
         assert_equal 'johndoe@example.com', commits[2].author_email
       end
     end
-
-    # Bzr converts invalid utf-8 characters into valid format before commit.
-    # So no utf-8 encoding issues are seen in ruby when dealing with Bzr.
-    def test_commits_encoding
-      with_bzr_repository('bzr_with_invalid_encoding') do |bzr|
-        assert_nothing_raised do
-          bzr.commits
-        end
-      end
-    end
-
+    
 		protected
 
 		def revision_ids

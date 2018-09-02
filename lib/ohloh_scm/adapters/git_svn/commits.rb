@@ -35,7 +35,7 @@ module OhlohScm::Adapters
     private
 
     def open_log_file(opts={})
-      cmd = "-v #{ after_revision(opts) } | #{string_encoder} > #{log_filename}"
+      cmd = "-v #{ after_revision(opts) } > #{log_filename}"
       git_svn_log(cmd: cmd, oneline: false)
       File.open(log_filename, 'r') { |io| yield io }
     end

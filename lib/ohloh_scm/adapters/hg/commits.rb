@@ -42,7 +42,7 @@ module OhlohScm::Adapters
 
 		# Returns a single commit, including its diffs
 		def verbose_commit(token)
-			log = run("cd '#{self.url}' && hg log -v -r #{token} --style #{OhlohScm::Parsers::HgStyledParser.verbose_style_path} | #{ string_encoder }")
+			log = run("cd '#{self.url}' && hg log -v -r #{token} --style #{OhlohScm::Parsers::HgStyledParser.verbose_style_path}")
 			OhlohScm::Parsers::HgStyledParser.parse(log).first
 		end
 
@@ -63,7 +63,7 @@ module OhlohScm::Adapters
 		# Not used by Ohloh proper, but handy for debugging and testing
 		def log(opts={})
       hg_log_with_opts = hg_command_builder(opts)
-			run "cd '#{url}' && #{ hg_log_with_opts } | #{ string_encoder }"
+			run "cd '#{url}' && #{ hg_log_with_opts } | sh"
 		end
 
 		# Returns a file handle to the log.
@@ -77,7 +77,7 @@ module OhlohScm::Adapters
 					# As a time optimization, just create an empty file rather than fetch a log we know will be empty.
 					File.open(log_filename, 'w') { }
 				else
-					run "cd '#{url}' && #{ hg_log_with_opts } --style #{OhlohScm::Parsers::HgStyledParser.verbose_style_path} | #{ string_encoder } > #{log_filename}"
+					run "cd '#{url}' && #{ hg_log_with_opts } --style #{OhlohScm::Parsers::HgStyledParser.verbose_style_path} > #{log_filename}"
 				end
 				File.open(log_filename, 'r') { |io| yield io }
 			ensure

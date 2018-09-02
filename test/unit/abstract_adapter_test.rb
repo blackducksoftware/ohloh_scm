@@ -95,12 +95,5 @@ module OhlohScm::Adapters
         stdout = AbstractAdapter.run(cmd)
       end
     end
-
-    def test_string_encoder_must_return_path_to_script
-      string_encoder_path = File.expand_path('../../../bin/string_encoder', __FILE__)
-
-      assert_equal string_encoder_path, AbstractAdapter.new.string_encoder
-    end
-
 	end
 end

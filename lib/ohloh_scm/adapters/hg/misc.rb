@@ -10,7 +10,7 @@ module OhlohScm::Adapters
 		end
 
 		def ls_tree(token)
-			run("cd '#{path}' && hg manifest -r #{token} | #{ string_encoder }").split("\n")
+			run("cd '#{path}' && hg manifest -r #{token}").split("\n")
 		end
 
 		def export(dest_dir, token='tip')

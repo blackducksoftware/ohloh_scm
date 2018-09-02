@@ -141,24 +141,10 @@ module OhlohScm::Adapters
       end
     end
 
-    def test_log_encoding
-      with_git_repository('git_with_invalid_encoding') do |git|
-        assert_equal true, git.log.valid_encoding?
-      end
-    end
-
     def test_verbose_commits_valid_encoding
       with_git_repository('git_with_invalid_encoding') do |git|
         assert_equal true,
           git.verbose_commit('8d03f4ea64fcd10966fb3773a212b141ada619e1').message.valid_encoding?
-      end
-    end
-
-    def test_open_log_file_encoding
-      with_git_repository('git_with_invalid_encoding') do |git|
-        git.open_log_file do |io|
-          assert_equal true, io.read.valid_encoding?
-        end
       end
     end
 

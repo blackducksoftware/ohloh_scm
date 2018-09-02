@@ -50,19 +50,6 @@ module OhlohScm::Adapters
 			end
 		end
 
-    def test_branches_encoding
-      with_git_repository('git_with_invalid_encoding') do |git|
-        assert_equal true, git.branches.all? { |branch| branch.valid_encoding? }
-      end
-    end
-
-    # `git ls-tree` returns filenames in valid utf8 regardless of their original form.
-    def test_ls_tree_encoding
-      with_git_repository('git_with_invalid_encoding') do |git|
-        assert_equal true, git.ls_tree.all? { |filename| filename.valid_encoding? }
-      end
-    end
-
     def test_fixture_repo_has_dereferenced_tags
       with_git_repository('git') do |git|
         tag_shas = git.run("cd #{git.url} && git tag --format='%(objectname)' | sed 's/refs\\/tags\\///'").split(/\n/)

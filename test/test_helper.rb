@@ -60,22 +60,6 @@ class OhlohScm::Test < Test::Unit::TestCase
 		end
 	end
 
-  # We are unable to add a commit message with non utf8 characters using svn 1.6 & above.
-  # In order to emulate encoding issues, we use a custom svn executable that returns
-  #   an xml log with invalid characters in it.
-  # We prepend our custom svn's location to $PATH to make it available during our tests.
-  def with_invalid_encoded_svn_repository
-    with_repository(OhlohScm::Adapters::SvnChainAdapter, 'svn_with_invalid_encoding') do |svn|
-      original_env_path = ENV['PATH']
-      custom_svn_path = File.expand_path('../bin/', __FILE__)
-      ENV['PATH'] = custom_svn_path + ':' + ENV['PATH']
-
-      yield svn
-
-      ENV['PATH'] = original_env_path
-    end
-  end
-
 	def with_svn_repository(name, branch_name='')
 		with_repository(OhlohScm::Adapters::SvnAdapter, name) do |svn|
 			svn.branch_name = branch_name

@@ -67,7 +67,7 @@ module OhlohScm::Adapters
 
 		def log(most_recent_token=nil)
       ensure_host_key
-			run "cvsnt -d #{self.url} rlog #{opt_branch} #{opt_time(most_recent_token)} '#{self.module_name}' | #{ string_encoder }"
+			run "cvsnt -d #{self.url} rlog #{opt_branch} #{opt_time(most_recent_token)} '#{self.module_name}'"
 		end
 
     def export_tag(dest_dir, tag_name = 'HEAD')

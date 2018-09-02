@@ -50,7 +50,7 @@ module OhlohScm::Adapters
 
 		# Returns a single commit, including its diffs
 		def verbose_commit(token)
-			c = OhlohScm::Parsers::GitStyledParser.parse(run("cd '#{url}' && #{OhlohScm::Parsers::GitStyledParser.whatchanged} #{token} | #{ string_encoder }")).first
+			c = OhlohScm::Parsers::GitStyledParser.parse(run("cd '#{url}' && #{OhlohScm::Parsers::GitStyledParser.whatchanged} #{token}")).first
       fixup_null_merge(c)
 		end
 
@@ -80,7 +80,7 @@ module OhlohScm::Adapters
 				if opts[:after] && opts[:after]==self.head_token
 					'' # Nothing new.
 				else
-					run "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::Parsers::GitStyledParser.whatchanged} | #{ string_encoder }"
+					run "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::Parsers::GitStyledParser.whatchanged}"
 				end
 			else
 				''
@@ -96,7 +96,7 @@ module OhlohScm::Adapters
 					'' # Nothing new.
 				else
           begin
-					  run "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::Parsers::GitStyledParser.whatchanged} | #{ string_encoder } > #{log_filename}"
+					  run "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::Parsers::GitStyledParser.whatchanged} > #{log_filename}"
             File.open(log_filename, 'r') { |io| yield io } 
           ensure
             File.delete(log_filename) if FileTest.exist?(log_filename)

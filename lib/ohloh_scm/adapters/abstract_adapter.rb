@@ -13,13 +13,6 @@ module OhlohScm::Adapters
 				self
 			end
 		end
-
-    # Returns path to the string_encoder binary.
-    # For use with inline system commands like `run`.
-    def string_encoder
-      File.expand_path('../../../../bin/string_encoder', __FILE__)
-    end
-
     def temp_folder
       @temp_folder || '/tmp'
     end
