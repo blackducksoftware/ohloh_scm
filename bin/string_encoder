@@ -5,9 +5,5 @@
 # $ cat some_file | string_encoder
 
 while input = gets
-  if input.to_s.valid_encoding?
-    puts input
-  else
-    puts input.encode('UTF-8', 'binary', invalid: :replace, undef: :replace)
-  end
+  puts input
 end
