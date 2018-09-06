@@ -180,20 +180,6 @@ module OhlohScm::Adapters
 			end
 		end
 
-    def test_open_log_file_encoding
-      with_hg_repository('hg_with_invalid_encoding') do |hg|
-        hg.open_log_file do |io|
-          assert_equal true, io.read.valid_encoding?
-        end
-      end
-    end
-
-    def test_log_encoding
-      with_hg_repository('hg_with_invalid_encoding') do |hg|
-        assert_equal true, hg.log.valid_encoding?
-      end
-    end
-
     def test_commits_encoding
       with_hg_repository('hg_with_invalid_encoding') do |hg|
         assert_nothing_raised do

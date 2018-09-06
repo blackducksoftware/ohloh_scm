@@ -79,7 +79,7 @@ module OhlohScm::Adapters
 		# Returns the first commit with a revision number greater than the provided revision number
 		def next_revision_xml(after=0)
 			return "<?xml?>" if after.to_i >= head_token
-			run "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{after.to_i+1}:#{final_token || 'HEAD'} --limit 1 #{opt_auth} '#{SvnAdapter.uri_encode(File.join(self.root, self.branch_name.to_s))}@#{final_token || 'HEAD'}' | #{ string_encoder }"
+			run "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{after.to_i+1}:#{final_token || 'HEAD'} --limit 1 #{opt_auth} '#{SvnAdapter.uri_encode(File.join(self.root, self.branch_name.to_s))}@#{final_token || 'HEAD'}'"
 		end
 
 		# If the passed diff represents the wholesale movement of the entire

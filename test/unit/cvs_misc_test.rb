@@ -57,12 +57,6 @@ module OhlohScm::Adapters
       assert_equal :pserver, CvsAdapter.new(:url => ':pserver:ext:@foo.com:/cvsroot/a', :module_name => 'b')
     end
 
-    def test_log_encoding
-      with_cvs_repository('cvs', 'invalid_utf8') do |cvs|
-        assert_equal true, cvs.log.valid_encoding?
-      end
-    end
-
     def test_tags
       with_cvs_repository('cvs', 'simple') do |cvs|
         assert_equal([['simple_release_tag', '1.1.1.1'], ['simple_vendor_tag', '1.1.1']], cvs.tags)

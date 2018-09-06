@@ -243,33 +243,5 @@ module OhlohScm::Adapters
 			assert_equal 'A', commits[4].diffs[1].action
 			assert_equal '/trunk/COPYING', commits[4].diffs[1].path
 		end
-
-    def test_log_valid_encoding
-      with_invalid_encoded_svn_repository do |svn|
-        assert_equal true, svn.log.valid_encoding?
-      end
-    end
-
-    def test_commits_encoding
-      with_invalid_encoded_svn_repository do |svn|
-        assert_nothing_raised do
-          svn.commits rescue raise Exception
-        end
-      end
-    end
-
-    def test_open_log_file_encoding
-      with_invalid_encoded_svn_repository do |svn|
-        svn.open_log_file do |io|
-          assert_equal true, io.read.valid_encoding?
-        end
-      end
-    end
-
-    def test_single_revision_xml_valid_encoding
-      with_invalid_encoded_svn_repository do |svn|
-        assert_equal true, svn.single_revision_xml(:anything).valid_encoding?
-      end
-    end
 	end
 end

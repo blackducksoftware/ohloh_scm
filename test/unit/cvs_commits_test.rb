@@ -32,21 +32,5 @@ module OhlohScm::Adapters
 				end
 			end
 		end
-
-    def test_open_log_file_encoding
-      with_cvs_repository('cvs', 'invalid_utf8') do |cvs|
-        cvs.open_log_file do |io|
-          assert_equal true, io.read.valid_encoding?
-        end
-      end
-    end
-
-    def test_commits_valid_encoding
-      with_cvs_repository('cvs', 'invalid_utf8') do |cvs|
-        assert_nothing_raised do
-          cvs.commits
-        end
-      end
-    end
 	end
 end

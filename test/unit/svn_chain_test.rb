@@ -68,10 +68,5 @@ module OhlohScm::Parsers
 					:path => "/trunk", :from_revision => 1, :from_path => "/branches/b"))
 		end
 
-    def test_next_revision_xml_valid_encoding
-      with_invalid_encoded_svn_repository do |svn|
-        assert_equal true, svn.next_revision_xml(0).valid_encoding?
-      end
-    end
 	end
 end

@@ -11,7 +11,7 @@ module OhlohScm::Adapters
 		def parents(commit)
 			# Subversion doesn't have an actual "parent" command, so get
 			# a log for this commit and the one preceding it, and keep only the preceding.
-			log = run "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{commit.token}:1 --limit 2 '#{SvnAdapter.uri_encode(self.url)}' #{opt_auth} | #{ string_encoder }"
+			log = run "svn log --trust-server-cert --non-interactive --verbose --xml --stop-on-copy -r #{commit.token}:1 --limit 2 '#{SvnAdapter.uri_encode(self.url)}' #{opt_auth}"
 			[deepen_commit(strip_commit_branch(OhlohScm::Parsers::SvnXmlParser.parse(log).last))]
 		end
 	end
