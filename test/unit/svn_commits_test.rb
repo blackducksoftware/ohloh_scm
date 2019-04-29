@@ -106,6 +106,19 @@ module OhlohScm::Adapters
 			assert_equal 'A', c.diffs.first.action
 		end
 
+        def test_remove_dupes_with_sql_acii_encoding
+           #Note: If there are two files that are identical except for the encoding, ohloh_scm should only keep one.
+           svn = SvnAdapter.new
+           diff_1 = OhlohScm::Diff.new(:action => "M", :path => "/FritzBoxDial/FritzBoxDial/formWählbox.vb")
+           diff_2 = OhlohScm::Diff.new(:action => "A", :path => "/FritzBoxDial/FritzBoxDial/formWählbox.vb")
+		   c = OhlohScm::Commit.new(:diffs => [diff_1 ,diff_2])
+																			
+           svn.remove_dupes(c)
+           puts c.diffs.count
+           assert_equal 1, c.diffs.size
+           assert_equal 'A', c.diffs.first.action
+        end
+
 		# Had so many bugs around this case that a test was required
 		def test_deepen_commit_with_nil_diffs
 			with_svn_repository('svn') do |svn|
