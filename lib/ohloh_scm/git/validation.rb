@@ -3,11 +3,6 @@
 module OhlohScm
   module Git
     class Validation < OhlohScm::Validation
-      def validate
-        super
-        @errors << [:branch_name, 'Invalid Branch Name.'] if scm.branch_name.to_s.empty?
-      end
-
       private
 
       def validate_server_connection

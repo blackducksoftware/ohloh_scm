@@ -22,16 +22,14 @@ module OhlohScm
 
     def validate_server_connection; end
 
-    # rubocop:disable Metrics/AbcSize
     def validate_attributes
       @errors = []
       @errors << url_errors
-      @errors << branch_name_errors unless scm.branch_name.to_s.empty?
+      @errors << branch_name_errors
       @errors << username_errors if scm.username
       @errors << password_errors if scm.password
       @errors.compact!
     end
-    # rubocop:enable Metrics/AbcSize
 
     # rubocop:disable Metrics/AbcSize
     def url_errors
@@ -48,7 +46,9 @@ module OhlohScm
     # rubocop:enable Metrics/AbcSize
 
     def branch_name_errors
-      if scm.branch_name.length > 80
+      if scm.branch_name.to_s.empty?
+        [:branch_name, 'Invalid Branch Name.']
+      elsif scm.branch_name.length > 80
         [:branch_name, 'The branch name must not be longer than 80 characters.']
       elsif !scm.branch_name.match?(/^[\w^\-\+\.\/\ ]+$/)
         [:branch_name, "The branch name may contain only letters, numbers, \
