@@ -66,7 +66,21 @@ module OhlohScm
         return if branch_name.to_s.empty?
         return if activity.branches.include?(branch_name)
 
-        run "cd '#{url}' && git remote update && git branch -f #{branch_name} origin/#{branch_name}"
+        begin
+          run "cd '#{url}' && git remote update && git branch -f #{branch_name} origin/#{branch_name}"
+        rescue RuntimeError
+          fix_origin_url
+          run "cd '#{url}' && git remote update && git branch -f #{branch_name} origin/#{branch_name}"
+        end
+      end
+
+      def fix_origin_url
+        # Github no longer accepts the git:// protocol so we need to update the origin url
+        origin_url = run("cd '#{url}' && git remote -v").split[1]
+        return unless origin_url.start_with?('git://')
+
+        origin_url['git://'] = 'https://'
+        run "cd '#{url}' && git remote set-url origin #{origin_url}"
       end
 
       # Deletes everything but the *.git* folder in the working directory.
