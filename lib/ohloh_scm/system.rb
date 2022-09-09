@@ -32,6 +32,11 @@ module OhlohScm
       ENV['OHLOH_SCM_TEMP_FOLDER_PATH'] || Dir.tmpdir
     end
 
+    def repository_temp_folder
+      temp_path = (ENV['OHLOH_SCM_TRASH_PATH'] || Dir.tmpdir) + "/#{Time.now.utc.strftime('%d%b%y')}"
+      FileUtils.mkdir_p(temp_path + "/#{DateTime.now.strftime('%Q')}").first
+    end
+
     class << self
       # Use a single logger instance.
       def logger

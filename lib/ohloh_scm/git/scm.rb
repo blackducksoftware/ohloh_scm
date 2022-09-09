@@ -44,7 +44,7 @@ module OhlohScm
 
       def clone_and_create_tracking_branch(remote_scm)
         unless status.scm_dir_exist? || status.exist?
-          run "rm -rf '#{url}'"
+          run "mv '#{url}' '#{repository_temp_folder}'" if File.directory?(url)
           run "git clone -q -n '#{remote_scm.url}' '#{url}'"
         end
         create_tracking_branch(remote_scm.branch_name) # ensure the correct branch exists locally
@@ -72,10 +72,9 @@ module OhlohScm
       # Deletes everything but the *.git* folder in the working directory.
       def clean_up_disk
         return unless Dir.exist?(url)
-        sleep 1
 
         run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0"\
-              ' | xargs -0 rm -rf --'
+              " | xargs -0 mv -t #{repository_temp_folder}"
       end
 
       def convert_to_git(remote_scm, callback)
