@@ -12,10 +12,10 @@ module OhlohScm
       #   remote_core = OhlohScm::Factory.get_core(url: 'https://github.com/ruby/ruby')
       #   local_core = OhlohScm::Factory.get_core(url: '/tmp/ruby-src')
       #   local_core.scm.pull(remote_core.scm)
-      def pull(from, callback)
+      def pull(from, callback, pre_cleanup_cmd: nil)
         case from
-        when Cvs::Scm then convert_to_git(from, callback)
-        else clone_or_fetch(from, callback)
+        when Cvs::Scm then convert_to_git(from, callback, pre_cleanup_cmd)
+        else clone_or_fetch(from, callback, pre_cleanup_cmd)
         end
       end
 
@@ -25,7 +25,7 @@ module OhlohScm
 
       private
 
-      def clone_or_fetch(remote_scm, callback)
+      def clone_or_fetch(remote_scm, callback, pre_cleanup_cmd)
         callback.update(0, 1)
         if status.exist? && status.branch?(branch_name)
           clean_and_checkout_branch # must be on correct branch, but we want to be careful.
@@ -33,6 +33,7 @@ module OhlohScm
         else
           clone_and_create_tracking_branch(remote_scm)
         end
+        system(pre_cleanup_cmd) if pre_cleanup_cmd
         clean_up_disk
         callback.update(1, 1)
       end
@@ -78,7 +79,7 @@ module OhlohScm
               ' | xargs -0 rm -rf --'
       end
 
-      def convert_to_git(remote_scm, callback)
+      def convert_to_git(remote_scm, callback, pre_cleanup_cmd)
         callback.update(0, 1)
 
         commits = remote_scm.activity.commits(after: activity.read_token)
@@ -86,6 +87,7 @@ module OhlohScm
 
         if commits && !commits.empty?
           setup_dir_and_convert_commits(commits, callback)
+          system(pre_cleanup_cmd)
         else
           logger.info { 'Already up-to-date.' }
         end
