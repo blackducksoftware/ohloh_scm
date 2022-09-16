@@ -83,9 +83,11 @@ module OhlohScm
       def clean_up_disk
         return unless  File.exist?(url)
 
+        temp_folder = repository_temp_folder
+
         run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0"\
-            " | xargs -0 mv -t #{repository_temp_folder}"
-        run "rm -rf '#{repository_temp_folder}'"
+            " | xargs -0 mv -t #{temp_folder}"
+        run "rm -rf '#{temp_folder}'"
       end
     end
   end

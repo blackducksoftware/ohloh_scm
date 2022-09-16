@@ -31,8 +31,9 @@ module OhlohScm
       end
 
       def clone_repository(remote_scm)
-        run "mv '#{url}' '#{repository_temp_folder}'" if File.directory?(url)
-        run "rm -rf '#{repository_temp_folder}'"
+        temp_folder = repository_temp_folder
+        run "mv '#{url}' '#{temp_folder}'" if File.directory?(url)
+        run "rm -rf '#{temp_folder}'"
         run "hg clone '#{remote_scm.url}' '#{url}'"
       end
 
@@ -44,9 +45,11 @@ module OhlohScm
       def clean_up_disk
         return unless FileTest.exist?(url)
 
+        temp_folder = repository_temp_folder
+        
         run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name . -print0"\
-            " | xargs -0 mv -t #{repository_temp_folder}"
-        run "rm -rf '#{repository_temp_folder}'"
+            " | xargs -0 mv -t #{temp_folder}"
+        run "rm -rf '#{temp_folder}'"
       end
     end
   end
