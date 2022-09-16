@@ -32,6 +32,7 @@ module OhlohScm
 
       def clone_repository(remote_scm)
         run "mv '#{url}' '#{repository_temp_folder}'" if File.directory?(url)
+        run "rm -rf '#{repository_temp_folder}'"
         run "hg clone '#{remote_scm.url}' '#{url}'"
       end
 
@@ -44,7 +45,8 @@ module OhlohScm
         return unless FileTest.exist?(url)
 
         run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name . -print0"\
-              " | xargs -0 mv -t #{repository_temp_folder}"
+            " | xargs -0 mv -t #{repository_temp_folder}"
+        run "rm -rf '#{repository_temp_folder}'"
       end
     end
   end

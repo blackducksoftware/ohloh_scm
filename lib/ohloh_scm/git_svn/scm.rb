@@ -84,7 +84,8 @@ module OhlohScm
         return unless  File.exist?(url)
 
         run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0"\
-              " | xargs -0 mv -t #{repository_temp_folder}"
+            " | xargs -0 mv -t #{repository_temp_folder}"
+        run "rm -rf '#{repository_temp_folder}'"
       end
     end
   end
