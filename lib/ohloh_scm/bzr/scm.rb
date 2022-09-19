@@ -19,6 +19,10 @@ module OhlohScm
       def vcs_path
         "#{url}/.bzr"
       end
+
+      def checkout_files(_names)
+        # Files are already checked out.
+      end
     end
   end
 end

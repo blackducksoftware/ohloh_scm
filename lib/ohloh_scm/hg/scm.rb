@@ -18,6 +18,11 @@ module OhlohScm
         "#{url}/.hg"
       end
 
+      def checkout_files(names)
+        pattern = "(#{ names.join('|') })"
+        run "cd #{url} && hg revert $(hg manifest | grep -P '#{pattern}')"
+      end
+
       private
 
       def clone_or_fetch(remote_scm, callback)
