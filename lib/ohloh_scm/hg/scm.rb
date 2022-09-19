@@ -46,9 +46,9 @@ module OhlohScm
         return unless FileTest.exist?(url)
 
         temp_folder = repository_temp_folder
-        
-        run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name . -print0"\
-            " | xargs -0 mv -t #{temp_folder}"
+
+        run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name . " \
+                            "-exec mv {} -t #{temp_folder} \\;"
         run "rm -rf '#{temp_folder}'"
       end
     end

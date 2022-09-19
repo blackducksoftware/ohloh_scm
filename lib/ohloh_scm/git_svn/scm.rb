@@ -85,8 +85,8 @@ module OhlohScm
 
         temp_folder = repository_temp_folder
 
-        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0"\
-            " | xargs -0 mv -t #{temp_folder}"
+        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . " \
+                            "-exec mv {} -t #{temp_folder} \\;"
         run "rm -rf '#{temp_folder}'"
       end
     end

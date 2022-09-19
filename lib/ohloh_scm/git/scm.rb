@@ -74,11 +74,11 @@ module OhlohScm
       # Deletes everything but the *.git* folder in the working directory.
       def clean_up_disk
         return unless Dir.exist?(url)
-        
+
         temp_folder = repository_temp_folder
-        
-        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0"\
-            " | xargs -0 mv -t #{temp_folder}"
+
+        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . " \
+                            "-exec mv {} -t #{temp_folder} \\;"
         run "rm -rf '#{temp_folder}'"
       end
 
