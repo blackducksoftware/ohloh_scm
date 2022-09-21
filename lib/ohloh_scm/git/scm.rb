@@ -23,6 +23,11 @@ module OhlohScm
         "#{url}/.git"
       end
 
+      def checkout_files(names)
+        filenames = names.map { |name| "*#{name}" }.join(' ')
+        run "cd #{url} && git checkout $(git ls-files #{filenames})"
+      end
+
       private
 
       def clone_or_fetch(remote_scm, callback)
@@ -72,7 +77,6 @@ module OhlohScm
       # Deletes everything but the *.git* folder in the working directory.
       def clean_up_disk
         return unless Dir.exist?(url)
-        sleep 1
 
         run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'

@@ -18,6 +18,11 @@ module OhlohScm
         "#{url}/.hg"
       end
 
+      def checkout_files(names)
+        pattern = "(#{ names.join('|') })"
+        run "cd #{url} && hg revert $(hg manifest | grep -P '#{pattern}')"
+      end
+
       private
 
       def clone_or_fetch(remote_scm, callback)
@@ -42,7 +47,6 @@ module OhlohScm
 
       def clean_up_disk
         return unless FileTest.exist?(url)
-        sleep 1
 
         run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'

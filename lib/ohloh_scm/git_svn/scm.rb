@@ -21,6 +21,11 @@ module OhlohScm
         "#{url}/.git"
       end
 
+      def checkout_files(names)
+        filenames = names.map { |name| "*#{name}" }.join(' ')
+        run "cd #{url} && git checkout $(git ls-files #{filenames})"
+      end
+
       private
 
       def convert_to_git(callback)
@@ -82,7 +87,6 @@ module OhlohScm
 
       def clean_up_disk
         return unless  File.exist?(url)
-        sleep 1
 
         run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'
