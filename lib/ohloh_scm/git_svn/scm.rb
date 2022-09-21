@@ -21,6 +21,11 @@ module OhlohScm
         "#{url}/.git"
       end
 
+      def checkout_files(names)
+        filenames = names.map { |name| "*#{name}" }.join(' ')
+        run "cd #{url} && git checkout $(git ls-files #{filenames})"
+      end
+
       private
 
       def convert_to_git(callback)

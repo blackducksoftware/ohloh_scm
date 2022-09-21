@@ -20,4 +20,17 @@ describe 'Hg::Scm' do
       end
     end
   end
+
+  it 'must checkout_files matching given names' do
+    with_git_repository('hg') do |src_core|
+      dir = src_core.scm.url
+      core = OhlohScm::Factory.get_core(scm_type: :hg, url: dir)
+
+      core.scm.checkout_files(['Gemfile.lock', 'package.json', 'Godeps.json', 'doesnt-exist'])
+
+      assert system("ls #{dir}/Gemfile.lock > /dev/null")
+      assert system("ls #{dir}/nested/nested_again/package.json > /dev/null")
+      assert system("ls #{dir}/Godeps/Godeps.json > /dev/null")
+    end
+  end
 end
