@@ -55,7 +55,7 @@ module OhlohScm
       def clean_and_checkout_branch
         return unless status.scm_dir_exist?
 
-        run "cd '#{url}' && git clean -f -d -x"
+        run "cd '#{url}' && git clean -f -d -x --exclude='*.nfs*'"
         return unless status.branch?(branch_name)
 
         run "cd '#{url}' && git checkout #{branch_name} --"
@@ -74,7 +74,7 @@ module OhlohScm
         return unless Dir.exist?(url)
         sleep 1
 
-        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name . -print0"\
+        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'
       end
 

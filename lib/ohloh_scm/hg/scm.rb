@@ -44,7 +44,7 @@ module OhlohScm
         return unless FileTest.exist?(url)
         sleep 1
 
-        run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name . -print0"\
+        run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'
       end
     end

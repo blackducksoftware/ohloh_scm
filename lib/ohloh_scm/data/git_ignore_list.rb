@@ -26,4 +26,5 @@ GIT_IGNORE_LIST = ['.svn',
                    '*.mov',
                    '*.qt',
                    '*.avi',
-                   '*.xbm'].freeze
+                   '*.xbm',
+                   '*.nfs*'].freeze
