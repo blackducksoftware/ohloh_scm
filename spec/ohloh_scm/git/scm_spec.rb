@@ -33,6 +33,21 @@ describe 'Git::Scm' do
     end
   end
 
+  it 'must handle file changes in multi branch directory' do
+    with_git_repository('git_with_multiple_branch', 'test') do |src_core|
+      tmpdir do |dest_dir|
+        core = OhlohScm::Factory.get_core(scm_type: :git, url: dest_dir, branch_name: 'test')
+        refute core.status.scm_dir_exist?
+        core.scm.pull(src_core.scm, TestCallback.new)
+
+        `cd #{dest_dir} && git checkout master`
+        `echo 'new change' >> #{dest_dir}/hello.rb`
+
+        core.scm.pull(src_core.scm, TestCallback.new)
+      end
+    end
+  end
+
   it 'must update branches in local copy' do
     test_branch_name = 'test' # consider that 'test' is the current *main* branch.
 

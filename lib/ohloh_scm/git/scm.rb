@@ -63,6 +63,7 @@ module OhlohScm
         run "cd '#{url}' && git clean -f -d -x"
         return unless status.branch?(branch_name)
 
+        run "cd '#{url}' && git reset --hard heads/#{branch_name} --"
         run "cd '#{url}' && git checkout #{branch_name} --"
         run "cd '#{url}' && git reset --hard heads/#{branch_name} --"
       end
