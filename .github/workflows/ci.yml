@@ -1,0 +1,20 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  push:
+    branches: [main]
+
+jobs:
+  ci_task:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run rubocop and tests
+      run: |
+        docker pull ohdeployer/ohloh_scm:latest
+        cmd='/etc/init.d/ssh start; rubocop; LANG=en_US.UTF-8 rake test 2> /dev/null'
+        docker run --rm -P -v $(pwd):/home/app/ohloh_scm -i ohdeployer/ohloh_scm:latest /bin/sh -c "$cmd"

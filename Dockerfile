@@ -13,6 +13,7 @@ RUN apt-get install -y ruby2.5 ruby2.5-dev
 
 RUN apt-get install -y ragel libxml2-dev libpcre3 libpcre3-dev swig gperf openssh-server expect
 RUN apt-get install -y git git-svn subversion cvs mercurial bzr
+RUN git config --global --add safe.directory '*'
 
 RUN ssh-keygen -q -t rsa -N '' -f /root/.ssh/id_rsa
 RUN cp ~/.ssh/id_rsa.pub ~/.ssh/authorized_keys

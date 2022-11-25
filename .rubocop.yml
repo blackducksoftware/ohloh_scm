@@ -11,3 +11,6 @@ Documentation:
 
 Style/RegexpLiteral:
   Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false

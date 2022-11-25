@@ -88,7 +88,8 @@ module OhlohScm
       def clean_up_disk
         return unless  File.exist?(url)
 
-        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
+        run "cd #{url} && "\
+              "find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'
       end
     end

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module OhlohScm
   class CvsParser < Parser
     class << self
@@ -158,4 +157,3 @@ module OhlohScm
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

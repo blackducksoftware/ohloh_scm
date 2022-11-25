@@ -1,4 +1,6 @@
-[![Ohloh SCM on OpenHub](https://www.openhub.net/p/ohloh_scm/widgets/project_partner_badge.gif)](https://www.openhub.net/p/ohloh_scm) [![Build Status](https://travis-ci.org/blackducksoftware/ohloh_scm.svg?branch=main)](https://travis-ci.org/blackducksoftware/ohloh_scm)
+[![Ohloh SCM on OpenHub](https://www.openhub.net/p/ohloh_scm/widgets/project_partner_badge.gif)](https://www.openhub.net/p/ohloh_scm)
+![Coverity Scan Build](https://github.com/blackducksoftware/ohloh_scm/actions/workflows/coverity.yml/badge.svg?branch=main)
+![Build Status](https://github.com/blackducksoftware/ohloh_scm/actions/workflows/ci.yml/badge.svg?branch=main)
 
 # Ohloh SCM
 

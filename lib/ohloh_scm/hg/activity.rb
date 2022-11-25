@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'shellwords'
-
-# rubocop:disable Metrics/ClassLength
 module OhlohScm
   module Hg
     class Activity < OhlohScm::Activity
@@ -185,4 +183,3 @@ module OhlohScm
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

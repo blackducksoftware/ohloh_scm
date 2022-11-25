@@ -57,6 +57,7 @@ module OhlohScm
       end
 
       # We need very high reliability and this sequence gets the job done every time.
+      # rubocop:disable Metrics/AbcSize
       def clean_and_checkout_branch
         return unless status.scm_dir_exist?
 
@@ -67,19 +68,22 @@ module OhlohScm
         run "cd '#{url}' && git checkout #{branch_name} --"
         run "cd '#{url}' && git reset --hard heads/#{branch_name} --"
       end
+      # rubocop:enable Metrics/AbcSize
 
       def create_tracking_branch(branch_name)
         return if branch_name.to_s.empty?
         return if activity.branches.include?(branch_name)
 
-        run "cd '#{url}' && git remote update && git branch -f #{branch_name} origin/#{branch_name}"
+        run("cd '#{url}' && git remote update && "\
+            "git branch -f #{branch_name} origin/#{branch_name}")
       end
 
       # Deletes everything but the *.git* folder in the working directory.
       def clean_up_disk
         return unless Dir.exist?(url)
 
-        run "cd #{url} && find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
+        run "cd #{url} && "\
+              "find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'
       end
 

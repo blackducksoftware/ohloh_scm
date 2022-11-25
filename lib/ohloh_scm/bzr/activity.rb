@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module OhlohScm
   module Bzr
     class Activity < OhlohScm::Activity
@@ -75,7 +74,8 @@ module OhlohScm
       end
 
       def head_token
-        run("bzr log --limit 1 --show-id #{url} 2> /dev/null | grep ^revision-id | cut -f2 -d' '").strip
+        run("bzr log --limit 1 --show-id #{url} 2> /dev/null"\
+            " | grep ^revision-id | cut -f2 -d' '").strip
       end
 
       def head
@@ -187,4 +187,3 @@ module OhlohScm
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

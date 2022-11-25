@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'ohloh_scm/data/git_ignore_list'
-
-# rubocop:disable Metrics/ClassLength
 module OhlohScm
   module Git
     class Activity < OhlohScm::Activity
@@ -314,4 +312,3 @@ module OhlohScm
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

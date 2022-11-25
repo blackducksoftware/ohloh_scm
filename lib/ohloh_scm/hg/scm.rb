@@ -19,7 +19,7 @@ module OhlohScm
       end
 
       def checkout_files(names)
-        pattern = "(#{ names.join('|') })"
+        pattern = "(#{names.join('|')})"
         run "cd #{url} && hg revert $(hg manifest | grep -P '#{pattern}')"
       end
 
@@ -48,7 +48,8 @@ module OhlohScm
       def clean_up_disk
         return unless FileTest.exist?(url)
 
-        run "cd #{url} && find . -maxdepth 1 -not -name .hg -not -name '*.nfs*' -not -name . -print0"\
+        run "cd #{url} && "\
+              "find . -maxdepth 1 -not -name .hg -not -name '*.nfs*' -not -name . -print0"\
               ' | xargs -0 rm -rf --'
       end
     end
