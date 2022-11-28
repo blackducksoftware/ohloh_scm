@@ -33,6 +33,27 @@ describe 'Git::Scm' do
     end
   end
 
+  it 'must checkout a branch which is behind the default' do
+    with_git_repository('git_with_multiple_branch') do |src_core|
+      tmpdir do |dest_dir|
+        core = OhlohScm::Factory.get_core(scm_type: :git, url: dest_dir, branch_name: 'master')
+        core.scm.pull(src_core.scm, TestCallback.new)
+
+        src_core.scm.branch_name = 'test'
+        core = OhlohScm::Factory.get_core(scm_type: :git, url: dest_dir, branch_name: 'test')
+        core.scm.pull(src_core.scm, TestCallback.new)
+
+        remote_master_branch_sha = `cd #{dest_dir} && git rev-parse origin/master`
+        remote_test_branch_sha = `cd #{dest_dir} && git rev-parse origin/test`
+        master_branch_sha = `cd #{dest_dir} && git rev-parse master`
+        test_branch_sha = `cd #{dest_dir} && git rev-parse test`
+
+        master_branch_sha.must_equal remote_master_branch_sha
+        test_branch_sha.must_equal remote_test_branch_sha
+      end
+    end
+  end
+
   it 'must handle file changes in multi branch directory' do
     with_git_repository('git_with_multiple_branch', 'test') do |src_core|
       tmpdir do |dest_dir|

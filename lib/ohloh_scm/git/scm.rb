@@ -63,7 +63,7 @@ module OhlohScm
         run "cd '#{url}' && git clean -f -d -x --exclude='*.nfs*'"
         return unless status.branch?(branch_name)
 
-        run "cd '#{url}' && git reset --hard heads/#{branch_name} --"
+        run "cd '#{url}' && git reset --hard HEAD --"
         run "cd '#{url}' && git checkout #{branch_name} --"
         run "cd '#{url}' && git reset --hard heads/#{branch_name} --"
       end
