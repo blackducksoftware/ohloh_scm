@@ -7,8 +7,8 @@ describe 'Git::Activity' do
     with_git_repository('git') do |git|
       tmpdir do |dir|
         git.activity.export(dir)
-        Dir.entries(dir).sort.must_equal ['.', '..', '.gitignore', 'COPYING', 'README',
-                                          'helloworld.c', 'makefile', 'ohloh_token']
+        entries = [".", "..", ".gitignore", "COPYING", "Gemfile.lock", "Godeps", "README", "helloworld.c", "makefile", "nested", "ohloh_token"]
+        Dir.entries(dir).sort.must_equal entries
       end
     end
   end
@@ -79,8 +79,8 @@ describe 'Git::Activity' do
   it 'must return correct head' do
     with_git_repository('git') do |git|
       assert git.status.exist?
-      git.activity.head_token.must_equal '1df547800dcd168e589bb9b26b4039bff3a7f7e4'
-      git.activity.head.token.must_equal '1df547800dcd168e589bb9b26b4039bff3a7f7e4'
+      git.activity.head_token.must_equal 'a2690f4471a0852723f0f0e95d97f7f1f3981639'
+      git.activity.head.token.must_equal 'a2690f4471a0852723f0f0e95d97f7f1f3981639'
       assert git.activity.head.diffs.any?
     end
   end
@@ -93,9 +93,9 @@ describe 'Git::Activity' do
 
   it 'commit_count' do
     with_git_repository('git') do |git|
-      git.activity.commit_count.must_equal 4
-      git.activity.commit_count(after: 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d').must_equal 2
-      git.activity.commit_count(after: '1df547800dcd168e589bb9b26b4039bff3a7f7e4').must_equal 0
+      git.activity.commit_count.must_equal 5
+      git.activity.commit_count(after: 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d').must_equal 3
+      git.activity.commit_count(after: '1df547800dcd168e589bb9b26b4039bff3a7f7e4').must_equal 1
     end
   end
 
@@ -104,12 +104,13 @@ describe 'Git::Activity' do
       git.activity.commit_tokens.must_equal %w[089c527c61235bd0793c49109b5bd34d439848c6
                                                b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
                                                2e9366dd7a786fdb35f211fff1c8ea05c51968b1
-                                               1df547800dcd168e589bb9b26b4039bff3a7f7e4]
+                                               1df547800dcd168e589bb9b26b4039bff3a7f7e4
+                                               a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
       git.activity.commit_tokens(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1')
-         .must_equal ['1df547800dcd168e589bb9b26b4039bff3a7f7e4']
+         .must_equal %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      git.activity.commit_tokens(after: '1df547800dcd168e589bb9b26b4039bff3a7f7e4').must_be :empty?
+      git.activity.commit_tokens(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639').must_be :empty?
     end
   end
 
@@ -118,12 +119,13 @@ describe 'Git::Activity' do
       git.activity.commits.collect(&:token).must_equal %w[089c527c61235bd0793c49109b5bd34d439848c6
                                                           b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
                                                           2e9366dd7a786fdb35f211fff1c8ea05c51968b1
-                                                          1df547800dcd168e589bb9b26b4039bff3a7f7e4]
+                                                          1df547800dcd168e589bb9b26b4039bff3a7f7e4
+                                                          a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
       git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1').collect(&:token)
-         .must_equal ['1df547800dcd168e589bb9b26b4039bff3a7f7e4']
+         .must_equal %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      git.activity.commits(after: '1df547800dcd168e589bb9b26b4039bff3a7f7e4').must_be :empty?
+      git.activity.commits(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639').must_be :empty?
     end
   end
 

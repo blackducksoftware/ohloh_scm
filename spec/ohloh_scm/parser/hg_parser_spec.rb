@@ -161,31 +161,31 @@ describe 'HgParser' do
     protected
 
     def assert_styled_commits(commits, with_diffs = false)
-      commits.size.must_equal 5
+      commits.size.must_equal 6
 
-      commits[1].token.must_equal '75532c1e1f1de55c2271f6fd29d98efbe35397c4'
-      commits[1].committer_name.must_equal 'Robin Luckey'
-      commits[1].committer_email.must_equal 'robin@ohloh.net'
+      commits[1].token.must_equal '655f04cf6ad708ab58c7b941672dce09dd369a18'
+      commits[1].committer_name.must_equal 'Alex'
+      commits[1].committer_email.must_equal 'alex@example.com'
       assert Time.utc(2009, 1, 20, 19, 34, 53) - commits[1].committer_date < 1 # Don't care about milliseconds
-      commits[1].message.must_equal "deleted helloworld.c\n"
+      commits[1].message.must_equal "Adding file two\n"
 
       if with_diffs
         commits[1].diffs.size.must_equal 1
-        commits[1].diffs[0].action.must_equal 'D'
-        commits[1].diffs[0].path.must_equal 'helloworld.c'
+        commits[1].diffs[0].action.must_equal 'A'
+        commits[1].diffs[0].path.must_equal 'two'
       else
         commits[1].diffs.must_equal []
       end
 
-      commits[2].token.must_equal '468336c6671cbc58237a259d1b7326866afc2817'
+      commits[2].token.must_equal '75532c1e1f1de55c2271f6fd29d98efbe35397c4'
       assert Time.utc(2009, 1, 20, 19, 34, 4) - commits[2].committer_date < 1
 
       if with_diffs
-        commits[2].diffs.size.must_equal 2
-        commits[2].diffs[0].action.must_equal 'M'
-        commits[2].diffs[0].path.must_equal 'helloworld.c'
-        commits[2].diffs[1].action.must_equal 'A'
-        commits[2].diffs[1].path.must_equal 'README'
+        commits[3].diffs.size.must_equal 2
+        commits[3].diffs[0].action.must_equal 'M'
+        commits[3].diffs[0].path.must_equal 'helloworld.c'
+        commits[3].diffs[1].action.must_equal 'A'
+        commits[3].diffs[1].path.must_equal 'README'
       else
         commits[0].diffs.must_equal []
       end

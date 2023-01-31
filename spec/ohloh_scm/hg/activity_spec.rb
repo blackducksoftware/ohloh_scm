@@ -3,8 +3,8 @@ require 'spec_helper'
 describe 'Hg::Activity' do
   it 'must fetch tags' do
     with_hg_repository('hg') do |hg|
-      time = Time.parse('Fri Jul 22 18:00:18 2016 +0530')
-      hg.activity.tags.first.must_equal ['tip', '5', time]
+      time = Time.parse('Mon Sep 19 15:27:19 2022 +0000')
+      hg.activity.tags.first.must_equal ['tip', '6', time]
       hg.activity.tags.last.first(2).must_equal ['tagname with space', '2']
     end
   end
@@ -13,7 +13,8 @@ describe 'Hg::Activity' do
     with_hg_repository('hg') do |hg|
       Dir.mktmpdir do |dir|
         hg.activity.export(dir)
-        Dir.entries(dir).sort.must_equal ['.', '..', 'README', 'makefile', 'two']
+        entries = [".", "..", ".hgtags", "Gemfile.lock", "Godeps", "README", "makefile", "nested", "two"]
+        Dir.entries(dir).sort.must_equal entries
       end
     end
   end
@@ -21,18 +22,18 @@ describe 'Hg::Activity' do
   describe 'commits' do
     it 'commit_count' do
       with_hg_repository('hg') do |hg|
-        hg.activity.commit_count.must_equal 5
-        hg.activity.commit_count(after: 'b14fa4692f949940bd1e28da6fb4617de2615484').must_equal 3
-        hg.activity.commit_count(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').must_equal 0
+        hg.activity.commit_count.must_equal 6
+        hg.activity.commit_count(after: 'b14fa4692f949940bd1e28da6fb4617de2615484').must_equal 4
+        hg.activity.commit_count(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').must_equal 1
       end
     end
 
     it 'commit_count_with_empty_branch' do
       with_hg_repository('hg', '') do |hg|
         hg.scm.branch_name.must_be_nil
-        hg.activity.commit_count.must_equal 5
-        hg.activity.commit_count(after: 'b14fa4692f949940bd1e28da6fb4617de2615484').must_equal 3
-        hg.activity.commit_count(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').must_equal 0
+        hg.activity.commit_count.must_equal 6
+        hg.activity.commit_count(after: 'b14fa4692f949940bd1e28da6fb4617de2615484').must_equal 4
+        hg.activity.commit_count(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').must_equal 1
       end
     end
 
@@ -42,15 +43,16 @@ describe 'Hg::Activity' do
                                                        b14fa4692f949940bd1e28da6fb4617de2615484
                                                        468336c6671cbc58237a259d1b7326866afc2817
                                                        75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                       655f04cf6ad708ab58c7b941672dce09dd369a18])
+                                                       655f04cf6ad708ab58c7b941672dce09dd369a18
+                                                       1f45520fff3982761cfe7a0502ad0888d5783efe])
 
-        after = '75532c1e1f1de55c2271f6fd29d98efbe35397c4'
-        hg.activity.commits(after: after).map(&:token).must_equal ['655f04cf6ad708ab58c7b941672dce09dd369a18']
+        after = '655f04cf6ad708ab58c7b941672dce09dd369a18'
+        hg.activity.commits(after: after).map(&:token).must_equal ['1f45520fff3982761cfe7a0502ad0888d5783efe']
 
         # Check that the diffs are not populated
-        hg.activity.commits(after: '75532c1e1f1de55c2271f6fd29d98efbe35397c4').first.diffs.must_be :empty?
+        hg.activity.commits(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').first.diffs.must_be :empty?
 
-        hg.activity.commits(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').must_be :empty?
+        hg.activity.commits(after: '1f45520fff3982761cfe7a0502ad0888d5783efe').must_be :empty?
       end
     end
 
@@ -113,7 +115,8 @@ describe 'Hg::Activity' do
                                            b14fa4692f949940bd1e28da6fb4617de2615484
                                            468336c6671cbc58237a259d1b7326866afc2817
                                            75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                           655f04cf6ad708ab58c7b941672dce09dd369a18])
+                                           655f04cf6ad708ab58c7b941672dce09dd369a18
+                                           1f45520fff3982761cfe7a0502ad0888d5783efe])
       end
     end
 
@@ -138,7 +141,8 @@ describe 'Hg::Activity' do
           commits << c
         end
         commits.map(&:token).must_equal(%w[75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                           655f04cf6ad708ab58c7b941672dce09dd369a18])
+                                           655f04cf6ad708ab58c7b941672dce09dd369a18
+                                           1f45520fff3982761cfe7a0502ad0888d5783efe])
       end
     end
 
@@ -166,8 +170,8 @@ describe 'Hg::Activity' do
   describe 'head' do
     it 'hg_head_and_parents' do
       with_hg_repository('hg') do |hg|
-        hg.activity.head_token.must_equal '655f04cf6ad708ab58c7b941672dce09dd369a18'
-        hg.activity.head.token.must_equal '655f04cf6ad708ab58c7b941672dce09dd369a18'
+        hg.activity.head_token.must_equal '1f45520fff3982761cfe7a0502ad0888d5783efe'
+        hg.activity.head.token.must_equal '1f45520fff3982761cfe7a0502ad0888d5783efe'
         assert hg.activity.head.diffs.any? # diffs should be populated
       end
     end
@@ -187,18 +191,20 @@ describe 'Hg::Activity' do
                                                 b14fa4692f949940bd1e28da6fb4617de2615484
                                                 468336c6671cbc58237a259d1b7326866afc2817
                                                 75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                655f04cf6ad708ab58c7b941672dce09dd369a18])
+                                                655f04cf6ad708ab58c7b941672dce09dd369a18
+                                                1f45520fff3982761cfe7a0502ad0888d5783efe])
 
         after = '01101d8ef3cea7da9ac6e9a226d645f4418f05c9'
         hg.activity.commit_tokens(after: after).must_equal(%w[b14fa4692f949940bd1e28da6fb4617de2615484
                                                               468336c6671cbc58237a259d1b7326866afc2817
                                                               75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                              655f04cf6ad708ab58c7b941672dce09dd369a18])
+                                                              655f04cf6ad708ab58c7b941672dce09dd369a18
+                                                              1f45520fff3982761cfe7a0502ad0888d5783efe])
 
-        after = '75532c1e1f1de55c2271f6fd29d98efbe35397c4'
-        hg.activity.commit_tokens(after: after).must_equal ['655f04cf6ad708ab58c7b941672dce09dd369a18']
+        after = '655f04cf6ad708ab58c7b941672dce09dd369a18'
+        hg.activity.commit_tokens(after: after).must_equal ['1f45520fff3982761cfe7a0502ad0888d5783efe']
 
-        hg.activity.commit_tokens(after: '655f04cf6ad708ab58c7b941672dce09dd369a18').must_be :empty?
+        hg.activity.commit_tokens(after: '1f45520fff3982761cfe7a0502ad0888d5783efe').must_be :empty?
       end
     end
 
