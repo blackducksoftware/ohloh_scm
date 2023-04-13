@@ -7,7 +7,8 @@ describe 'Git::Activity' do
     with_git_repository('git') do |git|
       tmpdir do |dir|
         git.activity.export(dir)
-        entries = [".", "..", ".gitignore", "COPYING", "Gemfile.lock", "Godeps", "README", "helloworld.c", "makefile", "nested", "ohloh_token"]
+        entries = ['.', '..', '.gitignore', 'COPYING', 'Gemfile.lock', 'Godeps', 'README',
+                   'helloworld.c', 'makefile', 'nested', 'ohloh_token']
         Dir.entries(dir).sort.must_equal entries
       end
     end

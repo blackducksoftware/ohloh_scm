@@ -13,7 +13,7 @@ describe 'Hg::Activity' do
     with_hg_repository('hg') do |hg|
       Dir.mktmpdir do |dir|
         hg.activity.export(dir)
-        entries = [".", "..", ".hgtags", "Gemfile.lock", "Godeps", "README", "makefile", "nested", "two"]
+        entries = ['.', '..', '.hgtags', 'Gemfile.lock', 'Godeps', 'README', 'makefile', 'nested', 'two']
         Dir.entries(dir).sort.must_equal entries
       end
     end
