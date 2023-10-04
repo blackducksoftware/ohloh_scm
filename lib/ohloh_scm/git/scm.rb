@@ -43,7 +43,7 @@ module OhlohScm
       end
 
       def fetch_new_commits(remote_scm)
-        run "cd '#{url}' && git fetch --tags --update-head-ok "\
+        run "cd '#{url}' && git fetch --tags --force --update-head-ok "\
               "'#{remote_scm.url}' #{branch_name}:#{branch_name}"
       end
 
