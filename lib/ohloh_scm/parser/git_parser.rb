@@ -6,7 +6,7 @@ module OhlohScm
   class GitParser < Parser
     class << self
       def whatchanged
-        "git log --raw --root -m --abbrev=40 --max-count=1 --always --pretty=#{format}"
+        "git whatchanged --root -m --abbrev=40 --max-count=1 --always --pretty=#{format}"
       end
 
       def format
