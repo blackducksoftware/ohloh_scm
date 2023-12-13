@@ -58,7 +58,7 @@ module OhlohScm
         # For OpenHub, this is fine because OpenHub ignores merge diffs anyway.
         previous = nil
         safe_open_log_file(opts) do |io|
-          if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT']&.to_i
+          if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT'].to_i
             io.each do |commit_sha|
               yield verbose_commit(commit_sha.chomp)
             end
@@ -183,7 +183,7 @@ module OhlohScm
       end
 
       def open_log_file(opts)
-        if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT']&.to_i
+        if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT'].to_i
           cmd = "#{rev_list_command(opts)} > #{log_filename}"
         else
           cmd = "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::GitParser.whatchanged}"\
