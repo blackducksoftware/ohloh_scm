@@ -21,5 +21,7 @@ module OhlohScm
     def scm_dir_exist?
       Dir.exist?(scm.vcs_path)
     end
+
+    def default_branch; end
   end
 end

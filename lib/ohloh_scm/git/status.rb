@@ -8,6 +8,13 @@ module OhlohScm
 
         activity.branches.include?(name)
       end
+
+      def default_branch
+        return scm.branch_name_or_default unless exist?
+
+        name = run("git remote show '#{scm.url}' | grep 'HEAD branch' | awk '{print $3}'").strip
+        name.to_s.empty? ? scm.branch_name_or_default : name
+      end
     end
   end
 end

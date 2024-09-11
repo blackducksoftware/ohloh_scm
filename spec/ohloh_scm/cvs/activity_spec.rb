@@ -59,7 +59,7 @@ describe 'Cvs::Activity' do
   it 'must correctly convert commits to git' do
     with_cvs_repository('cvs', 'simple') do |cvs|
       tmpdir do |tmp_dir|
-        git_core = OhlohScm::Factory.get_core(url: tmp_dir)
+        git_core = OhlohScm::Factory.get_core(url: tmp_dir, branch_name: 'master')
         git_core.scm.pull(cvs.scm, TestCallback.new)
         utc_dates = ['2006-06-29 16:21:07 UTC', '2006-06-29 18:14:47 UTC',
                      '2006-06-29 18:45:29 UTC', '2006-06-29 18:48:54 UTC',

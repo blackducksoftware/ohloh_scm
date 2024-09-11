@@ -93,7 +93,7 @@ describe 'Git::Scm' do
   it 'must test the basic conversion to git' do
     with_cvs_repository('cvs', 'simple') do |src_core|
       tmpdir do |dest_dir|
-        core = OhlohScm::Factory.get_core(scm_type: :git, url: dest_dir)
+        core = OhlohScm::Factory.get_core(scm_type: :git, branch_name: 'master', url: dest_dir)
         refute core.status.scm_dir_exist?
         core.scm.pull(src_core.scm, TestCallback.new)
         assert core.status.scm_dir_exist?
@@ -125,5 +125,10 @@ describe 'Git::Scm' do
       assert system("ls #{dir}/nested/nested_again/package.json > /dev/null")
       assert system("ls #{dir}/Godeps/Godeps.json > /dev/null")
     end
+  end
+
+  it 'must return master when branch_name is null' do
+    core = OhlohScm::Factory.get_core(scm_type: :git, url: 'foobar')
+    _(core.scm.branch_name_or_default).must_equal 'master'
   end
 end
