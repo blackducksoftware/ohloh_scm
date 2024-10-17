@@ -329,7 +329,7 @@ describe 'Git::Activity' do
 
     it 'must commit all changes in the working directory' do
       tmpdir do |dir|
-        core = OhlohScm::Factory.get_core(scm_type: :git, url: dir)
+        core = OhlohScm::Factory.get_core(scm_type: :git, branch_name: 'master', url: dir)
 
         core.activity.send(:init_db)
         refute core.activity.send(:anything_to_commit?)
@@ -356,7 +356,7 @@ describe 'Git::Activity' do
 
     it 'must test that no token returns nil' do
       tmpdir do |dir|
-        core = OhlohScm::Factory.get_core(scm_type: :git, url: dir)
+        core = OhlohScm::Factory.get_core(scm_type: :git, branch_name: 'master', url: dir)
         refute core.activity.read_token
         core.activity.send(:init_db)
         refute core.activity.read_token
@@ -365,7 +365,7 @@ describe 'Git::Activity' do
 
     it 'must test write and read token' do
       tmpdir do |dir|
-        core = OhlohScm::Factory.get_core(scm_type: :git, url: dir)
+        core = OhlohScm::Factory.get_core(scm_type: :git, branch_name: 'master', url: dir)
         core.activity.send(:init_db)
         core.activity.send(:write_token, 'FOO')
         refute core.activity.read_token # Token not valid until committed
@@ -376,7 +376,7 @@ describe 'Git::Activity' do
 
     it 'must test that commit_all includes write token' do
       tmpdir do |dir|
-        core = OhlohScm::Factory.get_core(scm_type: :git, url: dir)
+        core = OhlohScm::Factory.get_core(scm_type: :git, branch_name: 'master', url: dir)
         core.activity.send(:init_db)
         c = OhlohScm::Commit.new
         c.token = 'BAR'

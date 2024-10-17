@@ -5,7 +5,7 @@ module OhlohScm
     class Scm < OhlohScm::Scm
       def initialize(core:, url:, branch_name:, username:, password:)
         super
-        @branch_name = branch_name || 'master'
+        @branch_name = branch_name
       end
 
       # == Example:
@@ -26,6 +26,10 @@ module OhlohScm
       def checkout_files(names)
         filenames = names.map { |name| "*#{name}" }.join(' ')
         run "cd #{url} && git checkout $(git ls-files #{filenames})"
+      end
+
+      def branch_name_or_default
+        branch_name || 'master'
       end
 
       private

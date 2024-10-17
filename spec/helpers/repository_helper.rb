@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 module RepositoryHelper
-  %w[git svn git_svn cvs hg bzr].each do |scm_type|
+  %w[svn git_svn cvs hg bzr].each do |scm_type|
     define_method("with_#{scm_type}_repository") do |name, branch_name = nil, &block|
       with_repository(scm_type, name, branch_name) { |core| block.call(core) }
     end
+  end
+
+  def with_git_repository(name, branch_name = 'master', &block)
+    with_repository('git', name, branch_name) { |core| block.call(core) }
   end
 
   private
