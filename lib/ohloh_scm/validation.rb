@@ -37,8 +37,8 @@ module OhlohScm
     def url_errors
       error = if scm.url.nil? || scm.url.empty?
                 "The URL can't be blank."
-              elsif scm.url.length > 120
-                'The URL must not be longer than 120 characters.'
+              elsif scm.url.length > 200
+                'The URL must not be longer than 200 characters.'
               elsif !scm.url.match?(public_url_regex)
                 'The URL does not appear to be a valid server connection string.'
               end
