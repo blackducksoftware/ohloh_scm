@@ -12,7 +12,7 @@ describe 'Cvs::Validation' do
 
   it 'must have errors for invalid branch_name' do
     get_core(:cvs, branch_name: 'x' * 81).validation.send(:branch_name_errors).must_be_nil
-    get_core(:cvs, branch_name: 'x' * 121).validation.send(:branch_name_errors).wont_be :empty?
+    get_core(:cvs, branch_name: 'x' * 201).validation.send(:branch_name_errors).wont_be :empty?
     get_core(:cvs, branch_name: 'foo@bar').validation.send(:branch_name_errors).wont_be :empty?
   end
 

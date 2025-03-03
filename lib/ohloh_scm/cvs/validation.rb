@@ -17,8 +17,8 @@ module OhlohScm
       def branch_name_errors
         if scm.branch_name.to_s.empty?
           [:branch_name, "The branch name can't be blank."]
-        elsif scm.branch_name.length > 120
-          [:branch_name, 'The branch name must not be longer than 120 characters.']
+        elsif scm.branch_name.length > 200
+          [:branch_name, 'The branch name must not be longer than 200 characters.']
         elsif !scm.branch_name.match?(/^[\w\-\+\.\/\ ]+$/)
           [:branch_name, "The branch name may contain only letters,
           numbers, spaces, and the special characters '_', '-', '+', '/', and '.'"]
