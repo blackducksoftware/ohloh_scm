@@ -5,7 +5,7 @@ module OhlohScm
     class Activity < OhlohScm::Activity
       def tags
         cmd = "cvs -Q -d #{url} rlog -h #{scm.branch_name} | awk -F\"[.:]\" '/^\\t/&&$(NF-1)!=0'"
-        run(cmd).split(/\n/).map do |tag_string|
+        run(cmd).split("\n").map do |tag_string|
           tag_name, version = tag_string.split(':')
           [tag_name.delete("\t"), version.strip]
         end
@@ -54,7 +54,7 @@ module OhlohScm
         when commits.size - 1
           []
         else
-          commits[match_index + 1..-1]
+          commits[match_index + 1..]
         end
       end
 

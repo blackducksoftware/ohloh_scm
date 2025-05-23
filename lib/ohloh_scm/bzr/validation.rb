@@ -11,7 +11,7 @@ module OhlohScm
       end
 
       def public_url_regex
-        %r{^(((http|https|bzr)://(\w+@)?[\w\-\.]+(:\d+)?/)|(lp:[\w\-\.\~]))[\w\-\./\~\+]*$}
+        %r{^(((http|https|bzr)://(\w+@)?[\w\-.]+(:\d+)?/)|(lp:[\w\-.~]))[\w\-./~+]*$}
       end
     end
   end

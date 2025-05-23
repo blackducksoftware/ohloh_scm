@@ -29,12 +29,12 @@ describe 'Svn::Scm' do
       svn_scm.send(:recalc_branch_name).must_be_empty
       svn_scm.branch_name.must_be_empty
 
-      svn_scm = get_core(:svn, url: svn_core.scm.url + '/trunk').scm
+      svn_scm = get_core(:svn, url: "#{svn_core.scm.url}/trunk").scm
       OhlohScm::Svn::Activity.any_instance.stubs(:root).returns(svn_core.scm.url)
       svn_scm.send(:recalc_branch_name)
       svn_scm.branch_name.must_equal '/trunk'
 
-      svn_scm = get_core(:svn, url: svn_core.scm.url + '/trunk', branch_name: nil).scm
+      svn_scm = get_core(:svn, url: "#{svn_core.scm.url}/trunk", branch_name: nil).scm
       OhlohScm::Svn::Activity.any_instance.stubs(:root).returns(svn_core.scm.url)
       svn_scm.normalize.branch_name.must_equal '/trunk'
     end
@@ -54,7 +54,7 @@ describe 'Svn::Scm' do
 
         scm.restrict_url_to_trunk
 
-        scm.url.must_equal svn_core.activity.root + '/trunk'
+        scm.url.must_equal "#{svn_core.activity.root}/trunk"
         scm.branch_name.must_equal '/trunk'
       end
     end
@@ -67,7 +67,7 @@ describe 'Svn::Scm' do
 
         scm.restrict_url_to_trunk
 
-        scm.url.must_equal svn_core.activity.root + '/subdir/trunk'
+        scm.url.must_equal "#{svn_core.activity.root}/subdir/trunk"
         scm.branch_name.must_equal '/subdir/trunk'
       end
     end

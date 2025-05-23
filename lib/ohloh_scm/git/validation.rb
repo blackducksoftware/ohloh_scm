@@ -11,7 +11,7 @@ module OhlohScm
       end
 
       def public_url_regex
-        %r{^(http|https|git)://(\w+@)?[\w\-\.]+(:\d+)?/[\w\-\./\~\+]*$}
+        %r{^(http|https|git)://(\w+@)?[\w\-.]+(:\d+)?/[\w\-./~+]*$}
       end
     end
   end

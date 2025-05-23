@@ -9,7 +9,7 @@ describe 'SvnParser' do
 
   it 'test_yield_instead_of_writer' do
     commits = []
-    result = OhlohScm::SvnParser.parse(File.read(DATA_DIR + '/simple.svn_log')) do |commit|
+    result = OhlohScm::SvnParser.parse(File.read("#{DATA_DIR}/simple.svn_log")) do |commit|
       commits << commit.token
     end
     result.must_be_nil

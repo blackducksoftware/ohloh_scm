@@ -7,7 +7,7 @@ describe 'CvsParser' do
     end
 
     it 'must parse the log' do
-      revisions = OhlohScm::CvsParser.parse File.read(FIXTURES_DIR + '/basic.rlog')
+      revisions = OhlohScm::CvsParser.parse File.read("#{FIXTURES_DIR}/basic.rlog")
 
       revisions.size.must_equal 2
 
@@ -24,7 +24,7 @@ describe 'CvsParser' do
 
     # One file with several revisions
     it 'must test multiple revisions' do
-      revisions = OhlohScm::CvsParser.parse File.read(FIXTURES_DIR + '/multiple_revisions.rlog')
+      revisions = OhlohScm::CvsParser.parse File.read("#{FIXTURES_DIR}/multiple_revisions.rlog")
 
       # There are 9 revisions in the rlog, but some of them are close together with the same message.
       # Therefore we bin them together into only 7 revisions.
@@ -52,7 +52,7 @@ describe 'CvsParser' do
     # A file is created and modified on the branch, then merged to the trunk, then deleted from the branch.
     # From the trunk's point of view, we should see only the merge event.
     it 'must test file created on branch as seen from trunk' do
-      revisions = OhlohScm::CvsParser.parse File.read(FIXTURES_DIR + '/file_created_on_branch.rlog')
+      revisions = OhlohScm::CvsParser.parse File.read("#{FIXTURES_DIR}/file_created_on_branch.rlog")
       revisions.size.must_equal 1
       revisions[0].message.must_equal 'merged new_file.rb from branch onto the HEAD'
     end
@@ -61,7 +61,7 @@ describe 'CvsParser' do
     # with a different message ('Initial revision') but same committer_name name and timestamp.
     # We should only pick up one of these checkins.
     it 'must test simultaneous checkins' do
-      revisions = OhlohScm::CvsParser.parse File.read(FIXTURES_DIR + '/simultaneous_checkins.rlog')
+      revisions = OhlohScm::CvsParser.parse File.read("#{FIXTURES_DIR}/simultaneous_checkins.rlog")
       revisions.size.must_equal 1
       revisions[0].message.must_equal 'Initial revision'
     end
@@ -70,7 +70,7 @@ describe 'CvsParser' do
     # How this happens is a mystery, but I have seen it in rlogs.
     # We arbitrarily choose the first one if so.
     it 'must test simultaneous checkins_2' do
-      revisions = OhlohScm::CvsParser.parse File.read(FIXTURES_DIR + '/simultaneous_checkins_2.rlog')
+      revisions = OhlohScm::CvsParser.parse File.read("#{FIXTURES_DIR}/simultaneous_checkins_2.rlog")
       revisions.size.must_equal 1
     end
   end

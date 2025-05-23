@@ -7,7 +7,7 @@ module OhlohScm
       # commits (developer/date/message).
       # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
-      def internal_parse(io, _opts)
+      def internal_parse(io, _opts, &block)
         commits = {}
 
         read_files(io) do |c|
@@ -25,7 +25,7 @@ module OhlohScm
           # a number of separate times, we may end up with several timestamps for
           # that combination.
 
-          key = c.committer_name + ':' + c.message
+          key = "#{c.committer_name}:#{c.message}"
           if commits.key? key
             # We have already seen this developer/message combination
             match = false
@@ -61,7 +61,7 @@ module OhlohScm
           result.delete_at(i) if result[i].committer_date == result[i - 1].committer_date
         end
 
-        result.each { |r| yield r } if block_given?
+        result.each(&block) if block
       end
       # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
       # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -86,9 +86,10 @@ module OhlohScm
       def read_file(io, filename, &block)
         branch_number = nil
         io.each_line do |l|
-          if l =~ /^head: ([\d\.]+)/
+          case l
+          when /^head: ([\d.]+)/
             branch_number = BranchNumber.new(Regexp.last_match(1))
-          elsif /^----------------------------/.match?(l)
+          when /^----------------------------/
             read_commits(io, branch_number, filename, &block)
           end
         end
@@ -125,7 +126,7 @@ module OhlohScm
       def build_commit(committer_date, committer_name, message, filename)
         commit = OhlohScm::Commit.new
         commit.token = committer_date[0..18]
-        commit.committer_date = Time.parse(committer_date[0..18] + ' +0000').utc
+        commit.committer_date = Time.parse("#{committer_date[0..18]} +0000").utc
         commit.committer_name = committer_name
         commit.message = message
         commit.directories = [File.dirname(filename).intern]

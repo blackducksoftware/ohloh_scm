@@ -12,7 +12,7 @@ module OhlohScm
     end
 
     def log_filename
-      File.join(temp_folder, url.gsub(/\W/, '') + '.log')
+      File.join(temp_folder, "#{url.gsub(/\W/, '')}.log")
     end
 
     def tags; end

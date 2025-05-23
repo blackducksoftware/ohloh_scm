@@ -41,7 +41,7 @@ describe 'Git::Activity' do
   describe 'tags' do
     it 'scm test fixture must have dereferenced tags' do
       with_git_repository('git') do |git|
-        tag_shas = `cd #{git.scm.url} && git tag --format='%(objectname)' | sed 's/refs\\/tags\\///'`.split(/\n/)
+        tag_shas = `cd #{git.scm.url} && git tag --format='%(objectname)' | sed 's/refs\\/tags\\///'`.split("\n")
         assert(tag_shas.any? { |sha| !git.activity.commit_tokens.include?(sha) })
       end
     end

@@ -116,7 +116,7 @@ module OhlohScm
     # rubocop:enable Metrics/MethodLength
 
     def strip_trailing_asterisk(path)
-      path[-1..-1] == '*' ? path[0..-2] : path
+      path[-1..] == '*' ? path[0..-2] : path
     end
 
     def remove_dupes(diffs)

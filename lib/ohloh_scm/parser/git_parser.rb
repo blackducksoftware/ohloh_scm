@@ -30,19 +30,21 @@ module OhlohScm
           # is missing for this commit,  and we need to fix up our state.
           state = :key_values if state == :diffs && line =~ /^Commit: ([a-z0-9]+)$/
 
-          if state == :key_values
-            if line =~ /^Commit: ([a-z0-9]+)$/
+          case state
+          when :key_values
+            case line
+            when /^Commit: ([a-z0-9]+)$/
               sha1 = Regexp.last_match(1)
               yield e if e
               e = build_commit(sha1)
-            elsif line =~ /^Author: (.+)$/
+            when /^Author: (.+)$/
               e.author_name = Regexp.last_match(1)
-            elsif line =~ /^Date: (.*)$/
+            when /^Date: (.*)$/
               # MUST be RFC2822 format to parse properly, else defaults to epoch time
               e.author_date = parse_date(Regexp.last_match(1))
-            elsif line == '__BEGIN_COMMENT__'
+            when '__BEGIN_COMMENT__'
               state = :message
-            elsif line =~ /^AuthorEmail: (.+)$/
+            when /^AuthorEmail: (.+)$/
               e.author_email = Regexp.last_match(1)
               # In the rare case that the Git repository does not contain any names,
               #   we use the email instead (see OpenEmbedded for example).
@@ -51,7 +53,7 @@ module OhlohScm
               end
             end
 
-          elsif state == :message
+          when :message
             if line == '__END_COMMENT__'
               state = :diffs
             elsif line != '<unknown>'
@@ -62,13 +64,14 @@ module OhlohScm
               end
             end
 
-          elsif state == :diffs
-            if line == '__BEGIN_COMMIT__'
+          when :diffs
+            case line
+            when '__BEGIN_COMMIT__'
               state = :key_values
             # Ref: https://git-scm.com/docs/git-diff-index#Documentation/git-diff-index.txt-git-diff-filesltpatterngt82308203
-            elsif line =~ /:([0-9]+) ([0-9]+) ([a-z0-9]+) ([a-z0-9]+) ([A-Z])\t"?(.+)"?$/
+            when /:([0-9]+) ([0-9]+) ([a-z0-9]+) ([a-z0-9]+) ([A-Z])\t"?(.+)"?$/
               add_generic_diff(e, Regexp.last_match)
-            elsif line =~ /:([0-9]+) ([0-9]+) ([a-z0-9]+) ([a-z0-9]+) (R[0-9]+)\t"?(.+)"?$/
+            when /:([0-9]+) ([0-9]+) ([a-z0-9]+) ([a-z0-9]+) (R[0-9]+)\t"?(.+)"?$/
               add_rename_edit_diff(e, Regexp.last_match)
             end
           else
@@ -92,7 +95,7 @@ module OhlohScm
       end
 
       def add_generic_diff(commit, match_data)
-        src_mode, dst_mode, parent_sha1, sha1, action, path = match_data[1..-1]
+        src_mode, dst_mode, parent_sha1, sha1, action, path = match_data[1..]
 
         return if path == '.gitmodules' # contains submodule path config.
         # Submodules have a file mode of '160000'(gitlink). We ignore submodules completely.
@@ -103,7 +106,7 @@ module OhlohScm
       end
 
       def add_rename_edit_diff(commit, match_data)
-        src_mode, dst_mode, parent_sha1, sha1, _, path = match_data[1..-1]
+        src_mode, dst_mode, parent_sha1, sha1, _, path = match_data[1..]
 
         return if src_mode == '160000' || dst_mode == '160000'
 

@@ -34,7 +34,7 @@ module OhlohScm
     attr_accessor :from_path, :from_revision
 
     def initialize(params = {})
-      params.each { |k, v| send(k.to_s + '=', v) if respond_to?(k.to_s + '=') }
+      params.each { |k, v| send("#{k}=", v) if respond_to?("#{k}=") }
     end
 
     # eql?() and hash() are implemented so that [].uniq() will work on an array of Diffs.

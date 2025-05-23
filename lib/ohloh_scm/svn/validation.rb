@@ -15,7 +15,7 @@ module OhlohScm
       end
 
       def public_url_regex
-        /^(http|https|svn):\/\/[A-Za-z0-9_\-\.]+(:\d+)?(\/[A-Za-z0-9_\-\.\/\+%^~ ]*)?$/
+        /^(http|https|svn):\/\/[A-Za-z0-9_\-.]+(:\d+)?(\/[A-Za-z0-9_\-.\/+%^~ ]*)?$/
       end
 
       # Subversion usernames have been relaxed from the abstract rules.
@@ -25,7 +25,7 @@ module OhlohScm
 
         if scm.username.length > 32
           [:username, 'The username must not be longer than 32 characters.']
-        elsif !scm.username.match?(/^\w[\w@\.\+\-]*$/)
+        elsif !scm.username.match?(/^\w[\w@.+\-]*$/)
           [:username, 'The username contains illegal characters.']
         end
       end

@@ -10,7 +10,7 @@ module OhlohScm
         return [] if no_tags?
 
         flags = "--format='%(creatordate:iso-strict) %(objectname) %(refname)'"
-        tag_strings = run("cd #{url} && git tag #{flags} | sed 's/refs\\/tags\\///'").split(/\n/)
+        tag_strings = run("cd #{url} && git tag #{flags} | sed 's/refs\\/tags\\///'").split("\n")
         tag_strings.map do |tag_string|
           timestamp_string, commit_hash, tag_name = tag_string.split(/\s/)
           [tag_name, dereferenced_sha(tag_name) || commit_hash, time_object(timestamp_string)]
@@ -42,18 +42,18 @@ module OhlohScm
 
       # Yields each commit in the repository following the commit with SHA1 'after'.
       # These commits are populated with diffs.
-      def each_commit(opts = {})
+      def each_commit(opts = {}, &block)
         safe_open_log_file(opts) do |io|
-          process_commits(io, opts) { |commit| yield commit }
+          process_commits(io, opts, &block)
         end
       end
 
       private
 
-      def process_commits(io, opts)
-        return process_expensive_commits(io, opts) { |c| yield c } if expensive_commits?(opts)
+      def process_commits(io, opts, &block)
+        return process_expensive_commits(io, opts, &block) if expensive_commits?(opts)
 
-        process_standard_commits(io) { |c| yield c }
+        process_standard_commits(io, &block)
       end
 
       def expensive_commits?(opts)
@@ -181,16 +181,16 @@ module OhlohScm
         run("cd #{url} && git cat-file commit #{token} | grep '^tree' | cut -d ' ' -f 2").strip
       end
 
-      def safe_open_log_file(opts = {})
+      def safe_open_log_file(opts = {}, &block)
         return '' unless status.branch?
         return '' if opts[:after] && opts[:after] == head_token
 
-        open_log_file(opts) { |io| yield io }
+        open_log_file(opts, &block)
       end
 
-      def open_log_file(opts)
+      def open_log_file(opts, &block)
         prepare_log_file(opts)
-        process_log_file { |io| yield io }
+        process_log_file(&block)
       ensure
         cleanup_log_file
       end
@@ -220,8 +220,8 @@ module OhlohScm
         " | #{string_encoder_path} > #{log_filename}"
       end
 
-      def process_log_file
-        File.open(log_filename, 'r') { |io| yield io }
+      def process_log_file(&block)
+        File.open(log_filename, 'r', &block)
       end
 
       def cleanup_log_file
@@ -250,7 +250,7 @@ module OhlohScm
       def dereferenced_tag_strings
         # Pattern: b6e9220c3cabe53a4ed7f32952aeaeb8a822603d refs/tags/v1.0.0^{}
         run("cd #{url} && git show-ref --tags -d | grep '\\^{}' | sed 's/\\^{}//'"\
-              " | sed 's/refs\\/tags\\///'").split(/\n/)
+              " | sed 's/refs\\/tags\\///'").split("\n")
       end
 
       def time_object(timestamp_string)

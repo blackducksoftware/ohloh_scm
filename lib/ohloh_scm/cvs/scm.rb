@@ -9,7 +9,7 @@ module OhlohScm
         opt_d = rev.token ? "-D'#{rev.token}Z'" : ''
 
         activity.ensure_host_key
-        if File.exist?(local_directory + '/CVS/Root')
+        if File.exist?("#{local_directory}/CVS/Root")
           # We already have a local enlistment, so do a quick update.
           if !rev.directories.empty?
             build_ordered_directory_list(rev.directories).each do |d|
@@ -105,7 +105,7 @@ module OhlohScm
         # For example, if url = ':pserver:anonymous:@moodle.cvs.sourceforge.net:/cvsroot/moodle'
         # and module = 'contrib', then the directory prefix = '/cvsroot/moodle/contrib/'
         # If not remote, just leave the directory name as-is
-        root ? dir[root.length..-1] : dir
+        root ? dir[root.length..] : dir
       end
 
       def root
@@ -126,7 +126,7 @@ module OhlohScm
       # found in the :pserver: url is assigned to both.
       def sync_pserver_username_password
         # Do nothing unless pserver connection string is well-formed.
-        return unless url =~ /:pserver:([\w\-\_]*)(:([\w\-\_]*))?@(.*)$/
+        return unless url =~ /:pserver:([\w\-_]*)(:([\w\-_]*))?@(.*)$/
 
         pserver_username = Regexp.last_match(1)
         pserver_password = Regexp.last_match(3)
@@ -140,7 +140,7 @@ module OhlohScm
 
       # Based on the URL, take a guess about which forge this code is hosted on.
       def guess_forge
-        return unless url =~ /.*(pserver|ext).*@(([^\.]+\.)?(cvs|dev)\.)?([^:]+):\//i
+        return unless url =~ /.*(pserver|ext).*@(([^.]+\.)?(cvs|dev)\.)?([^:]+):\//i
 
         Regexp.last_match(5).downcase
       end
