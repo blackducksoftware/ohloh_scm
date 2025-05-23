@@ -20,7 +20,7 @@ module OhlohScm
         @branch_name = url ? url[activity.root.length..-1] : branch_name
       rescue RuntimeError => e
         pattern = /(svn:*is not a working copy|Unable to open an ra_local session to URL)/
-        @branch_name = '' if e.message =~ pattern # we have a file system
+        @branch_name = '' if e.message&.match?(pattern) # we have a file system
       ensure
         clean_branch_name
         branch_name
@@ -41,7 +41,6 @@ module OhlohScm
       #
       # The url and branch_name of this object will be updated with the selected location.
       # The url will be unmodified if there is a problem connecting to the server.
-      # rubocop:disable Metrics/AbcSize
       def restrict_url_to_trunk
         return url if url.match?(%r{/trunk/?$})
 
@@ -56,7 +55,6 @@ module OhlohScm
         end
         url
       end
-      # rubocop:enable Metrics/AbcSize
 
       private
 

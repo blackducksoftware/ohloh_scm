@@ -144,7 +144,7 @@ module OhlohScm
 
       def cat(revision, path)
         out, err = run_with_err("cd '#{url}' && hg cat -r #{revision} #{escape(path)}")
-        return if err =~ /No such file in rev/i
+        return if /No such file in rev/i.match?(err)
         raise err unless err&.empty?
 
         out

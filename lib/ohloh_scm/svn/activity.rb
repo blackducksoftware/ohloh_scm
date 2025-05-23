@@ -42,9 +42,8 @@ module OhlohScm
       #      http://svn.apache.org/repos/asf/httpd/httpd/trunk
       #      http://svn.apache.org/repos/asf/maven/plugin-testing/trunk
       #      all have the same root value(https://svn.apache.org/repos/asf)
-      # rubocop:disable Metrics/AbcSize
       def tags
-        doc = Nokogiri::XML(`svn ls --xml #{ base_path}/tags`)
+        doc = Nokogiri::XML(`svn ls --xml #{base_path}/tags`)
         doc.xpath('//lists/list/entry').map do |entry|
           tag_name = entry.xpath('name').text
           revision = entry.xpath('commit').attr('revision').text
@@ -53,7 +52,6 @@ module OhlohScm
           [tag_name, revision, date_string]
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
       def head_token
         return unless info =~ /^Revision: (\d+)$/

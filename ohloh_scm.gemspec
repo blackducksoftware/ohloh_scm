@@ -17,6 +17,7 @@ Gem::Specification.new do |gem|
   gem.files         = `git ls-files -z`.split("\x0")
   gem.test_files    = gem.files.grep(/^spec\//)
   gem.require_paths = %w[lib]
+  gem.required_ruby_version = '>= 3.0.0'
   gem.post_install_message = "Ohloh SCM is depending on Git #{OhlohScm::Version::GIT}, "\
                              "SVN #{OhlohScm::Version::SVN}, CVSNT #{OhlohScm::Version::CVSNT}, "\
                              "Mercurial #{OhlohScm::Version::HG} and Bazaar "\

@@ -61,7 +61,6 @@ module OhlohScm
       end
 
       # We need very high reliability and this sequence gets the job done every time.
-      # rubocop:disable Metrics/AbcSize
       def clean_and_checkout_branch
         return unless status.scm_dir_exist?
 
@@ -72,7 +71,6 @@ module OhlohScm
         run "cd '#{url}' && git checkout #{branch_name} --"
         run "cd '#{url}' && git reset --hard heads/#{branch_name} --"
       end
-      # rubocop:enable Metrics/AbcSize
 
       def create_tracking_branch(branch_name)
         return if branch_name.to_s.empty?

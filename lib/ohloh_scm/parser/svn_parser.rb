@@ -54,7 +54,7 @@ module OhlohScm
           elsif state == :log_embedded_within_comment
             e.message << "\n"
             e.message << l
-            next_state = :comment if l =~ /============================ .* log end =+/
+            next_state = :comment if /============================ .* log end =+/.match?(l)
 
           elsif state == :comment
             if /------------------------------------------------------------------------/.match?(l)

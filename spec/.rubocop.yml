@@ -3,7 +3,7 @@ inherit_from: ../.rubocop.yml
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 Metrics/AbcSize:

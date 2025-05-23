@@ -107,9 +107,9 @@ module OhlohScm
         return '' unless after
 
         most_recent_time = parse_time(after) - 10
-        # rubocop:disable Metrics/LineLength
+        # rubocop:disable Layout/LineLength
         " -d '#{most_recent_time.strftime('%Y-%m-%d %H:%M:%S')}Z<#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}Z' "
-        # rubocop:enable Metrics/LineLength
+        # rubocop:enable Layout/LineLength
       end
 
       def rlog_filename

@@ -13,7 +13,7 @@ module OhlohScm
       def cat_file(revision, file)
         send_command("CAT_FILE\t#{revision}\t#{file}")
       rescue RuntimeError => e
-        raise unless e.message =~ /not found in manifest/ # File does not exist.
+        raise unless /not found in manifest/.match?(e.message) # File does not exist.
       end
 
       def parent_tokens(revision)
