@@ -35,7 +35,7 @@ module OhlohScm
 
     # Returns true if <branch_number> is an ancestor of this object.
     # Also returns true if <branch_number> is the same as this object.
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
     def inherits_from?(branch_number)
       b = branch_number.to_a
 
@@ -51,7 +51,7 @@ module OhlohScm
       end
       true
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     private
 

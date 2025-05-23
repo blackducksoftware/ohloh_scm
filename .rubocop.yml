@@ -1,9 +1,9 @@
 require: rubocop-performance
 
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 3.0
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 99
 
 Documentation:

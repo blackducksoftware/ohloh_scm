@@ -33,7 +33,6 @@ module OhlohScm
     end
     # rubocop:enable Metrics/AbcSize
 
-    # rubocop:disable Metrics/AbcSize
     def url_errors
       error = if scm.url.nil? || scm.url.empty?
                 "The URL can't be blank."
@@ -45,7 +44,6 @@ module OhlohScm
 
       [:url, error] if error
     end
-    # rubocop:enable Metrics/AbcSize
 
     def branch_name_errors
       if scm.branch_name.length > 80

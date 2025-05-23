@@ -17,14 +17,14 @@ describe 'Git::Activity' do
   it 'export must work the same for tag or commit_sha' do
     with_git_repository('git') do |git|
       tag_sha = 'f6e5a894ac4173f8f2a200f2c36df38a1e61121a'
-      commit_sha = `cd #{ git.scm.url } && git show #{ tag_sha }`.slice(/commit (.+)$/, 1)
+      commit_sha = `cd #{git.scm.url} && git show #{tag_sha}`.slice(/commit (.+)$/, 1)
 
       Dir.mktmpdir('oh_scm_tag_') do |tag_dir|
         git.activity.export(tag_dir, tag_sha)
 
         Dir.mktmpdir('oh_scm_commit_') do |commit_dir|
           git.activity.export(commit_dir, commit_sha)
-          `diff -rq #{ tag_dir } #{ commit_dir }`.must_be :empty?
+          `diff -rq #{tag_dir} #{commit_dir}`.must_be :empty?
           Dir.entries(commit_dir).sort.must_equal ['.', '..', '.gitignore', 'helloworld.c',
                                                    'makefile', 'ohloh_token']
         end

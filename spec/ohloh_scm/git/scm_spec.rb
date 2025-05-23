@@ -81,11 +81,11 @@ describe 'Git::Scm' do
         `cd #{dest_dir} && git checkout master && git branch -D test`
 
         local_branch_cmd = "cd #{dest_dir} && git branch | grep '\*' | sed 's/^\* //'"
-        `#{ local_branch_cmd }`.chomp.must_equal 'master'
+        `#{local_branch_cmd}`.chomp.must_equal 'master'
 
         # On doing a refetch, our local copy will now have the updated *main* branch.
         core.scm.pull(src_core.scm, TestCallback.new)
-        `#{ local_branch_cmd }`.chomp.must_equal test_branch_name
+        `#{local_branch_cmd}`.chomp.must_equal test_branch_name
       end
     end
   end

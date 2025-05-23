@@ -7,7 +7,6 @@ describe 'GitParser' do
     end
 
     it 'must return epoch time for log with no date' do
-      # rubocop:disable Layout/TrailingWhitespace
       sample_log = <<-SAMPLE.gsub(/^ {8}/, '')
         __BEGIN_COMMIT__
         Commit: 1df547800dcd168e589bb9b26b4039bff3a7f7e4
@@ -19,8 +18,6 @@ describe 'GitParser' do
 
         __END_COMMENT__
       SAMPLE
-      # rubocop:enable Layout/TrailingWhitespace
-
       commits = OhlohScm::GitParser.parse(sample_log)
       commits.size.must_equal 1
       commits[0].author_date.must_equal Time.utc(1970, 1, 1, 0, 0, 0)

@@ -17,7 +17,7 @@ module OhlohScm
       @authors = []
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
     def tag_start(name, attrs)
       case name
       when 'log'
@@ -38,7 +38,7 @@ module OhlohScm
         @authors = []
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
     def tag_end(name)
@@ -149,7 +149,7 @@ module OhlohScm
       # Bazaar may report that a file was both deleted and added in a single commit.
       # Reduce these cases to a single 'M' action.
       diffs.each do |d|
-        d.action = 'M' if diffs.select { |x| x.path == d.path }.size > 1
+        d.action = 'M' if diffs.count { |x| x.path == d.path } > 1
       end.uniq
     end
     # rubocop:enable Metrics/AbcSize

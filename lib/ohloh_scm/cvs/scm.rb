@@ -66,7 +66,7 @@ module OhlohScm
         # using cvs modules that are only a single directory deep when testing.
         # We'll check if the url begins with '/' to detect an integration test,
         # then return an empty string (ie, the default root directory) if so.
-        return [''] if url =~ /^\//
+        return [''] if /^\//.match?(url)
 
         list = []
         directories = directories.collect { |a| trim_directory(a.to_s).to_s }
