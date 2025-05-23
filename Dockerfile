@@ -1,11 +1,11 @@
 FROM ubuntu:22.04
-MAINTAINER OpenHub <info@openhub.net>
+LABEL maintainer="OpenHub <info@openhub.net>"
 
-ENV HOME /home
-ENV LC_ALL en_US.UTF-8
-ENV APP_HOME $HOME/app/ohloh_scm
-ENV DEBIAN_FRONTEND noninteractive
-ENV PATH $HOME/.rbenv/shims:$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH
+ENV HOME=/home
+ENV LC_ALL=en_US.UTF-8
+ENV APP_HOME=$HOME/app/ohloh_scm
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH=$HOME/.rbenv/shims:$HOME/.rbenv/bin:$HOME/.rbenv/plugins/ruby-build/bin:$PATH
 
 RUN apt-get update
 RUN apt-get install -y build-essential software-properties-common locales ragel \
