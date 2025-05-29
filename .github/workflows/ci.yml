@@ -16,5 +16,5 @@ jobs:
     - name: Run rubocop and tests
       run: |
         docker pull priyar101/ohloh_scm:latest
-        cmd='/etc/init.d/ssh start; bundle exec rubocop; rake test 2> /dev/null'
-        docker run --rm -P -v $(pwd):/home/app/ohloh_scm -i ohdeployer/ohloh_scm:latest /bin/sh -c "$cmd"
+        cmd='/etc/init.d/ssh start; rake test 2> /dev/null'
+        docker run --rm -P -v $(pwd):/home/app/ohloh_scm -i priyar101/ohloh_scm:latest /bin/sh -c "$cmd"
