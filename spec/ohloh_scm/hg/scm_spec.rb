@@ -8,7 +8,7 @@ describe 'Hg::Scm' do
         assert !dest.status.exist?
 
         dest.scm.pull(src.scm, TestCallback.new)
-        dest.status.must_be :exist?
+        assert dest.status.exist?
         assert_equal Dir.entries(dir).sort, ['.', '..', '.hg']
 
         # Commit some new code on the original and pull again

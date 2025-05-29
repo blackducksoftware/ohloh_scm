@@ -15,6 +15,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Run rubocop and tests
       run: |
-        docker pull priyar101/ohloh_scm:latest
+        docker pull --platform=linux/amd64 priyar101/ohloh_scm:latest
         cmd='/etc/init.d/ssh start; rake test 2> /dev/null'
-        docker run --rm -P -v $(pwd):/home/app/ohloh_scm -i priyar101/ohloh_scm:latest /bin/sh -c "$cmd"
+        docker run --platform=linux/amd64 --rm -P -v $(pwd):/home/app/ohloh_scm -i priyar101/ohloh_scm:latest /bin/sh -c "$cmd"
