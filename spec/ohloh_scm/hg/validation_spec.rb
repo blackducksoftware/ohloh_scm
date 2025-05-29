@@ -5,7 +5,7 @@ describe 'Hg::Validation' do
     it 'must handle non existent remote source' do
       core = OhlohScm::Factory.get_core(scm_type: :hg, url: 'http://www.selenic.com/repo/foobar')
       core.validate
-      core.errors.wont_be :empty?
+      refute_empty core.errors
     end
   end
 

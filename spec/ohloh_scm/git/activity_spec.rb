@@ -9,7 +9,7 @@ describe 'Git::Activity' do
         git.activity.export(dir)
         entries = ['.', '..', '.gitignore', 'COPYING', 'Gemfile.lock', 'Godeps', 'README',
                    'helloworld.c', 'makefile', 'nested', 'ohloh_token']
-        Dir.entries(dir).sort.must_equal entries
+        assert_equal Dir.entries(dir).sort, entries
       end
     end
   end
@@ -24,8 +24,8 @@ describe 'Git::Activity' do
 
         Dir.mktmpdir('oh_scm_commit_') do |commit_dir|
           git.activity.export(commit_dir, commit_sha)
-          `diff -rq #{tag_dir} #{commit_dir}`.must_be :empty?
-          Dir.entries(commit_dir).sort.must_equal ['.', '..', '.gitignore', 'helloworld.c',
+          assert_empty `diff -rq #{tag_dir} #{commit_dir}`
+          assert_equal Dir.entries(commit_dir).sort, ['.', '..', '.gitignore', 'helloworld.c',
                                                    'makefile', 'ohloh_token']
         end
       end
@@ -48,7 +48,7 @@ describe 'Git::Activity' do
 
     it 'must return repository tags' do
       with_git_repository('git') do |git|
-        git.activity.tags.must_equal(
+        assert_equal git.activity.tags,(
           [['v1.0.0', 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d', Time.parse('2016-07-31T07:58:30+05:30')],
            ['v1.1.0-lw', '2e9366dd7a786fdb35f211fff1c8ea05c51968b1', Time.parse('2006-06-11T11:34:17-07:00')],
            ['v2.1.0', '1df547800dcd168e589bb9b26b4039bff3a7f7e4', Time.parse('2006-07-14T16:07:15-07:00')]]
@@ -65,13 +65,13 @@ describe 'Git::Activity' do
 
     it 'must be empty for repository with no tags' do
       with_git_repository('git_walk') do |git|
-        git.activity.tags.must_be :empty?
+        assert_empty git.activity.tags
       end
     end
 
     it 'must work for a tag named master' do
       with_git_repository('git_with_master_tag') do |git|
-        git.activity.tags.must_equal [['master', '4e95717ac8cff8cdb10d83398d3ac667a2cca341',
+        assert_equal git.activity.tags, [['master', '4e95717ac8cff8cdb10d83398d3ac667a2cca341',
                                        Time.parse('2018-02-01T12:56:48+0530')]]
       end
     end
@@ -80,8 +80,8 @@ describe 'Git::Activity' do
   it 'must return correct head' do
     with_git_repository('git') do |git|
       assert git.status.exist?
-      git.activity.head_token.must_equal 'a2690f4471a0852723f0f0e95d97f7f1f3981639'
-      git.activity.head.token.must_equal 'a2690f4471a0852723f0f0e95d97f7f1f3981639'
+      assert_equal git.activity.head_token, 'a2690f4471a0852723f0f0e95d97f7f1f3981639'
+      assert_equal git.activity.head.token, 'a2690f4471a0852723f0f0e95d97f7f1f3981639'
       assert git.activity.head.diffs.any?
     end
   end
@@ -94,53 +94,53 @@ describe 'Git::Activity' do
 
   it 'commit_count' do
     with_git_repository('git') do |git|
-      git.activity.commit_count.must_equal 5
-      git.activity.commit_count(after: 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d').must_equal 3
-      git.activity.commit_count(after: '1df547800dcd168e589bb9b26b4039bff3a7f7e4').must_equal 1
+      assert_equal git.activity.commit_count, 5
+      assert_equal git.activity.commit_count(after: 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d'), 3
+      assert_equal git.activity.commit_count(after: '1df547800dcd168e589bb9b26b4039bff3a7f7e4'), 1
     end
   end
 
   it 'commit_tokens' do
     with_git_repository('git') do |git|
-      git.activity.commit_tokens.must_equal %w[089c527c61235bd0793c49109b5bd34d439848c6
+      assert_equal git.activity.commit_tokens, %w[089c527c61235bd0793c49109b5bd34d439848c6
                                                b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
                                                2e9366dd7a786fdb35f211fff1c8ea05c51968b1
                                                1df547800dcd168e589bb9b26b4039bff3a7f7e4
                                                a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      git.activity.commit_tokens(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1')
-         .must_equal %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
+      assert_equal git.activity.commit_tokens(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1'), 
+      %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      git.activity.commit_tokens(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639').must_be :empty?
+      assert_empty git.activity.commit_tokens(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639')
     end
   end
 
   it 'commits' do
     with_git_repository('git') do |git|
-      git.activity.commits.collect(&:token).must_equal %w[089c527c61235bd0793c49109b5bd34d439848c6
+      assert_equal git.activity.commits.collect(&:token), %w[089c527c61235bd0793c49109b5bd34d439848c6
                                                           b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
                                                           2e9366dd7a786fdb35f211fff1c8ea05c51968b1
                                                           1df547800dcd168e589bb9b26b4039bff3a7f7e4
                                                           a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1').collect(&:token)
-         .must_equal %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
+      assert_equal git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1').collect(&:token), 
+      %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      git.activity.commits(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639').must_be :empty?
+      assert_empty git.activity.commits(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639')
     end
   end
 
   it 'commits for branch' do
     with_git_repository('git', 'develop') do |git|
-      git.activity.commits.map(&:token).must_equal %w[089c527c61235bd0793c49109b5bd34d439848c6
+      assert_equal git.activity.commits.map(&:token), %w[089c527c61235bd0793c49109b5bd34d439848c6
                                                       b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
                                                       2e9366dd7a786fdb35f211fff1c8ea05c51968b1
                                                       b4046b9a80fead62fa949232f2b87b0cb78fffcc]
 
-      git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1')
-         .map(&:token).must_equal ['b4046b9a80fead62fa949232f2b87b0cb78fffcc']
+      assert_equal git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1')
+         .map(&:token), ['b4046b9a80fead62fa949232f2b87b0cb78fffcc']
 
-      git.activity.commits(after: 'b4046b9a80fead62fa949232f2b87b0cb78fffcc').must_be :empty?
+      assert_empty git.activity.commits(after: 'b4046b9a80fead62fa949232f2b87b0cb78fffcc')
     end
   end
 
@@ -149,29 +149,29 @@ describe 'Git::Activity' do
       submodule_commits = %w[240375de181498b9a34d4bd328f2c87d2ade79f9
                              b6a80291e49dc540bb78526f9b1aab1123c9fb0e]
 
-      (git.activity.commit_tokens & submodule_commits).must_be :empty?
+      assert_empty (git.activity.commit_tokens & submodule_commits)
 
       diffs = git.activity.commits.map(&:diffs).reject(&:empty?).flatten
-      diffs.map(&:path).must_equal ['A']
-      diffs.map(&:sha1).must_equal ['f70f10e4db19068f79bc43844b49f3eece45c4e8']
+      assert_equal diffs.map(&:path), ['A']
+      assert_equal diffs.map(&:sha1), ['f70f10e4db19068f79bc43844b49f3eece45c4e8']
     end
   end
 
   it 'commit_count for trunk commits' do
     with_git_repository('git_dupe_delete') do |git|
-      git.activity.commit_count(trunk_only: false).must_equal 4
-      git.activity.commit_count(trunk_only: true).must_equal 3
+      assert_equal git.activity.commit_count(trunk_only: false), 4
+      assert_equal git.activity.commit_count(trunk_only: true), 3
     end
   end
 
   it 'commit tokens for trunk commits' do
     with_git_repository('git_dupe_delete') do |git|
-      git.activity.commit_tokens(trunk_only: false).must_equal ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
+      assert_equal git.activity.commit_tokens(trunk_only: false), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
                                                                 'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
                                                                 '6126337d2497806528fd8657181d5d4afadd72a4', # On branch
                                                                 '41c4b1044ebffc968d363e5f5e883134e624f846']
 
-      git.activity.commit_tokens(trunk_only: true).must_equal ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
+      assert_equal git.activity.commit_tokens(trunk_only: true), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
                                                                'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
                                                                # '6126337d2497806528fd8657181d5d4afadd72a4' # On branch
                                                                '41c4b1044ebffc968d363e5f5e883134e624f846']
@@ -180,13 +180,13 @@ describe 'Git::Activity' do
 
   it 'commit tokens for trunk commits using after' do
     with_git_repository('git_dupe_delete') do |git|
-      git.activity.commit_tokens(after: 'a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                 trunk_only: true).must_equal %w[ad6bb43112706c462e53a9a8a8cd3b05f8e9260f
+      assert_equal git.activity.commit_tokens(after: 'a0a2b8623941562031a7d7f95d984feb4a2d719c',
+                                 trunk_only: true), %w[ad6bb43112706c462e53a9a8a8cd3b05f8e9260f
                                                                  41c4b1044ebffc968d363e5f5e883134e624f846]
 
       # All trunk commit_tokens, with :after == HEAD
-      git.activity.commit_tokens(after: '41c4b1044ebffc968d363e5f5e883134e624f846',
-                                 trunk_only: true).must_be :empty?
+      assert_empty git.activity.commit_tokens(after: '41c4b1044ebffc968d363e5f5e883134e624f846',
+                                 trunk_only: true)
     end
   end
 
@@ -194,20 +194,20 @@ describe 'Git::Activity' do
     # `git mv foo bar` results in a single R diff. Split it into A & D diffs.
     with_git_repository('git_with_mv') do |git|
       r_commit = git.activity.commits[-2]
-      r_commit.message.strip.must_equal 'Ran: git mv foo bar'
-      r_commit.diffs.map(&:action).must_equal %w[D A]
-      r_commit.diffs.map(&:path).must_equal %w[foo bar]
+      assert_equal r_commit.message.strip, 'Ran: git mv foo bar'
+      assert_equal r_commit.diffs.map(&:action), %w[D A]
+      assert_equal r_commit.diffs.map(&:path), %w[foo bar]
 
       r_commit = git.activity.commits.last
-      r_commit.message.strip.must_equal 'Ran: echo B >> bar; mv bar rab'
-      r_commit.diffs.map(&:action).must_equal %w[D A]
-      r_commit.diffs.map(&:path).must_equal %w[bar rab]
+      assert_equal r_commit.message.strip, 'Ran: echo B >> bar; mv bar rab'
+      assert_equal r_commit.diffs.map(&:action), %w[D A]
+      assert_equal r_commit.diffs.map(&:path), %w[bar rab]
     end
   end
 
   it 'trunk only commits' do
     with_git_repository('git_dupe_delete') do |git|
-      git.activity.commits(trunk_only: true).collect(&:token).must_equal ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
+      assert_equal git.activity.commits(trunk_only: true).collect(&:token), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
                                                                           'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
                                                                           # on a branch, hence excluded.
                                                                           # '6126337d2497806528fd8657181d5d4afadd72a4',
@@ -229,14 +229,14 @@ describe 'Git::Activity' do
     with_git_repository('git_with_null_merge') do |git|
       c = git.activity.verbose_commit('d3bd0bedbf4b197b2c4eb827e1ec4c35b834482f')
       # This commit's tree is identical to its parent's. Thus it should contain no diffs.
-      c.diffs.must_equal []
+      assert_equal c.diffs, []
     end
   end
 
   it 'each commit with null merge' do
     with_git_repository('git_with_null_merge') do |git|
       git.activity.each_commit do |c|
-        c.diffs.must_equal [] if c.token == 'd3bd0bedbf4b197b2c4eb827e1ec4c35b834482f'
+        assert_equal c.diffs, [] if c.token == 'd3bd0bedbf4b197b2c4eb827e1ec4c35b834482f'
       end
     end
   end
@@ -250,20 +250,20 @@ describe 'Git::Activity' do
   it 'safe_open_log_file must return text with valid encoding' do
     with_git_repository('git_with_invalid_encoding') do |git|
       git.activity.send(:safe_open_log_file) do |io|
-        io.read.valid_encoding?.must_equal true
+        assert_equal io.read.valid_encoding?, true
       end
     end
   end
 
   it 'commit count when there is a tag named master' do
     with_git_repository('git_with_master_tag') do |git|
-      git.activity.commit_count.must_equal 3
+      assert_equal git.activity.commit_count, 3
     end
   end
 
   it 'commit tokens when there is a tag named master' do
     with_git_repository('git_with_master_tag') do |git|
-      git.activity.commit_tokens.must_equal %w[57b2bd30b7bae970cb3b374a0c05fd6ec3088ebf
+      assert_equal git.activity.commit_tokens, %w[57b2bd30b7bae970cb3b374a0c05fd6ec3088ebf
                                                4e95717ac8cff8cdb10d83398d3ac667a2cca341
                                                34b8a99e6e5dd39bc36893f71e0ab1685668731f]
     end
@@ -272,7 +272,7 @@ describe 'Git::Activity' do
   it 'must cat file correctly' do
     with_git_repository('git') do |core|
       diff = OhlohScm::Diff.new(sha1: '4c734ad53b272c9b3d719f214372ac497ff6c068')
-      core.activity.cat_file(nil, diff).must_equal <<-EXPECTED.gsub(/^ {8}/, '')
+      assert_equal core.activity.cat_file(nil, diff), <<-EXPECTED.gsub(/^ {8}/, '')
         /* Hello, World! */
         #include <stdio.h>
         main()
@@ -288,23 +288,23 @@ describe 'Git::Activity' do
       with_git_repository('git_walk') do |git|
         commit_tokens = CommitTokensHelper.new(git, commit_labels)
         # Full history to a commit
-        commit_tokens.between(nil, :A).must_equal %i[A]
-        commit_tokens.between(nil, :B).must_equal %i[A B]
-        commit_tokens.between(nil, :C).must_equal %i[A B G H C]
-        commit_tokens.between(nil, :D).must_equal %i[A B G H C I D]
-        commit_tokens.between(nil, :G).must_equal %i[A G]
-        commit_tokens.between(nil, :H).must_equal %i[A G H]
-        commit_tokens.between(nil, :I).must_equal %i[A G H I]
-        commit_tokens.between(nil, :J).must_equal %i[A G H I J]
+        assert_equal commit_tokens.between(nil, :A), %i[A]
+        assert_equal commit_tokens.between(nil, :B), %i[A B]
+        assert_equal commit_tokens.between(nil, :C), %i[A B G H C]
+        assert_equal commit_tokens.between(nil, :D), %i[A B G H C I D]
+        assert_equal commit_tokens.between(nil, :G), %i[A G]
+        assert_equal commit_tokens.between(nil, :H), %i[A G H]
+        assert_equal commit_tokens.between(nil, :I), %i[A G H I]
+        assert_equal commit_tokens.between(nil, :J), %i[A G H I J]
 
         # Limited history from one commit to another
-        commit_tokens.between(:A, :A).must_be :empty?
-        commit_tokens.between(:A, :B).must_equal %i[B]
-        commit_tokens.between(:A, :C).must_equal %i[B G H C]
-        commit_tokens.between(:A, :D).must_equal %i[B G H C I D]
-        commit_tokens.between(:B, :D).must_equal %i[G H C I D]
-        commit_tokens.between(:C, :D).must_equal %i[I D]
-        commit_tokens.between(:G, :J).must_equal %i[H I J]
+        assert_empty commit_tokens.between(:A, :A)
+        assert_equal commit_tokens.between(:A, :B), %i[B]
+        assert_equal commit_tokens.between(:A, :C), %i[B G H C]
+        assert_equal commit_tokens.between(:A, :D), %i[B G H C I D]
+        assert_equal commit_tokens.between(:B, :D), %i[G H C I D]
+        assert_equal commit_tokens.between(:C, :D), %i[I D]
+        assert_equal commit_tokens.between(:G, :J), %i[H I J]
       end
     end
 
@@ -312,18 +312,18 @@ describe 'Git::Activity' do
       with_git_repository('git_walk') do |git|
         commit_tokens = CommitTokensHelper.new(git, commit_labels, trunk_only: true)
         # Full history to a commit
-        commit_tokens.between(nil, :A).must_equal %i[A]
-        commit_tokens.between(nil, :B).must_equal %i[A B]
-        commit_tokens.between(nil, :C).must_equal %i[A B C]
-        commit_tokens.between(nil, :D).must_equal %i[A B C D]
+        assert_equal commit_tokens.between(nil, :A), %i[A]
+        assert_equal commit_tokens.between(nil, :B), %i[A B]
+        assert_equal commit_tokens.between(nil, :C), %i[A B C]
+        assert_equal commit_tokens.between(nil, :D), %i[A B C D]
 
         # Limited history from one commit to another
-        commit_tokens.between(:A, :A).must_be :empty?
-        commit_tokens.between(:A, :B).must_equal %i[B]
-        commit_tokens.between(:A, :C).must_equal %i[B C]
-        commit_tokens.between(:A, :D).must_equal %i[B C D]
-        commit_tokens.between(:B, :D).must_equal %i[C D]
-        commit_tokens.between(:C, :D).must_equal %i[D]
+        assert_empty commit_tokens.between(:A, :A)
+        assert_equal commit_tokens.between(:A, :B), %i[B]
+        assert_equal commit_tokens.between(:A, :C), %i[B C]
+        assert_equal commit_tokens.between(:A, :D), %i[B C D]
+        assert_equal commit_tokens.between(:B, :D), %i[C D]
+        assert_equal commit_tokens.between(:C, :D), %i[D]
       end
     end
 
@@ -343,12 +343,12 @@ describe 'Git::Activity' do
         core.activity.commit_all(c)
         refute core.activity.send(:anything_to_commit?)
 
-        core.activity.commits.size.must_equal 1
+        assert_equal core.activity.commits.size, 1
 
-        core.activity.commits.first.author_name.must_equal c.author_name
+        assert_equal core.activity.commits.first.author_name, c.author_name
         # Depending on version of Git used, we may or may not have trailing \n.
         # We don't really care, so just compare the stripped versions.
-        core.activity.commits.first.message.strip.must_equal c.message.strip
+        assert_equal core.activity.commits.first.message.strip, c.message.strip
 
         assert_equal ['.gitignore', 'README'], core.activity.commits.first.diffs.collect(&:path).sort
       end
@@ -370,7 +370,7 @@ describe 'Git::Activity' do
         core.activity.send(:write_token, 'FOO')
         refute core.activity.read_token # Token not valid until committed
         core.activity.commit_all(OhlohScm::Commit.new)
-        core.activity.read_token.must_equal 'FOO'
+        assert_equal core.activity.read_token, 'FOO'
       end
     end
 
@@ -381,7 +381,7 @@ describe 'Git::Activity' do
         c = OhlohScm::Commit.new
         c.token = 'BAR'
         core.activity.commit_all(c)
-        c.token.must_equal core.activity.read_token
+        assert_equal c.token, core.activity.read_token
       end
     end
 

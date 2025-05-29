@@ -51,12 +51,12 @@ describe 'Svn::Status' do
   it 'should validate_server_connection' do
     with_svn_repository('svn') do |svn|
       svn.validation.send(:validate_server_connection)
-      svn.validation.errors.must_be :empty?
+      assert_empty svn.validation.errors
     end
   end
 
   it 'should strip trailing whitespace in branch_name' do
-    get_core(:svn, branch_name: '/trunk/').scm.normalize.branch_name.must_equal '/trunk'
+    assert_equal get_core(:svn, branch_name: '/trunk/').scm.normalize.branch_name, '/trunk'
   end
 
   it 'should catch exception when validating server connection' do
@@ -64,7 +64,7 @@ describe 'Svn::Status' do
     git_svn.validation.instance_variable_set('@errors', nil)
     git_svn.validation.send :validate_server_connection
     msg = 'An error occured connecting to the server. Check the URL, username, and password.'
-    git_svn.validation.errors.must_equal [[:failed, msg]]
+    assert_equal git_svn.validation.errors, [[:failed, msg]]
   end
 
   it 'should validate head token when validating server connection' do
@@ -74,7 +74,7 @@ describe 'Svn::Status' do
     git_svn.validation.expects(:url_error)
     git_svn.validation.send :validate_server_connection
     msg = "The server did not respond to a 'svn info' command. Is the URL correct?"
-    git_svn.validation.errors.must_equal [[:failed, msg]]
+    assert_equal git_svn.validation.errors, [[:failed, msg]]
   end
 
   it 'should validate url when validating server connection' do
@@ -83,7 +83,7 @@ describe 'Svn::Status' do
     OhlohScm::Svn::Activity.any_instance.stubs(:head_token).returns('')
     OhlohScm::Svn::Activity.any_instance.stubs(:root).returns('tt')
     git_svn.validation.send :validate_server_connection
-    git_svn.validation.errors
-           .must_equal [[:failed, 'The URL did not match the Subversion root tt. Is the URL correct?']]
+    assert_equal git_svn.validation.errors, 
+    [[:failed, 'The URL did not match the Subversion root tt. Is the URL correct?']]
   end
 end

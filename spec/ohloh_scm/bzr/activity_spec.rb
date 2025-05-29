@@ -8,7 +8,7 @@ describe 'Bzr::Activity' do
       tmpdir do |dir|
         bzr.activity.export(dir)
         entries = ['.', '..', 'Cédric.txt', 'file1.txt', 'file3.txt', 'file4.txt', 'file5.txt']
-        Dir.entries(dir).sort.must_equal entries
+        assert_equal Dir.entries(dir).sort, entries
       end
     end
   end
@@ -17,11 +17,11 @@ describe 'Bzr::Activity' do
     with_bzr_repository('bzr') do |bzr|
       activity = bzr.activity
 
-      activity.head_token.must_equal 'test@example.com-20111222183733-y91if5npo3pe8ifs'
-      activity.head.token.must_equal 'test@example.com-20111222183733-y91if5npo3pe8ifs'
+      assert_equal activity.head_token, 'test@example.com-20111222183733-y91if5npo3pe8ifs'
+      assert_equal activity.head.token, 'test@example.com-20111222183733-y91if5npo3pe8ifs'
       assert activity.head.diffs.any? # diffs should be populated
 
-      activity.parents(activity.head).first.token.must_equal 'obnox@samba.org-20090204004942-73rnw0izen42f154'
+      assert_equal activity.parents(activity.head).first.token, 'obnox@samba.org-20090204004942-73rnw0izen42f154'
       assert activity.parents(activity.head).first.diffs.any?
     end
   end
@@ -35,11 +35,11 @@ describe 'Bzr::Activity' do
 
       commit = OhlohScm::Commit.new(token: 6)
       diff = OhlohScm::Diff.new(path: 'file1.txt')
-      bzr.activity.cat_file(commit, diff).must_equal expected
+      assert_equal bzr.activity.cat_file(commit, diff), expected
 
       # file2.txt has been removed in commit #5
       diff2 = OhlohScm::Diff.new(path: 'file2.txt')
-      bzr.activity.cat_file(bzr.activity.commits.last, diff2).must_be_nil
+      assert_nil bzr.activity.cat_file(bzr.activity.commits.last, diff2)
     end
   end
 
@@ -52,7 +52,7 @@ describe 'Bzr::Activity' do
 
       commit = OhlohScm::Commit.new(token: 7)
       diff = OhlohScm::Diff.new(path: 'Cédric.txt')
-      bzr.activity.cat_file(commit, diff).must_equal expected
+      assert_equal bzr.activity.cat_file(commit, diff), expected
     end
   end
 
@@ -65,7 +65,7 @@ describe 'Bzr::Activity' do
 
       commit = OhlohScm::Commit.new(token: 6)
       diff = OhlohScm::Diff.new(path: 'file1.txt')
-      bzr.activity.cat_file_parent(commit, diff).must_equal expected
+      assert_equal bzr.activity.cat_file_parent(commit, diff), expected
 
       # file2.txt has been removed in commit #5
       expected = <<-EXPECTED.gsub(/ {8}/, '')
@@ -74,24 +74,24 @@ describe 'Bzr::Activity' do
 
       commit2 = OhlohScm::Commit.new(token: 5)
       diff2 = OhlohScm::Diff.new(path: 'file2.txt')
-      bzr.activity.cat_file_parent(commit2, diff2).must_equal expected
+      assert_equal bzr.activity.cat_file_parent(commit2, diff2), expected
     end
   end
 
   describe 'commits' do
     it 'must test_commit_count' do
       with_bzr_repository('bzr') do |bzr|
-        bzr.activity.commit_count.must_equal 7
-        bzr.activity.commit_count(after: revision_ids.first).must_equal 6
-        bzr.activity.commit_count(after: revision_ids[5]).must_equal 1
-        bzr.activity.commit_count(after: revision_ids.last).must_equal 0
+        assert_equal bzr.activity.commit_count, 7
+        assert_equal bzr.activity.commit_count(after: revision_ids.first), 6
+        assert_equal bzr.activity.commit_count(after: revision_ids[5]), 1
+        assert_equal bzr.activity.commit_count(after: revision_ids.last), 0
       end
     end
 
     it 'must test_commit_count_with_branches' do
       with_bzr_repository('bzr_with_branch') do |bzr|
         # Only 3 commits are on main line... make sure we catch the branch commit as well
-        bzr.activity.commit_count.must_equal 4
+        assert_equal bzr.activity.commit_count, 4
       end
     end
 
@@ -105,16 +105,16 @@ describe 'Bzr::Activity' do
     it 'must test_commit_count_trunk_only' do
       with_bzr_repository('bzr_with_branch') do |bzr|
         # Only 3 commits are on main line
-        bzr.activity.commit_count(trunk_only: true).must_equal 3
+        assert_equal bzr.activity.commit_count(trunk_only: true), 3
       end
     end
 
     it 'must test_commit_tokens_after' do
       with_bzr_repository('bzr') do |bzr|
-        bzr.activity.commit_tokens.must_equal revision_ids
-        bzr.activity.commit_tokens(after: revision_ids.first).must_equal revision_ids[1..6]
-        bzr.activity.commit_tokens(after: revision_ids[5]).must_equal revision_ids[6..6]
-        bzr.activity.commit_tokens(after: revision_ids.last).must_equal []
+        assert_equal bzr.activity.commit_tokens, revision_ids
+        assert_equal bzr.activity.commit_tokens(after: revision_ids.first), revision_ids[1..6]
+        assert_equal bzr.activity.commit_tokens(after: revision_ids[5]), revision_ids[6..6]
+        assert_equal bzr.activity.commit_tokens(after: revision_ids.last), []
       end
     end
 
@@ -140,7 +140,7 @@ describe 'Bzr::Activity' do
                     'test@example.com-20090206214451-lzjngefdyw3vmgms',
                     'test@example.com-20090206214350-rqhdpz92l11eoq2t', # branch commit
                     'test@example.com-20090206214515-21lkfj3dbocao5pr']  # merge commit
-        bzr.activity.commit_tokens.must_equal expected
+        assert_equal bzr.activity.commit_tokens, expected
       end
     end
 
@@ -149,7 +149,7 @@ describe 'Bzr::Activity' do
         expected = ['test@example.com-20090206214301-s93cethy9atcqu9h',
                     'test@example.com-20090206214451-lzjngefdyw3vmgms',
                     'test@example.com-20090206214515-21lkfj3dbocao5pr']  # merge commit
-        bzr.activity.commit_tokens(trunk_only: true).must_equal expected
+        assert_equal bzr.activity.commit_tokens(trunk_only: true), expected
       end
     end
 
@@ -167,7 +167,7 @@ describe 'Bzr::Activity' do
                     'test@example.com-20110803170522-asv6i9z6m22jc8zz',
                     'test@example.com-20110803170648-o0xcbni7lwp97azj',
                     'test@example.com-20110803170818-v44umypquqg8migo']
-        bzr.activity.commit_tokens.must_equal expected
+        assert_equal bzr.activity.commit_tokens, expected
       end
     end
 
@@ -180,7 +180,7 @@ describe 'Bzr::Activity' do
                     'obnox@samba.org-20090204002540-gmana8tk5f9gboq9',
                     'obnox@samba.org-20090204004942-73rnw0izen42f154',
                     'test@example.com-20110803170818-v44umypquqg8migo']
-        bzr.activity.commit_tokens(trunk_only: true).must_equal expected
+        assert_equal bzr.activity.commit_tokens(trunk_only: true), expected
       end
     end
 
@@ -191,7 +191,7 @@ describe 'Bzr::Activity' do
                     'test@example.com-20090206214350-rqhdpz92l11eoq2t', # branch commit
                     'test@example.com-20090206214515-21lkfj3dbocao5pr']  # merge commit
 
-        bzr.activity.commits.map(&:token).must_equal expected
+        assert_equal bzr.activity.commits.map(&:token), expected
       end
     end
 
@@ -200,21 +200,21 @@ describe 'Bzr::Activity' do
         expected = ['test@example.com-20090206214301-s93cethy9atcqu9h',
                     'test@example.com-20090206214451-lzjngefdyw3vmgms',
                     'test@example.com-20090206214515-21lkfj3dbocao5pr']  # merge commit
-        bzr.activity.commits(trunk_only: true).map(&:token).must_equal expected
+        assert_equal bzr.activity.commits(trunk_only: true).map(&:token), expected
       end
     end
 
     it 'must test_commits_after_merge' do
       with_bzr_repository('bzr_with_branch') do |bzr|
         last_commit = bzr.activity.commits.last
-        bzr.activity.commits(after: last_commit.token).must_be :empty?
+        assert_predicate bzr.activity.commits(after: last_commit.token), :empty?
       end
     end
 
     it 'must test_commits_after_nested_merge' do
       with_bzr_repository('bzr_with_nested_branches') do |bzr|
         last_commit = bzr.activity.commits.last
-        bzr.activity.commits(after: last_commit.token).must_be :empty?
+        assert_predicate bzr.activity.commits(after: last_commit.token), :empty?
       end
     end
 
@@ -232,7 +232,7 @@ describe 'Bzr::Activity' do
                     'test@example.com-20110803170522-asv6i9z6m22jc8zz',
                     'test@example.com-20110803170648-o0xcbni7lwp97azj',
                     'test@example.com-20110803170818-v44umypquqg8migo']
-        bzr.activity.commits.map(&:token).must_equal expected
+        assert_equal bzr.activity.commits.map(&:token), expected
       end
     end
 
@@ -245,18 +245,18 @@ describe 'Bzr::Activity' do
                     'obnox@samba.org-20090204002540-gmana8tk5f9gboq9',
                     'obnox@samba.org-20090204004942-73rnw0izen42f154',
                     'test@example.com-20110803170818-v44umypquqg8migo']
-        bzr.activity.commits(trunk_only: true).map(&:token).must_equal expected
+        assert_equal bzr.activity.commits(trunk_only: true).map(&:token), expected
       end
     end
 
     it 'must test_commits' do
       with_bzr_repository('bzr') do |bzr|
-        bzr.activity.commits.collect(&:token).must_equal revision_ids
-        bzr.activity.commits(after: revision_ids[5]).collect(&:token).must_equal revision_ids[6..6]
-        bzr.activity.commits(after: revision_ids.last).collect(&:token).must_equal []
+        assert_equal bzr.activity.commits.collect(&:token), revision_ids
+        assert_equal bzr.activity.commits(after: revision_ids[5]).collect(&:token), revision_ids[6..6]
+        assert_equal bzr.activity.commits(after: revision_ids.last).collect(&:token), []
 
         # Check that the diffs are not populated
-        bzr.activity.commits.first.diffs.must_equal []
+        assert_equal bzr.activity.commits.first.diffs, []
       end
     end
 
@@ -280,7 +280,7 @@ describe 'Bzr::Activity' do
         assert !FileTest.exist?(bzr.activity.log_filename)
 
         # Verify that we got the commits in forward chronological order
-        commits.collect(&:token).must_equal revision_ids
+        assert_equal commits.collect(&:token), revision_ids
       end
     end
 
@@ -292,7 +292,7 @@ describe 'Bzr::Activity' do
                     'test@example.com-20090206214451-lzjngefdyw3vmgms',
                     'test@example.com-20090206214350-rqhdpz92l11eoq2t', # branch commit
                     'test@example.com-20090206214515-21lkfj3dbocao5pr'] # merge commit]
-        commits.map(&:token).must_equal expected
+        assert_equal commits.map(&:token), expected
       end
     end
 
@@ -306,7 +306,7 @@ describe 'Bzr::Activity' do
           'test@example.com-20090206214515-21lkfj3dbocao5pr' # merge commit
           # 'test@example.com-20090206214350-rqhdpz92l11eoq2t' # branch commit -- after merge!
         ]
-        commits.map(&:token).must_equal expected
+        assert_equal commits.map(&:token), expected
       end
     end
 
@@ -316,7 +316,7 @@ describe 'Bzr::Activity' do
 
         commits = []
         bzr.activity.each_commit(after: last_commit.token) { |c| commits << c }
-        commits.must_equal []
+        assert_equal commits, []
       end
     end
 
@@ -326,7 +326,7 @@ describe 'Bzr::Activity' do
 
         commits = []
         bzr.activity.each_commit(after: last_commit.token) { |c| commits << c }
-        commits.must_equal []
+        assert_equal commits, []
       end
     end
 
@@ -337,7 +337,7 @@ describe 'Bzr::Activity' do
 
         yielded_commits = []
         bzr.activity.each_commit(after: next_to_last_commit.token) { |c| yielded_commits << c }
-        yielded_commits.map(&:token).must_equal [last_commit.token]
+        assert_equal yielded_commits.map(&:token), [last_commit.token]
       end
     end
 
@@ -357,7 +357,7 @@ describe 'Bzr::Activity' do
                     'test@example.com-20110803170522-asv6i9z6m22jc8zz',
                     'test@example.com-20110803170648-o0xcbni7lwp97azj',
                     'test@example.com-20110803170818-v44umypquqg8migo']
-        commits.map(&:token).must_equal expected
+        assert_equal commits.map(&:token), expected
       end
     end
 
@@ -372,7 +372,7 @@ describe 'Bzr::Activity' do
                     'obnox@samba.org-20090204002540-gmana8tk5f9gboq9',
                     'obnox@samba.org-20090204004942-73rnw0izen42f154',
                     'test@example.com-20110803170818-v44umypquqg8migo']
-        commits.map(&:token).must_equal expected
+        assert_equal commits.map(&:token), expected
       end
     end
 
@@ -387,16 +387,16 @@ describe 'Bzr::Activity' do
         bzr.activity.each_commit do |c|
           commits << c
         end
-        commits.size.must_equal 1
-        commits.first.diffs.size.must_equal 1
-        commits.first.diffs.first.path.must_equal 'foo/helloworld.c'
+        assert_equal commits.size, 1
+        assert_equal commits.first.diffs.size, 1
+        assert_equal commits.first.diffs.first.path, 'foo/helloworld.c'
       end
     end
 
     # Verfies OTWO-344
     it 'must test_commit_tokens_with_colon_character' do
       with_bzr_repository('bzr_colon') do |bzr|
-        bzr.activity.commit_tokens.must_equal ['svn-v4:364a429a-ab12-11de-804f-e3d9c25ff3d2::0']
+        assert_equal bzr.activity.commit_tokens, ['svn-v4:364a429a-ab12-11de-804f-e3d9c25ff3d2::0']
       end
     end
 
@@ -406,23 +406,23 @@ describe 'Bzr::Activity' do
         bzr.activity.each_commit do |c|
           commits << c
         end
-        commits.size.must_equal 3
+        assert_equal commits.size, 3
 
-        commits[0].message.must_equal 'Initial.'
-        commits[0].committer_name.must_equal 'Abhay Mujumdar'
-        commits[0].author_name.must_be_nil
-        commits[0].author_email.must_be_nil
+        assert_equal commits[0].message, 'Initial.'
+        assert_equal commits[0].committer_name, 'Abhay Mujumdar'
+        assert_nil commits[0].author_name
+        assert_nil commits[0].author_email
 
-        commits[1].message.must_equal 'Updated.'
-        commits[1].committer_name.must_equal 'Abhay Mujumdar'
-        commits[1].author_name.must_equal 'John Doe'
-        commits[1].author_email.must_equal 'johndoe@example.com'
+        assert_equal commits[1].message, 'Updated.'
+        assert_equal commits[1].committer_name, 'Abhay Mujumdar'
+        assert_equal commits[1].author_name, 'John Doe'
+        assert_equal commits[1].author_email, 'johndoe@example.com'
 
         # When there are multiple authors, first one is captured.
-        commits[2].message.must_equal 'Updated by two authors.'
-        commits[2].committer_name.must_equal 'test'
-        commits[2].author_name.must_equal 'John Doe'
-        commits[2].author_email.must_equal 'johndoe@example.com'
+        assert_equal commits[2].message, 'Updated by two authors.'
+        assert_equal commits[2].committer_name, 'test'
+        assert_equal commits[2].author_name, 'John Doe'
+        assert_equal commits[2].author_email, 'johndoe@example.com'
       end
     end
 
@@ -453,7 +453,7 @@ describe 'Bzr::Activity' do
       time2 = Time.parse('2011-12-22 18:37:33 +0000')
       time3 = Time.parse('2009-02-04 00:24:22 +0000')
 
-      bzr.activity.tags.must_equal [['v1.0.0', '5', time1],
+      assert_equal bzr.activity.tags, [['v1.0.0', '5', time1],
                                     ['v2.0.0', '7', time2], ['v 3.0.0', '2', time3]]
     end
   end

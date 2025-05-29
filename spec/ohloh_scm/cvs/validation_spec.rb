@@ -6,14 +6,14 @@ describe 'Cvs::Validation' do
       url = ':pserver:anonymous:@foobar.xyz_example.org:/cvsroot'
       core = OhlohScm::Factory.get_core(scm_type: :cvs, url: url, branch_name: 'foo')
       core.validate
-      core.errors.wont_be :empty?
+      refute_empty core.errors
     end
   end
 
   it 'must have errors for invalid branch_name' do
-    get_core(:cvs, branch_name: 'x' * 81).validation.send(:branch_name_errors).must_be_nil
-    get_core(:cvs, branch_name: 'x' * 201).validation.send(:branch_name_errors).wont_be :empty?
-    get_core(:cvs, branch_name: 'foo@bar').validation.send(:branch_name_errors).wont_be :empty?
+    assert_nil get_core(:cvs, branch_name: 'x' * 81).validation.send(:branch_name_errors)
+    refute_empty get_core(:cvs, branch_name: 'x' * 201).validation.send(:branch_name_errors)
+    refute_empty get_core(:cvs, branch_name: 'foo@bar').validation.send(:branch_name_errors)
   end
 
   it 'must test rejected urls' do

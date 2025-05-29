@@ -10,7 +10,7 @@ describe 'Svn::Activity' do
       with_svn_repository('svn') do |svn|
         tmpdir do |dir|
           svn.activity.export(dir)
-          Dir.entries(dir).sort.must_equal %w[. .. branches tags trunk]
+          assert_equal Dir.entries(dir).sort, %w[. .. branches tags trunk]
         end
       end
     end
@@ -28,7 +28,7 @@ describe 'Svn::Activity' do
 
             svn.activity.export_tag(dir, '2.0')
 
-            Dir.entries(dir).sort.must_equal %w[. .. COPYING README helloworld.c makefile]
+            assert_equal Dir.entries(dir).sort, %w[. .. COPYING README helloworld.c makefile]
           end
         end
       end
@@ -44,10 +44,9 @@ describe 'Svn::Activity' do
                 " && svn copy trunk tags/2.0 && svn commit -m 'v2.0' && svn update"
           svn.activity.send :run, cmd
 
-          svn.activity.tags.first[0..1].must_equal ['2.0', '6']
+          assert_equal svn.activity.tags.first[0..1], ['2.0', '6']
           # Avoid millisecond comparision.
-          svn.activity.tags.first[-1].strftime('%F %R')
-             .must_equal Time.now.utc.strftime('%F %R')
+          assert_equal svn.activity.tags.first[-1].strftime('%F %R'), Time.now.utc.strftime('%F %R')
         end
       end
     end

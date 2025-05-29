@@ -8,7 +8,7 @@ describe 'GitSvn::Scm' do
         git_svn.scm.pull(src.scm, TestCallback.new)
         assert git_svn.status.exist?
 
-        git_svn.activity.commit_count.must_equal 5
+        assert_equal git_svn.activity.commit_count, 5
       end
     end
   end

@@ -17,13 +17,13 @@ describe 'ArrayWriter' do
     LOG
 
     commits = OhlohScm::GitParser.parse(log)
-    commits.size.must_equal 1
+    assert_equal commits.size, 1
     commit = commits.first
-    commit.token.must_equal '1df547800dcd168e589bb9b26b4039bff3a7f7e4'
-    commit.author_name.must_equal 'Jason Allen'
-    commit.author_email.must_equal 'jason@ohloh.net'
-    commit.message.must_equal "moving COPYING\n"
-    commit.author_date.must_equal Time.utc(2006, 7, 14, 23, 7, 15)
-    commit.diffs.size.must_equal 1
+    assert_equal commit.token, '1df547800dcd168e589bb9b26b4039bff3a7f7e4'
+    assert_equal commit.author_name, 'Jason Allen'
+    assert_equal commit.author_email, 'jason@ohloh.net'
+    assert_equal commit.message, "moving COPYING\n"
+    assert_equal commit.author_date, Time.utc(2006, 7, 14, 23, 7, 15)
+    assert_equal commit.diffs.size, 1
   end
 end
