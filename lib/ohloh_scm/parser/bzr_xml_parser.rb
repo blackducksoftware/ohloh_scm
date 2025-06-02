@@ -138,21 +138,22 @@ module OhlohScm
       'bzr'
     end
 
-    # rubocop:disable Metrics/AbcSize
     def self.remove_dupes(diffs)
-      # Bazaar may report that a file was added and modified in a single commit.
-      # Reduce these cases to a single 'A' action.
-      diffs.delete_if do |d|
-        d.action == 'M' && diffs.select { |x| x.path == d.path && x.action == 'A' }.any?
-      end
-
+      remove_modified_after_added!(diffs)
       # Bazaar may report that a file was both deleted and added in a single commit.
       # Reduce these cases to a single 'M' action.
       diffs.each do |d|
         d.action = 'M' if diffs.count { |x| x.path == d.path } > 1
       end.uniq
     end
-    # rubocop:enable Metrics/AbcSize
+
+    # Bazaar may report that a file was added and modified in a single commit.
+    # Reduce these cases to a single 'A' action.
+    def self.remove_modified_after_added!(diffs)
+      diffs.delete_if do |d|
+        d.action == 'M' && diffs.any? { |x| x.path == d.path && x.action == 'A' }
+      end
+    end
 
     # Bazaar expects committer/author to be specified in this format
     # Name <email>, or John Doe <jdoe@example.com>
