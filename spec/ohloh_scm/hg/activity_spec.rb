@@ -39,12 +39,12 @@ describe 'Hg::Activity' do
 
     it 'commits' do
       with_hg_repository('hg') do |hg|
-        assert_equal hg.activity.commits.map(&:token),(%w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
-                                                       b14fa4692f949940bd1e28da6fb4617de2615484
-                                                       468336c6671cbc58237a259d1b7326866afc2817
-                                                       75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                       655f04cf6ad708ab58c7b941672dce09dd369a18
-                                                       1f45520fff3982761cfe7a0502ad0888d5783efe])
+        assert_equal hg.activity.commits.map(&:token), %w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
+                                                          b14fa4692f949940bd1e28da6fb4617de2615484
+                                                          468336c6671cbc58237a259d1b7326866afc2817
+                                                          75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                                          655f04cf6ad708ab58c7b941672dce09dd369a18
+                                                          1f45520fff3982761cfe7a0502ad0888d5783efe]
 
         after = '655f04cf6ad708ab58c7b941672dce09dd369a18'
         assert_equal hg.activity.commits(after: after).map(&:token), ['1f45520fff3982761cfe7a0502ad0888d5783efe']
@@ -58,14 +58,14 @@ describe 'Hg::Activity' do
 
     it 'commits_with_branch' do
       with_hg_repository('hg', 'develop') do |hg|
-        assert_equal hg.activity.commits.map(&:token),(%w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
-                                                       b14fa4692f949940bd1e28da6fb4617de2615484
-                                                       468336c6671cbc58237a259d1b7326866afc2817
-                                                       75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                       4d54c3f0526a1ec89214a70615a6b1c6129c665c])
+        assert_equal hg.activity.commits.map(&:token), %w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
+                                                          b14fa4692f949940bd1e28da6fb4617de2615484
+                                                          468336c6671cbc58237a259d1b7326866afc2817
+                                                          75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                                          4d54c3f0526a1ec89214a70615a6b1c6129c665c]
 
         after = '75532c1e1f1de55c2271f6fd29d98efbe35397c4'
-        assert_equal hg.activity.commits(after: after).map(&:token),(['4d54c3f0526a1ec89214a70615a6b1c6129c665c'])
+        assert_equal hg.activity.commits(after: after).map(&:token), ['4d54c3f0526a1ec89214a70615a6b1c6129c665c']
 
         # Check that the diffs are not populated
         assert_empty hg.activity.commits(after: '75532c1e1f1de55c2271f6fd29d98efbe35397c4').first.diffs
@@ -84,10 +84,10 @@ describe 'Hg::Activity' do
     it 'trunk_only_commits' do
       with_hg_repository('hg_dupe_delete') do |hg|
         assert_equal hg.activity.commits(trunk_only: true)
-          .map(&:token),(['73e93f57224e3fd828cf014644db8eec5013cd6b',
-                                    '732345b1d5f4076498132fd4b965b1fec0108a50',
-                                    # '525de321d8085bc1d4a3c7608fda6b4020027985', # branch
-                                    '72fe74d643bdcb30b00da3b58796c50f221017d0'])
+                       .map(&:token), ['73e93f57224e3fd828cf014644db8eec5013cd6b',
+                                       '732345b1d5f4076498132fd4b965b1fec0108a50',
+                                       # '525de321d8085bc1d4a3c7608fda6b4020027985', # branch
+                                       '72fe74d643bdcb30b00da3b58796c50f221017d0']
       end
     end
 
@@ -111,12 +111,12 @@ describe 'Hg::Activity' do
         refute File.exist?(hg.activity.send(:log_filename)) # Make sure we cleaned up after ourselves
 
         # Verify that we got the commits in forward chronological order
-        assert_equal commits.map(&:token),(%w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
-                                           b14fa4692f949940bd1e28da6fb4617de2615484
-                                           468336c6671cbc58237a259d1b7326866afc2817
-                                           75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                           655f04cf6ad708ab58c7b941672dce09dd369a18
-                                           1f45520fff3982761cfe7a0502ad0888d5783efe])
+        assert_equal commits.map(&:token), %w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
+                                              b14fa4692f949940bd1e28da6fb4617de2615484
+                                              468336c6671cbc58237a259d1b7326866afc2817
+                                              75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                              655f04cf6ad708ab58c7b941672dce09dd369a18
+                                              1f45520fff3982761cfe7a0502ad0888d5783efe]
       end
     end
 
@@ -127,11 +127,11 @@ describe 'Hg::Activity' do
         commits = hg.activity.each_commit
       end
 
-      assert_equal commits.map(&:token),(%w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
-                                         b14fa4692f949940bd1e28da6fb4617de2615484
-                                         468336c6671cbc58237a259d1b7326866afc2817
-                                         75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                         4d54c3f0526a1ec89214a70615a6b1c6129c665c])
+      assert_equal commits.map(&:token), %w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
+                                            b14fa4692f949940bd1e28da6fb4617de2615484
+                                            468336c6671cbc58237a259d1b7326866afc2817
+                                            75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                            4d54c3f0526a1ec89214a70615a6b1c6129c665c]
     end
 
     it 'each_commit_after' do
@@ -140,9 +140,9 @@ describe 'Hg::Activity' do
         hg.activity.each_commit(after: '468336c6671cbc58237a259d1b7326866afc2817') do |c|
           commits << c
         end
-        assert_equal commits.map(&:token),(%w[75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                           655f04cf6ad708ab58c7b941672dce09dd369a18
-                                           1f45520fff3982761cfe7a0502ad0888d5783efe])
+        assert_equal commits.map(&:token), %w[75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                              655f04cf6ad708ab58c7b941672dce09dd369a18
+                                              1f45520fff3982761cfe7a0502ad0888d5783efe]
       end
     end
 
@@ -187,19 +187,19 @@ describe 'Hg::Activity' do
   describe 'commit_tokens' do
     it 'must work with after argument' do
       with_hg_repository('hg') do |hg|
-        assert_equal hg.activity.commit_tokens,(%w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
-                                                b14fa4692f949940bd1e28da6fb4617de2615484
-                                                468336c6671cbc58237a259d1b7326866afc2817
-                                                75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                655f04cf6ad708ab58c7b941672dce09dd369a18
-                                                1f45520fff3982761cfe7a0502ad0888d5783efe])
+        assert_equal hg.activity.commit_tokens, %w[01101d8ef3cea7da9ac6e9a226d645f4418f05c9
+                                                   b14fa4692f949940bd1e28da6fb4617de2615484
+                                                   468336c6671cbc58237a259d1b7326866afc2817
+                                                   75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                                   655f04cf6ad708ab58c7b941672dce09dd369a18
+                                                   1f45520fff3982761cfe7a0502ad0888d5783efe]
 
         after = '01101d8ef3cea7da9ac6e9a226d645f4418f05c9'
-        assert_equal hg.activity.commit_tokens(after: after),(%w[b14fa4692f949940bd1e28da6fb4617de2615484
-                                                              468336c6671cbc58237a259d1b7326866afc2817
-                                                              75532c1e1f1de55c2271f6fd29d98efbe35397c4
-                                                              655f04cf6ad708ab58c7b941672dce09dd369a18
-                                                              1f45520fff3982761cfe7a0502ad0888d5783efe])
+        assert_equal hg.activity.commit_tokens(after: after), %w[b14fa4692f949940bd1e28da6fb4617de2615484
+                                                                 468336c6671cbc58237a259d1b7326866afc2817
+                                                                 75532c1e1f1de55c2271f6fd29d98efbe35397c4
+                                                                 655f04cf6ad708ab58c7b941672dce09dd369a18
+                                                                 1f45520fff3982761cfe7a0502ad0888d5783efe]
 
         after = '655f04cf6ad708ab58c7b941672dce09dd369a18'
         assert_equal hg.activity.commit_tokens(after: after), ['1f45520fff3982761cfe7a0502ad0888d5783efe']
@@ -210,29 +210,29 @@ describe 'Hg::Activity' do
 
     it 'must work with trunk_only argument' do
       with_hg_repository('hg_dupe_delete') do |hg|
-        assert_equal hg.activity.commit_tokens(trunk_only: false),(%w[73e93f57224e3fd828cf014644db8eec5013cd6b
-                                                                   732345b1d5f4076498132fd4b965b1fec0108a50
-                                                                   525de321d8085bc1d4a3c7608fda6b4020027985
-                                                                   72fe74d643bdcb30b00da3b58796c50f221017d0])
+        assert_equal hg.activity.commit_tokens(trunk_only: false), %w[73e93f57224e3fd828cf014644db8eec5013cd6b
+                                                                      732345b1d5f4076498132fd4b965b1fec0108a50
+                                                                      525de321d8085bc1d4a3c7608fda6b4020027985
+                                                                      72fe74d643bdcb30b00da3b58796c50f221017d0]
 
-        assert_equal hg.activity.commit_tokens(trunk_only: true),(['73e93f57224e3fd828cf014644db8eec5013cd6b',
-                                                                '732345b1d5f4076498132fd4b965b1fec0108a50',
-                                                                # '525de321d8085bc1d4a3c7608fda6b4020027985', # branch
-                                                                '72fe74d643bdcb30b00da3b58796c50f221017d0'])
+        assert_equal hg.activity.commit_tokens(trunk_only: true), ['73e93f57224e3fd828cf014644db8eec5013cd6b',
+                                                                   '732345b1d5f4076498132fd4b965b1fec0108a50',
+                                                                   # '525de321d8085bc1d4a3c7608fda6b4020027985', # branch
+                                                                   '72fe74d643bdcb30b00da3b58796c50f221017d0']
       end
     end
 
     it 'must work with trunk_only and after arguments' do
       with_hg_repository('hg_dupe_delete') do |hg|
         opts = { after: '73e93f57224e3fd828cf014644db8eec5013cd6b', trunk_only: false }
-        assert_equal hg.activity.commit_tokens(opts),(%w[732345b1d5f4076498132fd4b965b1fec0108a50
-                                                      525de321d8085bc1d4a3c7608fda6b4020027985
-                                                      72fe74d643bdcb30b00da3b58796c50f221017d0])
+        assert_equal hg.activity.commit_tokens(opts), %w[732345b1d5f4076498132fd4b965b1fec0108a50
+                                                         525de321d8085bc1d4a3c7608fda6b4020027985
+                                                         72fe74d643bdcb30b00da3b58796c50f221017d0]
 
         opts = { after: '73e93f57224e3fd828cf014644db8eec5013cd6b', trunk_only: true }
-        assert_equal hg.activity.commit_tokens(opts),(['732345b1d5f4076498132fd4b965b1fec0108a50',
-                                                    # '525de321d8085bc1d4a3c7608fda6b4020027985', # On branch
-                                                    '72fe74d643bdcb30b00da3b58796c50f221017d0'])
+        assert_equal hg.activity.commit_tokens(opts), ['732345b1d5f4076498132fd4b965b1fec0108a50',
+                                                       # '525de321d8085bc1d4a3c7608fda6b4020027985', # On branch
+                                                       '72fe74d643bdcb30b00da3b58796c50f221017d0']
 
         assert_empty hg.activity.commit_tokens(after: '72fe74d643bdcb30b00da3b58796c50f221017d0', trunk_only: true)
       end

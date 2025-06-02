@@ -454,7 +454,7 @@ describe 'Bzr::Activity' do
       time3 = Time.parse('2009-02-04 00:24:22 +0000')
 
       assert_equal bzr.activity.tags, [['v1.0.0', '5', time1],
-                                    ['v2.0.0', '7', time2], ['v 3.0.0', '2', time3]]
+                                       ['v2.0.0', '7', time2], ['v 3.0.0', '2', time3]]
     end
   end
 end

@@ -4,7 +4,7 @@ describe 'Svn::Scm' do
   it 'must prefix file: to local path' do
     assert_nil get_core(:svn, url: '').scm.send(:prefix_file_for_local_path, '')
     assert_equal get_core(:svn, url: '/home/test').scm.send(:prefix_file_for_local_path, '/home/test'),
-     'file:///home/test'
+                 'file:///home/test'
   end
 
   it 'must require https for sourceforge' do

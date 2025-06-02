@@ -9,7 +9,6 @@ module OhlohScm
     attr_reader :scm, :activity, :status, :validation
 
     def initialize(scm_type, url, branch_name, username, password)
-     
       scm_opts = { core: self, url: url, branch_name: branch_name,
                    username: username, password: password }
 

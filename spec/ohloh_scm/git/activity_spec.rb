@@ -26,7 +26,7 @@ describe 'Git::Activity' do
           git.activity.export(commit_dir, commit_sha)
           assert_empty `diff -rq #{tag_dir} #{commit_dir}`
           assert_equal Dir.entries(commit_dir).sort, ['.', '..', '.gitignore', 'helloworld.c',
-                                                   'makefile', 'ohloh_token']
+                                                      'makefile', 'ohloh_token']
         end
       end
     end
@@ -48,11 +48,10 @@ describe 'Git::Activity' do
 
     it 'must return repository tags' do
       with_git_repository('git') do |git|
-        assert_equal git.activity.tags,(
-          [['v1.0.0', 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d', Time.parse('2016-07-31T07:58:30+05:30')],
-           ['v1.1.0-lw', '2e9366dd7a786fdb35f211fff1c8ea05c51968b1', Time.parse('2006-06-11T11:34:17-07:00')],
-           ['v2.1.0', '1df547800dcd168e589bb9b26b4039bff3a7f7e4', Time.parse('2006-07-14T16:07:15-07:00')]]
-        )
+        assert_equal git.activity.tags,
+                     [['v1.0.0', 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d', Time.parse('2016-07-31T07:58:30+05:30')],
+                      ['v1.1.0-lw', '2e9366dd7a786fdb35f211fff1c8ea05c51968b1', Time.parse('2006-06-11T11:34:17-07:00')],
+                      ['v2.1.0', '1df547800dcd168e589bb9b26b4039bff3a7f7e4', Time.parse('2006-07-14T16:07:15-07:00')]]
       end
     end
 
@@ -72,7 +71,7 @@ describe 'Git::Activity' do
     it 'must work for a tag named master' do
       with_git_repository('git_with_master_tag') do |git|
         assert_equal git.activity.tags, [['master', '4e95717ac8cff8cdb10d83398d3ac667a2cca341',
-                                       Time.parse('2018-02-01T12:56:48+0530')]]
+                                          Time.parse('2018-02-01T12:56:48+0530')]]
       end
     end
   end
@@ -103,13 +102,13 @@ describe 'Git::Activity' do
   it 'commit_tokens' do
     with_git_repository('git') do |git|
       assert_equal git.activity.commit_tokens, %w[089c527c61235bd0793c49109b5bd34d439848c6
-                                               b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
-                                               2e9366dd7a786fdb35f211fff1c8ea05c51968b1
-                                               1df547800dcd168e589bb9b26b4039bff3a7f7e4
-                                               a2690f4471a0852723f0f0e95d97f7f1f3981639]
+                                                  b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
+                                                  2e9366dd7a786fdb35f211fff1c8ea05c51968b1
+                                                  1df547800dcd168e589bb9b26b4039bff3a7f7e4
+                                                  a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      assert_equal git.activity.commit_tokens(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1'), 
-      %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
+      assert_equal git.activity.commit_tokens(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1'),
+                   %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
       assert_empty git.activity.commit_tokens(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639')
     end
@@ -118,13 +117,13 @@ describe 'Git::Activity' do
   it 'commits' do
     with_git_repository('git') do |git|
       assert_equal git.activity.commits.collect(&:token), %w[089c527c61235bd0793c49109b5bd34d439848c6
-                                                          b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
-                                                          2e9366dd7a786fdb35f211fff1c8ea05c51968b1
-                                                          1df547800dcd168e589bb9b26b4039bff3a7f7e4
-                                                          a2690f4471a0852723f0f0e95d97f7f1f3981639]
+                                                             b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
+                                                             2e9366dd7a786fdb35f211fff1c8ea05c51968b1
+                                                             1df547800dcd168e589bb9b26b4039bff3a7f7e4
+                                                             a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
-      assert_equal git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1').collect(&:token), 
-      %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
+      assert_equal git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1').collect(&:token),
+                   %w[1df547800dcd168e589bb9b26b4039bff3a7f7e4 a2690f4471a0852723f0f0e95d97f7f1f3981639]
 
       assert_empty git.activity.commits(after: 'a2690f4471a0852723f0f0e95d97f7f1f3981639')
     end
@@ -133,12 +132,12 @@ describe 'Git::Activity' do
   it 'commits for branch' do
     with_git_repository('git', 'develop') do |git|
       assert_equal git.activity.commits.map(&:token), %w[089c527c61235bd0793c49109b5bd34d439848c6
-                                                      b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
-                                                      2e9366dd7a786fdb35f211fff1c8ea05c51968b1
-                                                      b4046b9a80fead62fa949232f2b87b0cb78fffcc]
+                                                         b6e9220c3cabe53a4ed7f32952aeaeb8a822603d
+                                                         2e9366dd7a786fdb35f211fff1c8ea05c51968b1
+                                                         b4046b9a80fead62fa949232f2b87b0cb78fffcc]
 
       assert_equal git.activity.commits(after: '2e9366dd7a786fdb35f211fff1c8ea05c51968b1')
-         .map(&:token), ['b4046b9a80fead62fa949232f2b87b0cb78fffcc']
+                      .map(&:token), ['b4046b9a80fead62fa949232f2b87b0cb78fffcc']
 
       assert_empty git.activity.commits(after: 'b4046b9a80fead62fa949232f2b87b0cb78fffcc')
     end
@@ -149,7 +148,7 @@ describe 'Git::Activity' do
       submodule_commits = %w[240375de181498b9a34d4bd328f2c87d2ade79f9
                              b6a80291e49dc540bb78526f9b1aab1123c9fb0e]
 
-      assert_empty (git.activity.commit_tokens & submodule_commits)
+      assert_empty(git.activity.commit_tokens & submodule_commits)
 
       diffs = git.activity.commits.map(&:diffs).reject(&:empty?).flatten
       assert_equal diffs.map(&:path), ['A']
@@ -167,26 +166,26 @@ describe 'Git::Activity' do
   it 'commit tokens for trunk commits' do
     with_git_repository('git_dupe_delete') do |git|
       assert_equal git.activity.commit_tokens(trunk_only: false), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                                                'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
-                                                                '6126337d2497806528fd8657181d5d4afadd72a4', # On branch
-                                                                '41c4b1044ebffc968d363e5f5e883134e624f846']
+                                                                   'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
+                                                                   '6126337d2497806528fd8657181d5d4afadd72a4', # On branch
+                                                                   '41c4b1044ebffc968d363e5f5e883134e624f846']
 
       assert_equal git.activity.commit_tokens(trunk_only: true), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                                               'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
-                                                               # '6126337d2497806528fd8657181d5d4afadd72a4' # On branch
-                                                               '41c4b1044ebffc968d363e5f5e883134e624f846']
+                                                                  'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
+                                                                  # '6126337d2497806528fd8657181d5d4afadd72a4' # On branch
+                                                                  '41c4b1044ebffc968d363e5f5e883134e624f846']
     end
   end
 
   it 'commit tokens for trunk commits using after' do
     with_git_repository('git_dupe_delete') do |git|
       assert_equal git.activity.commit_tokens(after: 'a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                 trunk_only: true), %w[ad6bb43112706c462e53a9a8a8cd3b05f8e9260f
-                                                                 41c4b1044ebffc968d363e5f5e883134e624f846]
+                                              trunk_only: true), %w[ad6bb43112706c462e53a9a8a8cd3b05f8e9260f
+                                                                    41c4b1044ebffc968d363e5f5e883134e624f846]
 
       # All trunk commit_tokens, with :after == HEAD
       assert_empty git.activity.commit_tokens(after: '41c4b1044ebffc968d363e5f5e883134e624f846',
-                                 trunk_only: true)
+                                              trunk_only: true)
     end
   end
 
@@ -208,10 +207,10 @@ describe 'Git::Activity' do
   it 'trunk only commits' do
     with_git_repository('git_dupe_delete') do |git|
       assert_equal git.activity.commits(trunk_only: true).collect(&:token), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                                                          'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
-                                                                          # on a branch, hence excluded.
-                                                                          # '6126337d2497806528fd8657181d5d4afadd72a4',
-                                                                          '41c4b1044ebffc968d363e5f5e883134e624f846']
+                                                                             'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
+                                                                             # on a branch, hence excluded.
+                                                                             # '6126337d2497806528fd8657181d5d4afadd72a4',
+                                                                             '41c4b1044ebffc968d363e5f5e883134e624f846']
     end
   end
 
@@ -264,8 +263,8 @@ describe 'Git::Activity' do
   it 'commit tokens when there is a tag named master' do
     with_git_repository('git_with_master_tag') do |git|
       assert_equal git.activity.commit_tokens, %w[57b2bd30b7bae970cb3b374a0c05fd6ec3088ebf
-                                               4e95717ac8cff8cdb10d83398d3ac667a2cca341
-                                               34b8a99e6e5dd39bc36893f71e0ab1685668731f]
+                                                  4e95717ac8cff8cdb10d83398d3ac667a2cca341
+                                                  34b8a99e6e5dd39bc36893f71e0ab1685668731f]
     end
   end
 

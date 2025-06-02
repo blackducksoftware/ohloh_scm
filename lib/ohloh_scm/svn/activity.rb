@@ -81,9 +81,7 @@ module OhlohScm
         # URI.encode('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works in ruby 2.x
         # CGI.escape('foo bar') => foo+bar   # `svn log svn://...foo+bar` won't work.
         # URI::DEFAULT_PARSER.escape('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works in ruby 3.x
-        # rubocop:disable Lint/UriEscapeUnescape
         URI::DEFAULT_PARSER.escape(uri)
-        # rubocop:enable Lint/UriEscapeUnescape
       end
 
       def base_path

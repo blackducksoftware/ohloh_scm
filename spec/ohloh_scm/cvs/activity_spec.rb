@@ -6,7 +6,7 @@ describe 'Cvs::Activity' do
   it 'must return the host' do
     activity = get_core(:cvs, url: ':ext:anonymous:@moodle.cvs.sourceforge.net:/cvsroot/moodle',
                               branch_name: 'contrib').activity
-   assert_equal  activity.send(:host), 'moodle.cvs.sourceforge.net'
+    assert_equal activity.send(:host), 'moodle.cvs.sourceforge.net'
   end
 
   it 'must return the protocol' do
@@ -38,18 +38,18 @@ describe 'Cvs::Activity' do
   it 'must test commits' do
     with_cvs_repository('cvs', 'simple') do |cvs|
       assert_equal cvs.activity.commits.collect(&:token), ['2006-06-29 16:21:07',
-                                                        '2006-06-29 18:14:47',
-                                                        '2006-06-29 18:45:29',
-                                                        '2006-06-29 18:48:54',
-                                                        '2006-06-29 18:52:23']
+                                                           '2006-06-29 18:14:47',
+                                                           '2006-06-29 18:45:29',
+                                                           '2006-06-29 18:48:54',
+                                                           '2006-06-29 18:52:23']
 
       # Make sure we are date format agnostic (2008/01/01 is the same as 2008-01-01)
-      assert_equal cvs.activity.commits(after: '2006/06/29 18:45:29').collect(&:token), 
-      ['2006-06-29 18:48:54', '2006-06-29 18:52:23']
+      assert_equal cvs.activity.commits(after: '2006/06/29 18:45:29').collect(&:token),
+                   ['2006-06-29 18:48:54', '2006-06-29 18:52:23']
 
       assert_equal cvs.activity.commits(after: '2006-06-29 18:45:29')
-         .collect(&:token), ['2006-06-29 18:48:54',
-                                       '2006-06-29 18:52:23']
+                      .collect(&:token), ['2006-06-29 18:48:54',
+                                          '2006-06-29 18:52:23']
 
       assert_empty cvs.activity.commits(after: '2006/06/29 18:52:23').collect(&:token)
     end

@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'BranchNumber' do
   it 'must test basic' do
     assert_equal OhlohScm::BranchNumber.new('1.1').to_a, [1, 1]
-    assert_equal  OhlohScm::BranchNumber.new('1234.1234').to_a, [1234, 1234]
+    assert_equal OhlohScm::BranchNumber.new('1234.1234').to_a, [1234, 1234]
     assert_equal OhlohScm::BranchNumber.new('1.2.3.4').to_a, [1, 2, 3, 4]
   end
 

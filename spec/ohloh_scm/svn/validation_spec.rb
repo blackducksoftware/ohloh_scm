@@ -83,7 +83,7 @@ describe 'Svn::Status' do
     OhlohScm::Svn::Activity.any_instance.stubs(:head_token).returns('')
     OhlohScm::Svn::Activity.any_instance.stubs(:root).returns('tt')
     git_svn.validation.send :validate_server_connection
-    assert_equal git_svn.validation.errors, 
-    [[:failed, 'The URL did not match the Subversion root tt. Is the URL correct?']]
+    assert_equal git_svn.validation.errors,
+                 [[:failed, 'The URL did not match the Subversion root tt. Is the URL correct?']]
   end
 end
