@@ -71,7 +71,7 @@ module OhlohScm
       end
 
       def tags
-        tag_strings = run("cd '#{url}' && hg tags").split(/\n/)
+        tag_strings = run("cd '#{url}' && hg tags").split("\n")
         tag_strings.map do |tag_string|
           parsed_str = tag_string.split(' ')
           rev_number_and_hash = parsed_str.pop
@@ -99,7 +99,7 @@ module OhlohScm
 
         # Recent versions of Hg now somtimes append a '+' char to the token.
         # Strip the trailing '+', if any.
-        token = token[0..-2] if token[-1..-1] == '+'
+        token = token[0..-2] if token[-1..] == '+'
 
         token
       end
@@ -117,9 +117,9 @@ module OhlohScm
       # Our standards require +opts={ after: ... }+ to include everything AFTER +after+.
       # However, hg returns everything after and INCLUDING +after+.
       # Therefore, consumers of this endpoint must check for and reject the duplicate commit.
-      def open_log_file(opts = {})
+      def open_log_file(opts = {}, &block)
         get_hg_log(opts)
-        File.open(log_filename, 'r') { |io| yield io }
+        File.open(log_filename, 'r', &block)
       ensure
         File.delete(log_filename) if File.exist?(log_filename)
       end

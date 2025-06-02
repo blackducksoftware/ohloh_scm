@@ -19,14 +19,14 @@ module OhlohScm
           [:branch_name, "The branch name can't be blank."]
         elsif scm.branch_name.length > 200
           [:branch_name, 'The branch name must not be longer than 200 characters.']
-        elsif !scm.branch_name.match?(/^[\w\-\+\.\/\ ]+$/)
+        elsif !scm.branch_name.match?(/^[\w\-+.\/\ ]+$/)
           [:branch_name, "The branch name may contain only letters,
           numbers, spaces, and the special characters '_', '-', '+', '/', and '.'"]
         end
       end
 
       def public_url_regex
-        /^:(pserver|ext):[\w\-\+\_]*(:[\w\-\+\_]*)?@[\w\-\+\.]+:[0-9]*\/[\w\-\+\.\/]*$/
+        /^:(pserver|ext):[\w\-+_]*(:[\w\-+_]*)?@[\w\-+.]+:[0-9]*\/[\w\-+.\/]*$/
       end
 
       # Returns an array of file and directory names from the remote server.
@@ -56,7 +56,7 @@ module OhlohScm
         files = []
         output.each_line do |s|
           s.strip!
-          s = Regexp.last_match(1) + '/' if s =~ /^D\/(.*)\/\/\/\/$/
+          s = "#{Regexp.last_match(1)}/" if s =~ /^D\/(.*)\/\/\/\/$/
           s = Regexp.last_match(1) if s =~ /^\/(.*)\/.*\/.*\/.*\/$/
           next if s == 'CVSROOT/'
 

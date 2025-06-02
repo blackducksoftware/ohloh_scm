@@ -2,6 +2,7 @@ require: rubocop-performance
 
 AllCops:
   TargetRubyVersion: 3.0
+  NewCops: enable
 
 Layout/LineLength:
   Max: 99
@@ -13,4 +14,10 @@ Style/RegexpLiteral:
   Enabled: false
 
 Metrics/ClassLength:
+  Enabled: false
+
+Lint/MissingSuper:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
   Enabled: false

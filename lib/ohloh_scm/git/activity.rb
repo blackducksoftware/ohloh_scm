@@ -10,7 +10,7 @@ module OhlohScm
         return [] if no_tags?
 
         flags = "--format='%(creatordate:iso-strict) %(objectname) %(refname)'"
-        tag_strings = run("cd #{url} && git tag #{flags} | sed 's/refs\\/tags\\///'").split(/\n/)
+        tag_strings = run("cd #{url} && git tag #{flags} | sed 's/refs\\/tags\\///'").split("\n")
         tag_strings.map do |tag_string|
           timestamp_string, commit_hash, tag_name = tag_string.split(/\s/)
           [tag_name, dereferenced_sha(tag_name) || commit_hash, time_object(timestamp_string)]
@@ -176,14 +176,14 @@ module OhlohScm
         run("cd #{url} && git cat-file commit #{token} | grep '^tree' | cut -d ' ' -f 2").strip
       end
 
-      def safe_open_log_file(opts = {})
+      def safe_open_log_file(opts = {}, &block)
         return '' unless status.branch?
         return '' if opts[:after] && opts[:after] == head_token
 
-        open_log_file(opts) { |io| yield io }
+        open_log_file(opts, &block)
       end
 
-      def open_log_file(opts)
+      def open_log_file(opts, &block)
         cmd = if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT'].to_i
                 "#{rev_list_command(opts)} > #{log_filename}"
               else
@@ -191,7 +191,7 @@ module OhlohScm
                       " | #{string_encoder_path} > #{log_filename}"
               end
         run(cmd)
-        File.open(log_filename, 'r') { |io| yield io }
+        File.open(log_filename, 'r', &block)
       ensure
         File.delete(log_filename) if File.exist?(log_filename)
       end
@@ -218,7 +218,7 @@ module OhlohScm
       def dereferenced_tag_strings
         # Pattern: b6e9220c3cabe53a4ed7f32952aeaeb8a822603d refs/tags/v1.0.0^{}
         run("cd #{url} && git show-ref --tags -d | grep '\\^{}' | sed 's/\\^{}//'"\
-              " | sed 's/refs\\/tags\\///'").split(/\n/)
+              " | sed 's/refs\\/tags\\///'").split("\n")
       end
 
       def time_object(timestamp_string)

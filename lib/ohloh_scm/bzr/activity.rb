@@ -45,7 +45,7 @@ module OhlohScm
         a = OhlohScm::BzrXmlParser.parse(log)
 
         if after && (i = a.index { |commit| commit.token == after })
-          a[(i + 1)..-1]
+          a[(i + 1)..]
         else
           a
         end
@@ -136,16 +136,16 @@ module OhlohScm
       # +after+. However, bzr doesn't work that way; it returns
       # everything after and INCLUDING +after+. Therefore, consumers
       # of this file should check for and reject the duplicate commit.
-      def safe_open_log_file(opts = {})
+      def safe_open_log_file(opts = {}, &block)
         return '' if opts[:after] && opts[:after] == head_token
 
-        open_log_file(opts) { |io| yield io }
+        open_log_file(opts, &block)
       end
 
-      def open_log_file(opts = {})
+      def open_log_file(opts = {}, &block)
         cmd = "#{rev_list_command(opts)} -v > #{log_filename}"
         run cmd
-        File.open(log_filename, 'r') { |io| yield io }
+        File.open(log_filename, 'r', &block)
       ensure
         File.delete(log_filename) if File.exist?(log_filename)
       end
@@ -153,7 +153,7 @@ module OhlohScm
       # Ohloh tracks only files, not directories. This function removes directories
       # from the commit diffs.
       def remove_directories(commit)
-        commit.diffs.delete_if { |d| d.path[-1..-1] == '/' }
+        commit.diffs.delete_if { |d| d.path[-1..] == '/' }
         commit
       end
 
@@ -164,11 +164,11 @@ module OhlohScm
       # Bzr doesn't like it when the filename includes a colon
       # Also, fix the case where the filename includes a single quote
       def escape(path)
-        path.gsub(/[:]/) { |c| '\\' + c }.gsub("'", "''")
+        path.gsub(/:/) { |c| "\\#{c}" }.gsub("'", "''")
       end
 
       def tag_strings
-        run("cd '#{url}' && bzr tags").split(/\n/)
+        run("cd '#{url}' && bzr tags").split("\n")
       end
 
       def time_string(rev)

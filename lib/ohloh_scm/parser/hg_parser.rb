@@ -23,14 +23,15 @@ module OhlohScm
 
         buffer.each_line do |line|
           next_state = state
-          if state == :data
+          case state
+          when :data
             case line
             when /^changeset:\s+([0-9a-f]+)/
               e = build_commit(Regexp.last_match(1))
             when /^user:\s+(.+?)(\s+<(.+)>)?$/
               e.committer_name = Regexp.last_match(1)
               e.committer_email = Regexp.last_match(3)
-            when /^date:\s+([\d\.]+)/
+            when /^date:\s+([\d.]+)/
               time = Regexp.last_match(1)
               e.committer_date = Time.at(time.to_f).utc
             when "__BEGIN_FILES__\n"
@@ -42,15 +43,16 @@ module OhlohScm
               e = nil
             end
 
-          elsif state == :files
-            if line == "__END_FILES__\n"
+          when :files
+            case line
+            when "__END_FILES__\n"
               next_state = :data
-            elsif line =~ /^([MAD]) (.+)$/
+            when /^([MAD]) (.+)$/
               e.diffs << OhlohScm::Diff.new(action: Regexp.last_match(1),
                                             path: Regexp.last_match(2))
             end
 
-          elsif state == :long_comment
+          when :long_comment
             if line == "__END_COMMENT__\n"
               next_state = :data
             elsif e.message

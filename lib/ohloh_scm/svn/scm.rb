@@ -17,7 +17,7 @@ module OhlohScm
       # From the given URL, determine which part of it is the root and
       # which part of it is the branch_name. The current branch_name is overwritten.
       def recalc_branch_name
-        @branch_name = url ? url[activity.root.length..-1] : branch_name
+        @branch_name = url ? url[activity.root.length..] : branch_name
       rescue RuntimeError => e
         pattern = /(svn:*is not a working copy|Unable to open an ra_local session to URL)/
         @branch_name = '' if e.message&.match?(pattern) # we have a file system
@@ -49,7 +49,7 @@ module OhlohScm
 
         if list.include? 'trunk/'
           update_url_and_branch_with_trunk
-        elsif list.size == 1 && list.first[-1..-1] == '/'
+        elsif list.size == 1 && list.first[-1..] == '/'
           update_url_and_branch_with_subdir(list)
           return restrict_url_to_trunk
         end
@@ -86,7 +86,7 @@ module OhlohScm
       def prefix_file_for_local_path(path)
         return if path.empty?
 
-        %r{://}.match?(url) ? url : 'file://' + File.expand_path(path)
+        %r{://}.match?(url) ? url : "file://#{File.expand_path(path)}"
       end
     end
   end

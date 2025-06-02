@@ -5,7 +5,7 @@ module OhlohScm
     class Activity < OhlohScm::Activity
       def tags
         cmd = "cvs -Q -d #{url} rlog -h #{scm.branch_name} | awk -F\"[.:]\" '/^\\t/&&$(NF-1)!=0'"
-        tag_strings = run(cmd).split(/\n/)
+        tag_strings = run(cmd).split("\n")
         tag_strings.map do |tag_string|
           tag_name, version = tag_string.split(':')
           [tag_name.delete("\t"), version.strip]
@@ -45,7 +45,7 @@ module OhlohScm
           next unless result[i].token&.match?(re) # We found the match for after
           return [] if i == result.size - 1 # There aren't any new commits.
 
-          return result[i + 1..-1]
+          return result[i + 1..]
         end
 
         # Something bad is going on: 'after' does not match any timestamp in the rlog.
@@ -72,7 +72,7 @@ module OhlohScm
       def ensure_host_key
         return if protocol != :ext
 
-        ensure_key_file = File.dirname(__FILE__) + '/../../../../bin/ensure_key'
+        ensure_key_file = "#{File.dirname(__FILE__)}/../../../../bin/ensure_key"
         cmd = "#{ensure_key_file} '#{host}'"
         run_with_err(cmd)
       end
@@ -92,12 +92,12 @@ module OhlohScm
       # that predate the requested time.
       # That's better than missing revisions completely! Just be sure to check for duplicates.
       # rubocop:disable Metrics/AbcSize
-      def open_log_file(opts = {})
+      def open_log_file(opts = {}, &block)
         ensure_host_key
         status.lock?
         run "cvsnt -d #{url} rlog #{opt_branch} #{opt_time(opts[:after])} '#{scm.branch_name}'"\
               " | #{string_encoder_path} > #{rlog_filename}"
-        File.open(rlog_filename, 'r') { |file| yield file }
+        File.open(rlog_filename, 'r', &block)
       ensure
         File.delete(rlog_filename) if File.exist?(rlog_filename)
       end
@@ -113,7 +113,7 @@ module OhlohScm
       end
 
       def rlog_filename
-        File.join(temp_folder, (url + scm.branch_name.to_s).gsub(/\W/, '') + '.rlog')
+        File.join(temp_folder, "#{(url + scm.branch_name.to_s).gsub(/\W/, '')}.rlog")
       end
 
       # Converts a CVS time string to a Ruby Time object
@@ -128,9 +128,9 @@ module OhlohScm
       # returns the host this adapter is connecting to
       def host
         @host ||= begin
-                    url =~ /@([^:]*):/
-                    Regexp.last_match(1)
-                  end
+          url =~ /@([^:]*):/
+          Regexp.last_match(1)
+        end
       end
 
       # returns the protocol this adapter connects with
