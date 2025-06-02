@@ -78,9 +78,9 @@ module OhlohScm
       # Because uri(with branch) may have characters(e.g. space) that break the shell command.
       def uri_encode(uri)
         # URI.encode is declared obsolete, however we couldn't find an alternative.
-        # URI.encode('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works in ruby 2.x
         # CGI.escape('foo bar') => foo+bar   # `svn log svn://...foo+bar` won't work.
-        # URI::DEFAULT_PARSER.escape('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works in ruby 3.x
+        # URI.encode('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works in ruby 2.x
+        # URI::DEFAULT_PARSER.escape('foo bar') => foo%20bar # This works in ruby 3.x
         URI::DEFAULT_PARSER.escape(uri)
       end
 

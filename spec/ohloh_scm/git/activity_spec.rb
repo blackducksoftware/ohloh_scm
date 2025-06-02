@@ -50,7 +50,8 @@ describe 'Git::Activity' do
       with_git_repository('git') do |git|
         assert_equal git.activity.tags,
                      [['v1.0.0', 'b6e9220c3cabe53a4ed7f32952aeaeb8a822603d', Time.parse('2016-07-31T07:58:30+05:30')],
-                      ['v1.1.0-lw', '2e9366dd7a786fdb35f211fff1c8ea05c51968b1', Time.parse('2006-06-11T11:34:17-07:00')],
+                      ['v1.1.0-lw', '2e9366dd7a786fdb35f211fff1c8ea05c51968b1',
+                       Time.parse('2006-06-11T11:34:17-07:00')],
                       ['v2.1.0', '1df547800dcd168e589bb9b26b4039bff3a7f7e4', Time.parse('2006-07-14T16:07:15-07:00')]]
       end
     end
@@ -165,15 +166,15 @@ describe 'Git::Activity' do
 
   it 'commit tokens for trunk commits' do
     with_git_repository('git_dupe_delete') do |git|
-      assert_equal git.activity.commit_tokens(trunk_only: false), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                                                   'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
-                                                                   '6126337d2497806528fd8657181d5d4afadd72a4', # On branch
-                                                                   '41c4b1044ebffc968d363e5f5e883134e624f846']
+      assert_equal git.activity.commit_tokens(trunk_only: false),
+                   ['a0a2b8623941562031a7d7f95d984feb4a2d719c', 'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
+                    '6126337d2497806528fd8657181d5d4afadd72a4', # On branch
+                    '41c4b1044ebffc968d363e5f5e883134e624f846']
 
-      assert_equal git.activity.commit_tokens(trunk_only: true), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                                                  'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
-                                                                  # '6126337d2497806528fd8657181d5d4afadd72a4' # On branch
-                                                                  '41c4b1044ebffc968d363e5f5e883134e624f846']
+      assert_equal git.activity.commit_tokens(trunk_only: true),
+                   ['a0a2b8623941562031a7d7f95d984feb4a2d719c', 'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
+                    # '6126337d2497806528fd8657181d5d4afadd72a4' # On branch
+                    '41c4b1044ebffc968d363e5f5e883134e624f846']
     end
   end
 
@@ -206,11 +207,11 @@ describe 'Git::Activity' do
 
   it 'trunk only commits' do
     with_git_repository('git_dupe_delete') do |git|
-      assert_equal git.activity.commits(trunk_only: true).collect(&:token), ['a0a2b8623941562031a7d7f95d984feb4a2d719c',
-                                                                             'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
-                                                                             # on a branch, hence excluded.
-                                                                             # '6126337d2497806528fd8657181d5d4afadd72a4',
-                                                                             '41c4b1044ebffc968d363e5f5e883134e624f846']
+      assert_equal git.activity.commits(trunk_only: true).collect(&:token),
+                   ['a0a2b8623941562031a7d7f95d984feb4a2d719c', 'ad6bb43112706c462e53a9a8a8cd3b05f8e9260f',
+                    # on a branch, hence excluded.
+                    # '6126337d2497806528fd8657181d5d4afadd72a4',
+                    '41c4b1044ebffc968d363e5f5e883134e624f846']
     end
   end
 

@@ -215,10 +215,10 @@ describe 'Hg::Activity' do
                                                                       525de321d8085bc1d4a3c7608fda6b4020027985
                                                                       72fe74d643bdcb30b00da3b58796c50f221017d0]
 
-        assert_equal hg.activity.commit_tokens(trunk_only: true), ['73e93f57224e3fd828cf014644db8eec5013cd6b',
-                                                                   '732345b1d5f4076498132fd4b965b1fec0108a50',
-                                                                   # '525de321d8085bc1d4a3c7608fda6b4020027985', # branch
-                                                                   '72fe74d643bdcb30b00da3b58796c50f221017d0']
+        assert_equal hg.activity.commit_tokens(trunk_only: true),
+                     ['73e93f57224e3fd828cf014644db8eec5013cd6b', '732345b1d5f4076498132fd4b965b1fec0108a50',
+                      # '525de321d8085bc1d4a3c7608fda6b4020027985', # branch
+                      '72fe74d643bdcb30b00da3b58796c50f221017d0']
       end
     end
 
