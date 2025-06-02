@@ -80,7 +80,7 @@ describe 'Git::Scm' do
         # Emulate a scenario where the local copy doesn't have the current *main* branch.
         `cd #{dest_dir} && git checkout master && git branch -D test`
 
-        local_branch_cmd = "cd #{dest_dir} && git branch | grep '\*' | sed 's/^\* //'"
+        local_branch_cmd = "cd #{dest_dir} && git branch | grep '*' | sed 's/^* //'"
         assert_equal `#{local_branch_cmd}`.chomp, 'master'
 
         # On doing a refetch, our local copy will now have the updated *main* branch.

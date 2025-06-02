@@ -29,7 +29,7 @@ module OhlohScm
         # Unlike other SCMs, Bzr doesn't simply place the contents into dest_dir.
         # It actually *creates* dest_dir. Since it should already exist at this point,
         # first we have to delete it.
-        Dir.delete(dest_dir) if File.exist?(dest_dir)
+        FileUtils.rm_f(dest_dir)
 
         run "cd '#{url}' && bzr export --format=dir -r #{to_rev_param(token)} '#{dest_dir}'"
       end
@@ -74,8 +74,8 @@ module OhlohScm
       end
 
       def head_token
-        run("bzr log --limit 1 --show-id #{url} 2> /dev/null"\
-            " | grep ^revision-id | cut -f2 -d' '").strip
+        run("bzr log --limit 1 --show-id #{url} 2> /dev/null " \
+            "| grep ^revision-id | cut -f2 -d' '").strip
       end
 
       def head
@@ -147,7 +147,7 @@ module OhlohScm
         run cmd
         File.open(log_filename, 'r', &block)
       ensure
-        File.delete(log_filename) if File.exist?(log_filename)
+        FileUtils.rm_f(log_filename)
       end
 
       # Ohloh tracks only files, not directories. This function removes directories
@@ -164,7 +164,7 @@ module OhlohScm
       # Bzr doesn't like it when the filename includes a colon
       # Also, fix the case where the filename includes a single quote
       def escape(path)
-        path.gsub(/:/) { |c| "\\#{c}" }.gsub("'", "''")
+        path.gsub(':') { |c| "\\#{c}" }.gsub("'", "''")
       end
 
       def tag_strings

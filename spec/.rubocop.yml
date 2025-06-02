@@ -9,10 +9,10 @@ Layout/LineLength:
 Metrics/AbcSize:
   Enabled: false
 
-ClassLength:
+Metrics/ClassLength:
   Enabled: false
 
-AbcSize:
+Metrics/AbcSize:
   Enabled: false
 
 Metrics/MethodLength:

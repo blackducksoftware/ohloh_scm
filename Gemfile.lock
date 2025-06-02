@@ -4,6 +4,9 @@ GEM
     ast (2.4.3)
     byebug (12.0.0)
     docile (1.4.1)
+    json (2.12.2)
+    language_server-protocol (3.17.0.5)
+    lint_roller (1.1.0)
     mini_portile2 (2.8.9)
     minitest (5.25.5)
     mocha (2.7.1)
@@ -20,16 +23,17 @@ GEM
     rainbow (3.1.1)
     rake (13.2.1)
     regexp_parser (2.10.0)
-    rexml (3.4.1)
-    rubocop (0.93.1)
+    rubocop (1.75.8)
+      json (~> 2.3)
+      language_server-protocol (~> 3.17.0.2)
+      lint_roller (~> 1.1.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.5)
+      parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8)
-      rexml
-      rubocop-ast (>= 0.6.0)
+      regexp_parser (>= 2.9.3, < 3.0)
+      rubocop-ast (>= 1.44.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
+      unicode-display_width (>= 2.4.0, < 4.0)
     rubocop-ast (1.44.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
@@ -44,7 +48,9 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.13.1)
     simplecov_json_formatter (0.1.4)
-    unicode-display_width (1.8.0)
+    unicode-display_width (3.1.4)
+      unicode-emoji (~> 4.0, >= 4.0.4)
+    unicode-emoji (4.0.4)
 
 PLATFORMS
   ruby
@@ -55,7 +61,7 @@ DEPENDENCIES
   mocha
   nokogiri
   rake
-  rubocop (~> 0.67)
+  rubocop (>= 1.12.0)
   rubocop-performance
   simplecov
 

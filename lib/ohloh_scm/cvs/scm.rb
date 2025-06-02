@@ -11,7 +11,12 @@ module OhlohScm
         activity.ensure_host_key
         if File.exist?("#{local_directory}/CVS/Root")
           # We already have a local enlistment, so do a quick update.
-          if !rev.directories.empty?
+          if rev.directories.empty?
+            # Brute force: get all updates
+            logger.warn("Revision #{rev.token} did not contain any directories.
+            Using brute force update of entire module.")
+            run "cd #{local_directory} && cvsnt update -d -R -C #{opt_d}"
+          else
             build_ordered_directory_list(rev.directories).each do |d|
               if d.empty?
                 run "cd #{local_directory} && cvsnt update -d -l -C #{opt_d} ."
@@ -19,18 +24,13 @@ module OhlohScm
                 run "cd #{local_directory} && cvsnt update -d -l -C #{opt_d} '#{d}'"
               end
             end
-          else
-            # Brute force: get all updates
-            logger.warn("Revision #{rev.token} did not contain any directories.
-            Using brute force update of entire module.")
-            run "cd #{local_directory} && cvsnt update -d -R -C #{opt_d}"
           end
         else
           # We do not have a local enlistment, so do a slow checkout to create one.
           # Silly cvsnt won't accept an absolute path.
           # We'll have to play some games and cd to the parent directory.
           parent_path, checkout_dir = File.split(local_directory)
-          FileUtils.mkdir_p(parent_path) unless File.exist?(parent_path)
+          FileUtils.mkdir_p(parent_path)
           run "cd #{parent_path} &&
           cvsnt -d #{url} checkout #{opt_d} -A -d'#{checkout_dir}' '#{branch_name}'"
         end

@@ -91,17 +91,15 @@ module OhlohScm
       # This means that the returned log might actually contain a few revisions
       # that predate the requested time.
       # That's better than missing revisions completely! Just be sure to check for duplicates.
-      # rubocop:disable Metrics/AbcSize
       def open_log_file(opts = {}, &block)
         ensure_host_key
         status.lock?
-        run "cvsnt -d #{url} rlog #{opt_branch} #{opt_time(opts[:after])} '#{scm.branch_name}'"\
-              " | #{string_encoder_path} > #{rlog_filename}"
+        run "cvsnt -d #{url} rlog #{opt_branch} #{opt_time(opts[:after])} '#{scm.branch_name}' " \
+            "| #{string_encoder_path} > #{rlog_filename}"
         File.open(rlog_filename, 'r', &block)
       ensure
-        File.delete(rlog_filename) if File.exist?(rlog_filename)
+        FileUtils.rm_f(rlog_filename)
       end
-      # rubocop:enable Metrics/AbcSize
 
       def opt_time(after = nil)
         return '' unless after

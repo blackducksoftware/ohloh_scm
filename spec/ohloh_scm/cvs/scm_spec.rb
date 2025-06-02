@@ -90,10 +90,10 @@ describe 'Cvs::Scm' do
     scm = get_core(:cvs, url: ':pserver:anonymous:@moodle.cvs.sourceforge.net:/cvsroot/moodle',
                          branch_name: 'contrib').scm
 
-    list = scm.send(:build_ordered_directory_list, ['/cvsroot/moodle/contrib/foo/bar'.intern,
-                                                    '/cvsroot/moodle/contrib'.intern,
-                                                    '/cvsroot/moodle/contrib/hello'.intern,
-                                                    '/cvsroot/moodle/contrib/hello'.intern])
+    list = scm.send(:build_ordered_directory_list, %i[/cvsroot/moodle/contrib/foo/bar
+                                                      /cvsroot/moodle/contrib
+                                                      /cvsroot/moodle/contrib/hello
+                                                      /cvsroot/moodle/contrib/hello])
     assert_equal list.size, 4
     assert_equal list, ['', 'foo', 'hello', 'foo/bar']
   end
@@ -102,9 +102,9 @@ describe 'Cvs::Scm' do
     scm = get_core(:cvs, url: ':pserver:anonymous:@moodle.cvs.sourceforge.net:/cvsroot/moodle',
                          branch_name: 'contrib').scm
 
-    list = scm.send(:build_ordered_directory_list, ['/cvsroot/moodle/contrib/foo/bar'.intern,
-                                                    '/cvsroot/moodle/contrib/Attic'.intern,
-                                                    '/cvsroot/moodle/contrib/hello/Attic'.intern])
+    list = scm.send(:build_ordered_directory_list, %i[/cvsroot/moodle/contrib/foo/bar
+                                                      /cvsroot/moodle/contrib/Attic
+                                                      /cvsroot/moodle/contrib/hello/Attic])
 
     assert_equal list.size, 4
     assert_equal list, ['', 'foo', 'hello', 'foo/bar']

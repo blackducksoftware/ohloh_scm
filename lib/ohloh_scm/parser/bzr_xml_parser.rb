@@ -76,7 +76,7 @@ module OhlohScm
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity
 
-    # rubocop:disable Style/TrivialAccessors # Cannot use attr_writer; we need cdata not cdata=.
+    # # Cannot use attr_writer; we need cdata not cdata=.
     def cdata(data)
       @cdata = data
     end
@@ -84,7 +84,6 @@ module OhlohScm
     def text(text)
       @text = text
     end
-    # rubocop:enable Style/TrivialAccessors
 
     private
 
@@ -125,7 +124,7 @@ module OhlohScm
   end
 
   class BzrXmlParser < Parser
-    NAME_REGEX = /^(.+?)(\s+<(.+)>\s*)?$/.freeze
+    NAME_REGEX = /^(.+?)(\s+<(.+)>\s*)?$/
     def self.internal_parse(buffer, _)
       buffer = '<?xml?>' if buffer.is_a?(StringIO) && buffer.length < 2
       REXML::Document.parse_stream(buffer,

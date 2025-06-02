@@ -10,8 +10,8 @@ module OhlohScm
       end
 
       def format
-        "format:'__BEGIN_COMMIT__%nCommit: %H%nAuthor: %an%nAuthorEmail:"\
-          " %ae%nDate: %aD%n__BEGIN_COMMENT__%n%s%n%b%n__END_COMMENT__%n'"
+        "format:'__BEGIN_COMMIT__%nCommit: %H%nAuthor: %an%nAuthorEmail: " \
+          "%ae%nDate: %aD%n__BEGIN_COMMENT__%n%s%n%b%n__END_COMMENT__%n'"
       end
 
       ANONYMOUS = '(no author)' unless defined?(ANONYMOUS)

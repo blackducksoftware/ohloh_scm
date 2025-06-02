@@ -58,7 +58,7 @@ module OhlohScm
         # For OpenHub, this is fine because OpenHub ignores merge diffs anyway.
         previous = nil
         safe_open_log_file(opts) do |io|
-          expensive_commit_count = ENV['EXPENSIVE_COMMIT_COUNT']
+          expensive_commit_count = ENV.fetch('EXPENSIVE_COMMIT_COUNT', nil)
           if expensive_commit_count && commit_count(opts) > expensive_commit_count.to_i
             io.each do |commit_sha|
               yield verbose_commit(commit_sha.chomp)
@@ -74,8 +74,8 @@ module OhlohScm
 
       # Returns a single commit, including its diffs
       def verbose_commit(token)
-        cmd = "cd '#{url}' && #{OhlohScm::GitParser.whatchanged} #{token}"\
-              " | #{string_encoder_path}"
+        cmd = "cd '#{url}' && #{OhlohScm::GitParser.whatchanged} #{token} " \
+              "| #{string_encoder_path}"
         commit = OhlohScm::GitParser.parse(run(cmd)).first
         fixup_null_merge(commit)
       end
@@ -119,7 +119,7 @@ module OhlohScm
 
       def branches
         cmd = "cd '#{url}' && git branch | #{string_encoder_path}"
-        run(cmd).split.select { |branch_name| branch_name =~ /\b(.+)$/ }
+        run(cmd).split.grep(/\b(.+)$/)
       end
 
       # Commit all changes in the working directory, using metadata from the passed commit.
@@ -187,13 +187,13 @@ module OhlohScm
         cmd = if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT'].to_i
                 "#{rev_list_command(opts)} > #{log_filename}"
               else
-                "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::GitParser.whatchanged}"\
-                      " | #{string_encoder_path} > #{log_filename}"
+                "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::GitParser.whatchanged} " \
+                  "| #{string_encoder_path} > #{log_filename}"
               end
         run(cmd)
         File.open(log_filename, 'r', &block)
       ensure
-        File.delete(log_filename) if File.exist?(log_filename)
+        FileUtils.rm_f(log_filename)
       end
 
       def rev_list_command(opts = {})
@@ -217,8 +217,8 @@ module OhlohScm
 
       def dereferenced_tag_strings
         # Pattern: b6e9220c3cabe53a4ed7f32952aeaeb8a822603d refs/tags/v1.0.0^{}
-        run("cd #{url} && git show-ref --tags -d | grep '\\^{}' | sed 's/\\^{}//'"\
-              " | sed 's/refs\\/tags\\///'").split("\n")
+        run("cd #{url} && git show-ref --tags -d | grep '\\^{}' | sed 's/\\^{}//' " \
+            "| sed 's/refs\\/tags\\///'").split("\n")
       end
 
       def time_object(timestamp_string)
@@ -240,25 +240,23 @@ module OhlohScm
         # This is a one-off fix for DrJava, which includes some escape characters
         # in one of its Subversion messages. This might lead to a more generalized
         # cleanup of message text, but for now...
-        commit.message = commit.message&.gsub(/\\027/, '')
+        commit.message = commit.message&.gsub('\\027', '')
 
         # Git requires a non-empty message
         commit.message = '[no message]' if commit.message.nil? || commit.message =~ /\A\s*\z/
 
         # We need to store the message in a file in case it contains crazy characters
         #    that would corrupt a bash command line.
-        File.open(message_filename, 'w') do |f|
-          f.write commit.message
-        end
+        File.write(message_filename, commit.message)
         message_filename
       end
 
       def configure_git_environment_variables(commit)
         ENV['GIT_COMMITTER_NAME'] = commit.committer_name || '[anonymous]'
-        ENV['GIT_AUTHOR_NAME'] = commit.author_name || ENV['GIT_COMMITTER_NAME']
+        ENV['GIT_AUTHOR_NAME'] = commit.author_name || ENV.fetch('GIT_COMMITTER_NAME', nil)
 
-        ENV['GIT_COMMITTER_EMAIL'] = commit.committer_email || ENV['GIT_COMMITTER_NAME']
-        ENV['GIT_AUTHOR_EMAIL'] = commit.author_email || ENV['GIT_AUTHOR_NAME']
+        ENV['GIT_COMMITTER_EMAIL'] = commit.committer_email || ENV.fetch('GIT_COMMITTER_NAME', nil)
+        ENV['GIT_AUTHOR_EMAIL'] = commit.author_email || ENV.fetch('GIT_AUTHOR_NAME', nil)
 
         ENV['GIT_COMMITTER_DATE'] = commit.committer_date.to_s
         ENV['GIT_AUTHOR_DATE'] = (commit.author_date || commit.committer_date).to_s
@@ -272,7 +270,7 @@ module OhlohScm
 
       # True if there are pending changes to commit.
       def anything_to_commit?
-        /nothing to commit/.match?(run("cd '#{url}' && git status | tail -1")) ? false : true
+        !/nothing to commit/.match?(run("cd '#{url}' && git status | tail -1"))
       end
 
       # Ensures that the repository directory exists, and that the git db has been initialized.
@@ -317,9 +315,7 @@ module OhlohScm
       def write_token(token)
         return unless token && !token.to_s.empty?
 
-        File.open(token_path, 'w') do |f|
-          f.write token.to_s
-        end
+        File.write(token_path, token.to_s)
       end
     end
   end

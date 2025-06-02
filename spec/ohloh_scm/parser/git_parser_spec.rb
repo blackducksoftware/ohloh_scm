@@ -12,7 +12,7 @@ describe 'GitParser' do
         Commit: 1df547800dcd168e589bb9b26b4039bff3a7f7e4
         Author: Jason Allen
         AuthorEmail: jason@ohloh.net
-        Date: 
+        Date:#{' '}
         __BEGIN_COMMENT__
             moving COPYING
 

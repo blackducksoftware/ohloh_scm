@@ -49,8 +49,8 @@ module OhlohScm
         prepare_dest_dir
         accept_certificate_if_prompted
 
-        cmd = "#{password_prompt} git svn clone --quiet #{username_opts}"\
-                " '#{@source_scm.url}' '#{url}'"
+        cmd = "#{password_prompt} git svn clone --quiet #{username_opts} " \
+              "'#{@source_scm.url}' '#{url}'"
         run(cmd)
       end
 
@@ -88,9 +88,9 @@ module OhlohScm
       def clean_up_disk
         return unless  File.exist?(url)
 
-        run "cd #{url} && "\
-              "find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0"\
-              ' | xargs -0 rm -rf --'
+        run "cd #{url} && " \
+            "find . -maxdepth 1 -not -name .git -not -name '*.nfs*' -not -name . -print0 " \
+            '| xargs -0 rm -rf --'
       end
     end
   end

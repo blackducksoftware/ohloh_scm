@@ -21,9 +21,9 @@ describe 'Svn::Activity' do
           tmpdir('oh_scm_out_dir_') do |dir|
             root_path = svn.activity.root
             folder_name = root_path.slice(/[^\/]+\/?\Z/)
-            cmd = "cd #{svn_working_folder} && svn co #{root_path} && cd #{folder_name}"\
-                  " && mkdir -p #{root_path.gsub(/^file:../, '')}/db/transactions"\
-                  " && svn copy trunk tags/2.0 && svn commit -m 'v2.0' && svn update"
+            cmd = "cd #{svn_working_folder} && svn co #{root_path} && cd #{folder_name} " \
+                  "&& mkdir -p #{root_path.gsub(/^file:../, '')}/db/transactions " \
+                  "&& svn copy trunk tags/2.0 && svn commit -m 'v2.0' && svn update"
             svn.activity.send :run, cmd
 
             svn.activity.export_tag(dir, '2.0')
@@ -39,9 +39,9 @@ describe 'Svn::Activity' do
         tmpdir do |svn_working_folder|
           root_path = svn.activity.root
           folder_name = root_path.slice(/[^\/]+\/?\Z/)
-          cmd = "cd #{svn_working_folder} && svn co #{root_path} && cd #{folder_name}"\
-                " && mkdir -p #{root_path.gsub(/^file:../, '')}/db/transactions"\
-                " && svn copy trunk tags/2.0 && svn commit -m 'v2.0' && svn update"
+          cmd = "cd #{svn_working_folder} && svn co #{root_path} && cd #{folder_name} " \
+                "&& mkdir -p #{root_path.gsub(/^file:../, '')}/db/transactions " \
+                "&& svn copy trunk tags/2.0 && svn commit -m 'v2.0' && svn update"
           svn.activity.send :run, cmd
 
           assert_equal svn.activity.tags.first[0..1], ['2.0', '6']

@@ -16,25 +16,26 @@ module OhlohScm
       end
 
       def ls(path = nil, revision = 'HEAD')
-        stdout = run "svn ls --trust-server-cert --non-interactive -r #{revision} "\
-          "#{username_and_password_opts} "\
-          "'#{uri_encode(File.join(root.to_s, scm.branch_name.to_s, path.to_s))}@#{revision}'"
+        stdout = run "svn ls --trust-server-cert --non-interactive -r #{revision} " \
+                     "#{username_and_password_opts} " \
+                     "'#{uri_encode(File.join(root.to_s, scm.branch_name.to_s,
+                                              path.to_s))}@#{revision}'"
         collect_files(stdout)
       rescue StandardError => e
         logger.error(e.message) && nil
       end
 
       def export(dest_dir, commit_id = 'HEAD')
-        FileUtils.mkdir_p(File.dirname(dest_dir)) unless File.exist?(File.dirname(dest_dir))
-        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force '\
-          "-r #{commit_id} '#{uri_encode(File.join(root.to_s, scm.branch_name.to_s))}'"\
-          " '#{dest_dir}'"
+        FileUtils.mkdir_p(File.dirname(dest_dir))
+        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force ' \
+            "-r #{commit_id} '#{uri_encode(File.join(root.to_s, scm.branch_name.to_s))}' " \
+            "'#{dest_dir}'"
       end
 
       def export_tag(dest_dir, tag_name)
         tag_url = "#{base_path}/tags/#{tag_name}"
-        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force'\
-              " '#{tag_url}' '#{dest_dir}'"
+        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force ' \
+            "'#{tag_url}' '#{dest_dir}'"
       end
 
       # Svn root is not usable here since several projects are nested in subfolders.
@@ -71,8 +72,8 @@ module OhlohScm
       def info(path = nil, revision = 'HEAD')
         @info ||= {}
         uri = path ? File.join(root, scm.branch_name.to_s, path) : url
-        @info[[path, revision]] ||= run 'svn info --trust-server-cert --non-interactive -r '\
-          "#{revision} #{username_and_password_opts} '#{uri_encode(uri)}@#{revision}'"
+        @info[[path, revision]] ||= run 'svn info --trust-server-cert --non-interactive -r ' \
+                                        "#{revision} #{username_and_password_opts} '#{uri_encode(uri)}@#{revision}'"
       end
 
       # Because uri(with branch) may have characters(e.g. space) that break the shell command.

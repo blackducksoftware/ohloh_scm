@@ -304,7 +304,7 @@ describe 'Hg::Activity' do
         # Make a file with a problematic filename
         funny_name = '#|file_name` $(&\'")#'
         file_content = 'foobar'
-        File.open(File.join(dir, funny_name), 'w') { |f| f.write file_content }
+        File.write(File.join(dir, funny_name), file_content)
 
         # Add it to an hg repository
         `cd #{dir} && hg init && hg add * 2> /dev/null && hg commit -u tester -m test`

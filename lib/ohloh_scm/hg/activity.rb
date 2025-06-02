@@ -40,8 +40,8 @@ module OhlohScm
 
       # Returns a single commit, including its diffs
       def verbose_commit(token)
-        cmd = "cd '#{url}' && hg log -v -r #{token} "\
-              " --style #{OhlohScm::HgParser.verbose_style_path} | #{string_encoder_path}"
+        cmd = "cd '#{url}' && hg log -v -r #{token}  " \
+              "--style #{OhlohScm::HgParser.verbose_style_path} | #{string_encoder_path}"
         OhlohScm::HgParser.parse(run(cmd)).first
       end
 
@@ -67,13 +67,13 @@ module OhlohScm
 
         # Hg leaves a little cookie crumb in the export directory. Remove it.
         file_path = File.join(dest_dir, '.hg_archival.txt')
-        File.delete(file_path) if File.exist?(file_path)
+        FileUtils.rm_f(file_path)
       end
 
       def tags
         tag_strings = run("cd '#{url}' && hg tags").split("\n")
         tag_strings.map do |tag_string|
-          parsed_str = tag_string.split(' ')
+          parsed_str = tag_string.split
           rev_number_and_hash = parsed_str.pop
           tag_name = parsed_str.join(' ')
           rev = rev_number_and_hash.slice(/\A\d+/)
@@ -121,7 +121,7 @@ module OhlohScm
         get_hg_log(opts)
         File.open(log_filename, 'r', &block)
       ensure
-        File.delete(log_filename) if File.exist?(log_filename)
+        FileUtils.rm_f(log_filename)
       end
 
       def get_hg_log(opts)
@@ -131,9 +131,9 @@ module OhlohScm
           #  just create an empty file rather than fetch a log we know will be empty.
           File.write(log_filename, '')
         else
-          cmd = "cd '#{url}' && #{hg_log_with_opts}"\
-                " --style #{OhlohScm::HgParser.verbose_style_path} | #{string_encoder_path}"\
-                " > #{log_filename}"
+          cmd = "cd '#{url}' && #{hg_log_with_opts} " \
+                "--style #{OhlohScm::HgParser.verbose_style_path} | #{string_encoder_path} " \
+                "> #{log_filename}"
           run cmd
         end
       end

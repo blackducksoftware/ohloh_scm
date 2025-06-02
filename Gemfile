@@ -8,7 +8,7 @@ group :development do
   gem 'mocha'
   gem 'nokogiri'
   gem 'rake'
-  gem 'rubocop', '~> 0.67'
+  gem 'rubocop', '>= 1.12.0'
   gem 'rubocop-performance'
   gem 'simplecov'
 end
