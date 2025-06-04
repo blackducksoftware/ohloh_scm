@@ -42,33 +42,9 @@ module OhlohScm
 
       # Yields each commit in the repository following the commit with SHA1 'after'.
       # These commits are populated with diffs.
-      def each_commit(opts = {})
-        # Bug fix (hack) follows.
-        #
-        # git-whatchanged emits a merge commit multiple times, once for each parent, giving the
-        # delta to each parent in turn.
-        #
-        # This causes us to emit too many commits, with repeated merge commits.
-        #
-        # To fix this, we track the previous commit, and emit a new commit only if it is distinct
-        # from the previous.
-        #
-        # This means that the diffs for a merge commit yielded by this method will be the diffs
-        # vs. the first parent only, and diffs vs. other parents are lost.
-        # For OpenHub, this is fine because OpenHub ignores merge diffs anyway.
-        previous = nil
+      def each_commit(opts = {}, &block)
         safe_open_log_file(opts) do |io|
-          expensive_commit_count = ENV.fetch('EXPENSIVE_COMMIT_COUNT', nil)
-          if expensive_commit_count && commit_count(opts) > expensive_commit_count.to_i
-            io.each do |commit_sha|
-              yield verbose_commit(commit_sha.chomp)
-            end
-          else
-            OhlohScm::GitParser.parse(io) do |e|
-              yield fixup_null_merge(e) unless previous && previous.token == e.token
-              previous = e
-            end
-          end
+          process_commits(io, opts, &block)
         end
       end
 
@@ -160,6 +136,35 @@ module OhlohScm
 
       private
 
+      def process_commits(io, opts, &block)
+        return process_expensive_commits(io, opts, &block) if expensive_commits?(opts)
+
+        process_standard_commits(io, &block)
+      end
+
+      def expensive_commits?(opts)
+        ENV.fetch('EXPENSIVE_COMMIT_COUNT',
+                  nil) && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT'].to_i
+      end
+
+      def process_expensive_commits(io, _opts)
+        io.each do |commit_sha|
+          yield verbose_commit(commit_sha.chomp)
+        end
+      end
+
+      def process_standard_commits(io)
+        previous = nil
+        OhlohScm::GitParser.parse(io) do |e|
+          yield fixup_null_merge(e) unless duplicate_commit?(previous, e)
+          previous = e
+        end
+      end
+
+      def duplicate_commit?(previous, current)
+        previous && previous.token == current.token
+      end
+
       def cat(sha1)
         return '' if sha1 == NULL_SHA1
 
@@ -184,15 +189,41 @@ module OhlohScm
       end
 
       def open_log_file(opts, &block)
-        cmd = if ENV['EXPENSIVE_COMMIT_COUNT'] && commit_count(opts) > ENV['EXPENSIVE_COMMIT_COUNT'].to_i
-                "#{rev_list_command(opts)} > #{log_filename}"
-              else
-                "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::GitParser.whatchanged} " \
-                  "| #{string_encoder_path} > #{log_filename}"
-              end
-        run(cmd)
-        File.open(log_filename, 'r', &block)
+        prepare_log_file(opts)
+        process_log_file(&block)
       ensure
+        cleanup_log_file
+      end
+
+      def prepare_log_file(opts)
+        cmd = select_log_command(opts)
+        run(cmd)
+      end
+
+      def select_log_command(opts)
+        return expensive_log_command(opts) if expensive_commits?(opts)
+
+        standard_log_command(opts)
+      end
+
+      def expensive_commit_processing?(expensive_count, opts)
+        expensive_count && commit_count(opts) > expensive_count.to_i
+      end
+
+      def expensive_log_command(opts)
+        "#{rev_list_command(opts)} > #{log_filename}"
+      end
+
+      def standard_log_command(opts)
+        "#{rev_list_command(opts)} | xargs -n 1 #{OhlohScm::GitParser.whatchanged} " \
+          "| #{string_encoder_path} > #{log_filename}"
+      end
+
+      def process_log_file(&block)
+        File.open(log_filename, 'r', &block)
+      end
+
+      def cleanup_log_file
         FileUtils.rm_f(log_filename)
       end
 
@@ -252,14 +283,40 @@ module OhlohScm
       end
 
       def configure_git_environment_variables(commit)
-        ENV['GIT_COMMITTER_NAME'] = commit.committer_name || '[anonymous]'
-        ENV['GIT_AUTHOR_NAME'] = commit.author_name || ENV.fetch('GIT_COMMITTER_NAME', nil)
+        configure_committer_details(commit)
+        configure_author_details(commit)
+        configure_commit_dates(commit)
+      end
 
-        ENV['GIT_COMMITTER_EMAIL'] = commit.committer_email || ENV.fetch('GIT_COMMITTER_NAME', nil)
-        ENV['GIT_AUTHOR_EMAIL'] = commit.author_email || ENV.fetch('GIT_AUTHOR_NAME', nil)
+      def configure_committer_details(commit)
+        ENV['GIT_COMMITTER_NAME'] = fallback_committer_name(commit)
+        ENV['GIT_COMMITTER_EMAIL'] = fallback_committer_email(commit)
+      end
 
+      def configure_author_details(commit)
+        ENV['GIT_AUTHOR_NAME'] = fallback_author_name(commit)
+        ENV['GIT_AUTHOR_EMAIL'] = fallback_author_email(commit)
+      end
+
+      def configure_commit_dates(commit)
         ENV['GIT_COMMITTER_DATE'] = commit.committer_date.to_s
         ENV['GIT_AUTHOR_DATE'] = (commit.author_date || commit.committer_date).to_s
+      end
+
+      def fallback_committer_name(commit)
+        commit.committer_name || '[anonymous]'
+      end
+
+      def fallback_committer_email(commit)
+        commit.committer_email || ENV.fetch('GIT_COMMITTER_NAME', nil)
+      end
+
+      def fallback_author_name(commit)
+        commit.author_name || ENV.fetch('GIT_COMMITTER_NAME', nil)
+      end
+
+      def fallback_author_email(commit)
+        commit.author_email || ENV.fetch('GIT_AUTHOR_NAME', nil)
       end
 
       # By hiding the message file inside the .git directory, we
@@ -294,6 +351,7 @@ module OhlohScm
         end
       end
 
+      # rubocop:disable Lint/LiteralAsCondition
       def check_if_ignored(gitignore_filename, filespec)
         File.open(gitignore_filename, File::CREAT | File::RDONLY) do |io|
           io.readlines.each do |l|
@@ -301,6 +359,7 @@ module OhlohScm
           end
         end
       end
+      # rubocop:enable Lint/LiteralAsCondition
 
       def token_filename
         'ohloh_token'
