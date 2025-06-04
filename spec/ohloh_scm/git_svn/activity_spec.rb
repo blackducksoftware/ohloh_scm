@@ -33,7 +33,7 @@ describe 'GitSvn::Activity' do
   end
 
   describe 'cat' do
-    let(:commit_1) { OhlohScm::Commit.new(token: 1) }
+    let(:commit1) { OhlohScm::Commit.new(token: 1) }
     let(:hello_diff) { OhlohScm::Diff.new(path: 'helloworld.c') }
 
     it 'cat_file' do
@@ -47,7 +47,7 @@ describe 'GitSvn::Activity' do
           }
         EXPECTED
 
-        assert_equal git_svn.activity.cat_file(commit_1, hello_diff)
+        assert_equal git_svn.activity.cat_file(commit1, hello_diff)
                             .delete("\t").strip, expected.strip
       end
     end
@@ -60,7 +60,7 @@ describe 'GitSvn::Activity' do
 
     it 'cat_file_with_invalid_filename' do
       with_git_svn_repository('git_svn') do |git_svn|
-        assert_empty git_svn.activity.cat_file(commit_1, OhlohScm::Diff.new(path: 'invalid'))
+        assert_empty git_svn.activity.cat_file(commit1, OhlohScm::Diff.new(path: 'invalid'))
       end
     end
 
@@ -82,7 +82,7 @@ describe 'GitSvn::Activity' do
 
     it 'cat_file_parent_with_first_token' do
       with_git_svn_repository('git_svn') do |git_svn|
-        assert git_svn.activity.cat_file(commit_1, hello_diff)
+        assert git_svn.activity.cat_file(commit1, hello_diff)
       end
     end
   end

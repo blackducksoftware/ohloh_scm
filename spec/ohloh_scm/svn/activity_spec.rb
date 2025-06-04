@@ -3,7 +3,7 @@ require 'mocha'
 
 describe 'Svn::Activity' do
   describe 'cat' do
-    let(:commit_1) { OhlohScm::Commit.new(token: 1) }
+    let(:commit1) { OhlohScm::Commit.new(token: 1) }
     let(:hello_diff) { OhlohScm::Diff.new(path: 'helloworld.c') }
 
     it 'must export data correctly' do

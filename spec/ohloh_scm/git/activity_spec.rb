@@ -333,8 +333,9 @@ describe 'Git::Activity' do
 
         core.activity.send(:init_db)
         refute core.activity.send(:anything_to_commit?)
-
+        # rubocop:disable Lint/EmptyBlock
         File.open(File.join(dir, 'README'), 'w') {}
+        # rubocop:enable Lint/EmptyBlock
         assert core.activity.send(:anything_to_commit?)
 
         c = OhlohScm::Commit.new

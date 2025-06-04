@@ -72,8 +72,9 @@ module OhlohScm
       def info(path = nil, revision = 'HEAD')
         @info ||= {}
         uri = path ? File.join(root, scm.branch_name.to_s, path) : url
-        @info[[path, revision]] ||= run 'svn info --trust-server-cert --non-interactive -r ' \
-                                        "#{revision} #{username_and_password_opts} '#{uri_encode(uri)}@#{revision}'"
+        @info[[path, revision]] ||=
+          run 'svn info --trust-server-cert --non-interactive -r ' \
+              "#{revision} #{username_and_password_opts} '#{uri_encode(uri)}@#{revision}'"
       end
 
       # Because uri(with branch) may have characters(e.g. space) that break the shell command.
