@@ -5,62 +5,19 @@ module OhlohScm
     class Activity < OhlohScm::Activity
       def tags
         cmd = "cvs -Q -d #{url} rlog -h #{scm.branch_name} | awk -F\"[.:]\" '/^\\t/&&$(NF-1)!=0'"
-        tag_strings = run(cmd).split("\n")
-        tag_strings.map do |tag_string|
+        run(cmd).split("\n").map do |tag_string|
           tag_name, version = tag_string.split(':')
           [tag_name.delete("\t"), version.strip]
         end
       end
 
-      # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       def commits(opts = {})
-        after = opts[:after]
-        result = []
+        result = fetch_commits(opts)
+        # Nothing found; we're done here. || We requested everything, so just return everything.
+        return result if result.empty? || opts[:after].to_s.empty?
 
-        open_log_file(opts) do |io|
-          result = OhlohScm::CvsParser.parse(io)
-        end
-
-        # Git converter needs a backpointer to the scm for each commit
-        result.each { |c| c.scm = scm }
-
-        return result if result.empty? # Nothing found; we're done here.
-        return result if after.to_s == '' # We requested everything, so just return everything.
-
-        # We must now remove any duplicates caused by timestamp fudge factors,
-        # and only return commits with timestamp > after.
-
-        # If the first commit is newer than after,
-        # then the whole list is new and we can simply return.
-        return result if parse_time(result.first.token) > parse_time(after)
-
-        # Walk the list of commits to find the first new one, throwing away all of the old ones.
-
-        # I want to string-compare timestamps without converting to dates objects.
-        # Some CVS servers print dates as 2006/01/02 03:04:05, others as 2006-01-02 03:04:05.
-        # To work around this, we'll build a regex that matches either date format.
-        re = Regexp.new(after.gsub(/[\/-]/, '.'))
-
-        result.each_index do |i|
-          next unless result[i].token&.match?(re) # We found the match for after
-          return [] if i == result.size - 1 # There aren't any new commits.
-
-          return result[i + 1..]
-        end
-
-        # Something bad is going on: 'after' does not match any timestamp in the rlog.
-        # This is very rare, but it can happen.
-        #
-        # Often this means that the *last* time we ran commits(), there was some kind of
-        # undetected problem (CVS was in an intermediate state?) so the list of timestamps we
-        # calculated last time does not match the list of timestamps we calculated this time.
-        #
-        # There's no work around for this condition here in the code, but there are some things
-        # you can try manually to fix the problem. Typically, you can try throwing way the
-        # commit associated with 'after' and fetching it again (git reset --hard HEAD^).
-        raise "token '#{after}' not found in rlog."
+        filter_commits(result, opts[:after])
       end
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
       def export_tag(dest_dir, tag_name = 'HEAD')
         run "cvsnt -d #{url} export -d'#{dest_dir}' -r #{tag_name} '#{scm.branch_name}'"
@@ -78,6 +35,65 @@ module OhlohScm
       end
 
       private
+
+      def fetch_commits(opts)
+        OhlohScm::CvsParser.parse(open_log_file(opts)).tap do |result|
+          # Git converter needs a backpointer to the scm for each commit
+          result.each { |c| c.scm = scm }
+        end
+      end
+
+      def filter_commits(commits, after)
+        return commits if first_commit_newer?(commits, after)
+
+        # Walk the list of commits to find the first new one, throwing away all of the old ones.
+
+        # I want to string-compare timestamps without converting to dates objects.
+        # Some CVS servers print dates as 2006/01/02 03:04:05, others as 2006-01-02 03:04:05.
+        # To work around this, we'll build a regex that matches either date format.
+        timestamp_regex = create_timestamp_regex(after)
+        match_index = find_match_index(commits, timestamp_regex)
+
+        extract_new_commits(commits, match_index)
+      end
+
+      def first_commit_newer?(commits, after)
+        # We must now remove any duplicates caused by timestamp fudge factors,
+        # and only return commits with timestamp > after.
+
+        # If the first commit is newer than after,
+        # then the whole list is new and we can simply return.
+        parse_time(commits.first.token) > parse_time(after)
+      end
+
+      def create_timestamp_regex(timestamp)
+        Regexp.new(timestamp.gsub(/[\/-]/, '.'))
+      end
+
+      def find_match_index(commits, timestamp_regex)
+        commits.index { |commit| commit.token&.match?(timestamp_regex) }
+      end
+
+      def extract_new_commits(commits, match_index)
+        case match_index
+        when nil
+          # Something bad is going on: 'after' does not match any timestamp in the rlog.
+          # This is very rare, but it can happen.
+          #
+          # Often this means that the *last* time we ran commits(), there was some kind of
+          # undetected problem (CVS was in an intermediate state?) so the list of timestamps we
+          # calculated last time does not match the list of timestamps we calculated this time.
+          #
+          # There's no work around for this condition here in the code, but there are some things
+          # you can try manually to fix the problem. Typically, you can try throwing way the
+          # commit associated with 'after' and fetching it again (git reset --hard HEAD^).
+          raise 'token not found in rlog.'
+        when commits.size - 1
+          []
+        else
+          commits[match_index + 1..]
+        end
+      end
 
       # Gets the rlog of the repository and saves it in a temporary file.
       # If you pass a timestamp token, then only commits after the timestamp will be returned.
@@ -105,9 +121,9 @@ module OhlohScm
         return '' unless after
 
         most_recent_time = parse_time(after) - 10
-        # rubocop:disable Layout/LineLength
+        # rubocop:disable Metrics/LineLength
         " -d '#{most_recent_time.strftime('%Y-%m-%d %H:%M:%S')}Z<#{Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')}Z' "
-        # rubocop:enable Layout/LineLength
+        # rubocop:enable Metrics/LineLength
       end
 
       def rlog_filename
