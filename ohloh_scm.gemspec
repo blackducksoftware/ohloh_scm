@@ -22,5 +22,4 @@ Gem::Specification.new do |gem|
                              "Mercurial #{OhlohScm::Version::HG} and Bazaar " \
                              "#{OhlohScm::Version::BZR}. If the installed version is different, " \
                              'Ohloh SCM may not operate as expected.'
-  gem.metadata['rubygems_mfa_required'] = 'true'
 end
