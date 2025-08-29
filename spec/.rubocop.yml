@@ -3,16 +3,13 @@ inherit_from: ../.rubocop.yml
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 Metrics/AbcSize:
   Enabled: false
 
-ClassLength:
-  Enabled: false
-
-AbcSize:
+Metrics/ClassLength:
   Enabled: false
 
 Metrics/MethodLength:

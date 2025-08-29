@@ -16,25 +16,26 @@ module OhlohScm
       end
 
       def ls(path = nil, revision = 'HEAD')
-        stdout = run "svn ls --trust-server-cert --non-interactive -r #{revision} "\
-          "#{username_and_password_opts} "\
-          "'#{uri_encode(File.join(root.to_s, scm.branch_name.to_s, path.to_s))}@#{revision}'"
+        stdout = run "svn ls --trust-server-cert --non-interactive -r #{revision} " \
+                     "#{username_and_password_opts} " \
+                     "'#{uri_encode(File.join(root.to_s, scm.branch_name.to_s,
+                                              path.to_s))}@#{revision}'"
         collect_files(stdout)
       rescue StandardError => e
         logger.error(e.message) && nil
       end
 
       def export(dest_dir, commit_id = 'HEAD')
-        FileUtils.mkdir_p(File.dirname(dest_dir)) unless File.exist?(File.dirname(dest_dir))
-        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force '\
-          "-r #{commit_id} '#{uri_encode(File.join(root.to_s, scm.branch_name.to_s))}'"\
-          " '#{dest_dir}'"
+        FileUtils.mkdir_p(File.dirname(dest_dir))
+        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force ' \
+            "-r #{commit_id} '#{uri_encode(File.join(root.to_s, scm.branch_name.to_s))}' " \
+            "'#{dest_dir}'"
       end
 
       def export_tag(dest_dir, tag_name)
         tag_url = "#{base_path}/tags/#{tag_name}"
-        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force'\
-              " '#{tag_url}' '#{dest_dir}'"
+        run 'svn export --trust-server-cert --non-interactive --ignore-externals --force ' \
+            "'#{tag_url}' '#{dest_dir}'"
       end
 
       # Svn root is not usable here since several projects are nested in subfolders.
@@ -42,9 +43,8 @@ module OhlohScm
       #      http://svn.apache.org/repos/asf/httpd/httpd/trunk
       #      http://svn.apache.org/repos/asf/maven/plugin-testing/trunk
       #      all have the same root value(https://svn.apache.org/repos/asf)
-      # rubocop:disable Metrics/AbcSize
       def tags
-        doc = Nokogiri::XML(`svn ls --xml #{ base_path}/tags`)
+        doc = Nokogiri::XML(`svn ls --xml #{base_path}/tags`)
         doc.xpath('//lists/list/entry').map do |entry|
           tag_name = entry.xpath('name').text
           revision = entry.xpath('commit').attr('revision').text
@@ -53,7 +53,6 @@ module OhlohScm
           [tag_name, revision, date_string]
         end
       end
-      # rubocop:enable Metrics/AbcSize
 
       def head_token
         return unless info =~ /^Revision: (\d+)$/
@@ -73,18 +72,18 @@ module OhlohScm
       def info(path = nil, revision = 'HEAD')
         @info ||= {}
         uri = path ? File.join(root, scm.branch_name.to_s, path) : url
-        @info[[path, revision]] ||= run 'svn info --trust-server-cert --non-interactive -r '\
-          "#{revision} #{username_and_password_opts} '#{uri_encode(uri)}@#{revision}'"
+        @info[[path, revision]] ||=
+          run 'svn info --trust-server-cert --non-interactive -r ' \
+              "#{revision} #{username_and_password_opts} '#{uri_encode(uri)}@#{revision}'"
       end
 
       # Because uri(with branch) may have characters(e.g. space) that break the shell command.
       def uri_encode(uri)
         # URI.encode is declared obsolete, however we couldn't find an alternative.
-        # URI.encode('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works.
         # CGI.escape('foo bar') => foo+bar   # `svn log svn://...foo+bar` won't work.
-        # rubocop:disable Lint/UriEscapeUnescape
-        URI.encode(uri)
-        # rubocop:enable Lint/UriEscapeUnescape
+        # URI.encode('foo bar') => foo%20bar # `svn log svn://...foo%20bar` works in ruby 2.x
+        # URI::DEFAULT_PARSER.escape('foo bar') => foo%20bar # This works in ruby 3.x
+        URI::DEFAULT_PARSER.escape(uri)
       end
 
       def base_path

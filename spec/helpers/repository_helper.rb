@@ -8,7 +8,7 @@ module RepositoryHelper
   end
 
   def with_git_repository(name, branch_name = 'master', &block)
-    with_repository('git', name, branch_name) { |core| block.call(core) }
+    with_repository('git', name, branch_name, &block)
   end
 
   private

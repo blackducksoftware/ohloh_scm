@@ -5,18 +5,18 @@ describe 'Hg::Scm' do
     with_hg_repository('hg') do |src|
       tmpdir do |dir|
         dest = OhlohScm::Factory.get_core(scm_type: :hg, url: dir)
-        dest.status.wont_be :exist?
+        assert !dest.status.exist?
 
         dest.scm.pull(src.scm, TestCallback.new)
-        dest.status.must_be :exist?
-        Dir.entries(dir).sort.must_equal ['.', '..', '.hg']
+        assert dest.status.exist?
+        assert_equal Dir.entries(dir).sort, ['.', '..', '.hg']
 
         # Commit some new code on the original and pull again
         run_p "cd '#{src.scm.url}' && touch foo && hg add foo && hg commit -u test -m test"
-        src.activity.commits.last.message.must_equal "test\n"
+        assert_equal src.activity.commits.last.message, "test\n"
 
         dest.scm.pull(src.scm, TestCallback.new)
-        Dir.entries(dir).sort.must_equal ['.', '..', '.hg']
+        assert_equal Dir.entries(dir).sort, ['.', '..', '.hg']
       end
     end
   end

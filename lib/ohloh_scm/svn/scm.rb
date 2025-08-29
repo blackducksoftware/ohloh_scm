@@ -17,10 +17,10 @@ module OhlohScm
       # From the given URL, determine which part of it is the root and
       # which part of it is the branch_name. The current branch_name is overwritten.
       def recalc_branch_name
-        @branch_name = url ? url[activity.root.length..-1] : branch_name
+        @branch_name = url ? url[activity.root.length..] : branch_name
       rescue RuntimeError => e
         pattern = /(svn:*is not a working copy|Unable to open an ra_local session to URL)/
-        @branch_name = '' if e.message =~ pattern # we have a file system
+        @branch_name = '' if e.message&.match?(pattern) # we have a file system
       ensure
         clean_branch_name
         branch_name
@@ -41,7 +41,6 @@ module OhlohScm
       #
       # The url and branch_name of this object will be updated with the selected location.
       # The url will be unmodified if there is a problem connecting to the server.
-      # rubocop:disable Metrics/AbcSize
       def restrict_url_to_trunk
         return url if url.match?(%r{/trunk/?$})
 
@@ -50,13 +49,12 @@ module OhlohScm
 
         if list.include? 'trunk/'
           update_url_and_branch_with_trunk
-        elsif list.size == 1 && list.first[-1..-1] == '/'
+        elsif list.size == 1 && list.first[-1..] == '/'
           update_url_and_branch_with_subdir(list)
           return restrict_url_to_trunk
         end
         url
       end
-      # rubocop:enable Metrics/AbcSize
 
       private
 
@@ -88,7 +86,7 @@ module OhlohScm
       def prefix_file_for_local_path(path)
         return if path.empty?
 
-        %r{://}.match?(url) ? url : 'file://' + File.expand_path(path)
+        %r{://}.match?(url) ? url : "file://#{File.expand_path(path)}"
       end
     end
   end

@@ -33,7 +33,6 @@ module OhlohScm
     end
     # rubocop:enable Metrics/AbcSize
 
-    # rubocop:disable Metrics/AbcSize
     def url_errors
       error = if scm.url.nil? || scm.url.empty?
                 "The URL can't be blank."
@@ -45,12 +44,11 @@ module OhlohScm
 
       [:url, error] if error
     end
-    # rubocop:enable Metrics/AbcSize
 
     def branch_name_errors
       if scm.branch_name.length > 80
         [:branch_name, 'The branch name must not be longer than 80 characters.']
-      elsif !scm.branch_name.match?(/^[\w^\-\+\.\/\ ]+$/)
+      elsif !scm.branch_name.match?(/^[\w^\-+.\/\ ]+$/)
         [:branch_name, "The branch name may contain only letters, numbers, \
            spaces, and the special characters '_', '-', '+', '/', '^', and '.'"]
       end
@@ -67,7 +65,7 @@ module OhlohScm
     def password_errors
       if scm.password.length > 32
         [:password, 'The password must not be longer than 32 characters.']
-      elsif !scm.password.match?(/^[\w!@\#$%^&*\(\)\{\}\[\]\;\?\|\+\-\=]*$/)
+      elsif !scm.password.match?(/^[\w!@\#$%^&*(){}\[\];?|+\-=]*$/)
         [:password, 'The password contains illegal characters']
       end
     end

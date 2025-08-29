@@ -4,6 +4,6 @@ require 'spec_helper'
 
 describe 'Version' do
   it 'must return the version string' do
-    OhlohScm::Version::STRING.must_be_instance_of String
+    assert OhlohScm::Version::STRING.is_a?(String)
   end
 end

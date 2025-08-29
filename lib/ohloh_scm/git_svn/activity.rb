@@ -23,8 +23,8 @@ module OhlohScm
         git_svn_log(cmd: cmd, oneline: false).split.map(&:to_i)
       end
 
-      def each_commit(opts = {})
-        commits(opts).each { |commit| yield commit }
+      def each_commit(opts = {}, &block)
+        commits(opts).each(&block)
       end
 
       def head_token
@@ -46,14 +46,14 @@ module OhlohScm
 
       private
 
-      def open_log_file(opts = {})
+      def open_log_file(opts = {}, &block)
         cmd = "-v #{after_revision(opts)} | #{string_encoder_path} > #{log_filename}"
         git_svn_log(cmd: cmd, oneline: false)
-        File.open(log_filename, 'r') { |io| yield io }
+        File.open(log_filename, 'r', &block)
       end
 
       def log_filename
-        File.join(temp_folder, url.gsub(/\W/, '') + '.log')
+        File.join(temp_folder, "#{url.gsub(/\W/, '')}.log")
       end
 
       def after_revision(opts)

@@ -9,9 +9,14 @@ module OhlohScm
         opt_d = rev.token ? "-D'#{rev.token}Z'" : ''
 
         activity.ensure_host_key
-        if File.exist?(local_directory + '/CVS/Root')
+        if File.exist?("#{local_directory}/CVS/Root")
           # We already have a local enlistment, so do a quick update.
-          if !rev.directories.empty?
+          if rev.directories.empty?
+            # Brute force: get all updates
+            logger.warn("Revision #{rev.token} did not contain any directories.
+            Using brute force update of entire module.")
+            run "cd #{local_directory} && cvsnt update -d -R -C #{opt_d}"
+          else
             build_ordered_directory_list(rev.directories).each do |d|
               if d.empty?
                 run "cd #{local_directory} && cvsnt update -d -l -C #{opt_d} ."
@@ -19,18 +24,13 @@ module OhlohScm
                 run "cd #{local_directory} && cvsnt update -d -l -C #{opt_d} '#{d}'"
               end
             end
-          else
-            # Brute force: get all updates
-            logger.warn("Revision #{rev.token} did not contain any directories.
-            Using brute force update of entire module.")
-            run "cd #{local_directory} && cvsnt update -d -R -C #{opt_d}"
           end
         else
           # We do not have a local enlistment, so do a slow checkout to create one.
           # Silly cvsnt won't accept an absolute path.
           # We'll have to play some games and cd to the parent directory.
           parent_path, checkout_dir = File.split(local_directory)
-          FileUtils.mkdir_p(parent_path) unless File.exist?(parent_path)
+          FileUtils.mkdir_p(parent_path)
           run "cd #{parent_path} &&
           cvsnt -d #{url} checkout #{opt_d} -A -d'#{checkout_dir}' '#{branch_name}'"
         end
@@ -66,7 +66,7 @@ module OhlohScm
         # using cvs modules that are only a single directory deep when testing.
         # We'll check if the url begins with '/' to detect an integration test,
         # then return an empty string (ie, the default root directory) if so.
-        return [''] if url =~ /^\//
+        return [''] if /^\//.match?(url)
 
         list = []
         directories = directories.collect { |a| trim_directory(a.to_s).to_s }
@@ -105,7 +105,7 @@ module OhlohScm
         # For example, if url = ':pserver:anonymous:@moodle.cvs.sourceforge.net:/cvsroot/moodle'
         # and module = 'contrib', then the directory prefix = '/cvsroot/moodle/contrib/'
         # If not remote, just leave the directory name as-is
-        root ? dir[root.length..-1] : dir
+        root ? dir[root.length..] : dir
       end
 
       def root
@@ -126,7 +126,7 @@ module OhlohScm
       # found in the :pserver: url is assigned to both.
       def sync_pserver_username_password
         # Do nothing unless pserver connection string is well-formed.
-        return unless url =~ /:pserver:([\w\-\_]*)(:([\w\-\_]*))?@(.*)$/
+        return unless url =~ /:pserver:([\w\-_]*)(:([\w\-_]*))?@(.*)$/
 
         pserver_username = Regexp.last_match(1)
         pserver_password = Regexp.last_match(3)
@@ -140,7 +140,7 @@ module OhlohScm
 
       # Based on the URL, take a guess about which forge this code is hosted on.
       def guess_forge
-        return unless url =~ /.*(pserver|ext).*@(([^\.]+\.)?(cvs|dev)\.)?([^:]+):\//i
+        return unless url =~ /.*(pserver|ext).*@(([^.]+\.)?(cvs|dev)\.)?([^:]+):\//i
 
         Regexp.last_match(5).downcase
       end

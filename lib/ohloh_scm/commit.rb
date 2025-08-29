@@ -24,9 +24,7 @@ module OhlohScm
     attr_accessor :author_name, :author_email, :author_date,
                   :committer_name, :committer_email, :committer_date
 
-    attr_accessor :message
-
-    attr_accessor :diffs
+    attr_accessor :message, :diffs
 
     # The token is used to uniquely identify a commit, and can be any type of
     # adapter-specific data.
@@ -46,7 +44,7 @@ module OhlohScm
     attr_accessor :directories
 
     def initialize(params = {})
-      params.each { |k, v| send(k.to_s + '=', v) if respond_to?(k.to_s + '=') }
+      params.each { |k, v| send("#{k}=", v) if respond_to?("#{k}=") }
     end
   end
 end

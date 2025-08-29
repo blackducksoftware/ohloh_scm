@@ -27,8 +27,8 @@ describe 'Git::Scm' do
         master_branch_sha = `cd #{dest_dir} && git rev-parse master`
         test_branch_sha = `cd #{dest_dir} && git rev-parse test`
 
-        master_branch_sha.wont_equal test_branch_sha
-        master_branch_sha.must_equal remote_master_branch_sha
+        refute_equal master_branch_sha, test_branch_sha
+        assert_equal master_branch_sha, remote_master_branch_sha
       end
     end
   end
@@ -48,8 +48,8 @@ describe 'Git::Scm' do
         master_branch_sha = `cd #{dest_dir} && git rev-parse master`
         test_branch_sha = `cd #{dest_dir} && git rev-parse test`
 
-        master_branch_sha.must_equal remote_master_branch_sha
-        test_branch_sha.must_equal remote_test_branch_sha
+        assert_equal master_branch_sha, remote_master_branch_sha
+        assert_equal test_branch_sha, remote_test_branch_sha
       end
     end
   end
@@ -80,12 +80,12 @@ describe 'Git::Scm' do
         # Emulate a scenario where the local copy doesn't have the current *main* branch.
         `cd #{dest_dir} && git checkout master && git branch -D test`
 
-        local_branch_cmd = "cd #{dest_dir} && git branch | grep '\*' | sed 's/^\* //'"
-        `#{ local_branch_cmd }`.chomp.must_equal 'master'
+        local_branch_cmd = "cd #{dest_dir} && git branch | grep '*' | sed 's/^* //'"
+        assert_equal `#{local_branch_cmd}`.chomp, 'master'
 
         # On doing a refetch, our local copy will now have the updated *main* branch.
         core.scm.pull(src_core.scm, TestCallback.new)
-        `#{ local_branch_cmd }`.chomp.must_equal test_branch_name
+        assert_equal `#{local_branch_cmd}`.chomp, test_branch_name
       end
     end
   end
@@ -103,12 +103,12 @@ describe 'Git::Scm' do
         src_core.activity.commits.each_with_index do |c, i|
           # Because CVS does not track authors (only committers),
           # the CVS committer becomes the Git author.
-          c.committer_date.must_equal dest_commits[i].author_date
-          c.committer_name.must_equal dest_commits[i].author_name
+          assert_equal c.committer_date, dest_commits[i].author_date
+          assert_equal c.committer_name, dest_commits[i].author_name
 
           # Depending upon version of Git used, we may or may not have a trailing \n.
           # We don't really care, so just compare the stripped versions.
-          c.message.strip.must_equal dest_commits[i].message.strip
+          assert_equal c.message.strip, dest_commits[i].message.strip
         end
       end
     end
@@ -129,6 +129,6 @@ describe 'Git::Scm' do
 
   it 'must return master when branch_name is null' do
     core = OhlohScm::Factory.get_core(scm_type: :git, url: 'foobar')
-    _(core.scm.branch_name_or_default).must_equal 'master'
+    assert_equal core.scm.branch_name_or_default, 'master'
   end
 end

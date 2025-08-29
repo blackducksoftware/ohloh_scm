@@ -20,11 +20,12 @@ module OhlohScm
         # b and a have the same number of branch events.
         # If either one inherits from the other then they
         # are on the same line.
-        return (inherits_from?(branch_number) || branch_number.inherits_from?(self))
+        return inherits_from?(branch_number) || branch_number.inherits_from?(self)
       end
+
       # b has not been branched as often as this object.
       # That's OK if b is an ancestor of this object.
-      return inherits_from?(branch_number) if b.size < @num.size
+      inherits_from?(branch_number) if b.size < @num.size
     end
 
     def to_a
@@ -35,7 +36,7 @@ module OhlohScm
 
     # Returns true if <branch_number> is an ancestor of this object.
     # Also returns true if <branch_number> is the same as this object.
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/AbcSize
     def inherits_from?(branch_number)
       b = branch_number.to_a
 
@@ -51,13 +52,13 @@ module OhlohScm
       end
       true
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/AbcSize
 
     private
 
     def descendant?(branch_number)
-      return true if branch_number[0] > @num[0] ||
-                     ((branch_number[0] == @num[0]) && (branch_number[1] > @num[1]))
+      true if branch_number[0] > @num[0] ||
+              ((branch_number[0] == @num[0]) && (branch_number[1] > @num[1]))
     end
   end
 end

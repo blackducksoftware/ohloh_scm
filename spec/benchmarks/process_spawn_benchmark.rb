@@ -83,7 +83,7 @@ class ProcessSpawnBenchmark
   def benchmark_popen
     @reporter.report('IO.popen:') do
       @iterations.times do
-        IO.popen(@cmd).each {}
+        IO.popen(@cmd).each { |_line| } # consume output to avoid Lint/EmptyBlock
       end
     end
   end

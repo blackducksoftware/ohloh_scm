@@ -35,7 +35,7 @@ module OhlohScm
     class << self
       # Use a single logger instance.
       def logger
-        @logger ||= Logger.new(STDERR).tap do |log_obj|
+        @logger ||= Logger.new($stderr).tap do |log_obj|
           log_obj.level = ENV['SCM_LOG_LEVEL'].to_i
         end
       end

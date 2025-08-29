@@ -4,16 +4,16 @@ DATA_DIR = File.expand_path(File.join(File.dirname(__FILE__), '../raw_fixtures')
 
 describe 'SvnParser' do
   it 'test_empty_array' do
-    OhlohScm::SvnParser.parse('').must_be :empty?
+    assert_predicate OhlohScm::SvnParser.parse(''), :empty?
   end
 
   it 'test_yield_instead_of_writer' do
     commits = []
-    result = OhlohScm::SvnParser.parse(File.read(DATA_DIR + '/simple.svn_log')) do |commit|
+    result = OhlohScm::SvnParser.parse(File.read("#{DATA_DIR}/simple.svn_log")) do |commit|
       commits << commit.token
     end
-    result.must_be_nil
-    commits.must_equal [5, 4, 3, 2, 1]
+    assert_nil result
+    assert_equal commits, [5, 4, 3, 2, 1]
   end
 
   it 'test_log_parser' do
@@ -37,22 +37,22 @@ describe 'SvnParser' do
     revs = OhlohScm::SvnParser.parse(sample_log)
 
     assert revs
-    revs.size.must_equal 3
+    assert_equal revs.size, 3
 
-    revs[0].token.must_equal 1
-    revs[0].committer_name.must_equal 'robin'
-    revs[0].message.must_equal "Initial Checkin\n" # Note \n at end of comment
-    revs[0].committer_date.must_equal Time.utc(2006, 6, 11, 18, 28, 0o0)
+    assert_equal revs[0].token, 1
+    assert_equal revs[0].committer_name, 'robin'
+    assert_equal revs[0].message, "Initial Checkin\n" # Note \n at end of comment
+    assert_equal revs[0].committer_date, Time.utc(2006, 6, 11, 18, 28, 0o0)
 
-    revs[1].token.must_equal 2
-    revs[1].committer_name.must_equal 'jason'
-    revs[1].message.must_equal 'added makefile' # Note no \n at end of comment
-    revs[1].committer_date.must_equal Time.utc(2006, 6, 11, 18, 32, 13)
+    assert_equal revs[1].token, 2
+    assert_equal revs[1].committer_name, 'jason'
+    assert_equal revs[1].message, 'added makefile' # Note no \n at end of comment
+    assert_equal revs[1].committer_date, Time.utc(2006, 6, 11, 18, 32, 13)
 
-    revs[2].token.must_equal 3
-    revs[2].committer_name.must_equal 'robin'
-    revs[2].message.must_equal 'added some documentation and licensing info'
-    revs[2].committer_date.must_equal Time.utc(2006, 6, 11, 18, 34, 17)
+    assert_equal revs[2].token, 3
+    assert_equal revs[2].committer_name, 'robin'
+    assert_equal revs[2].message, 'added some documentation and licensing info'
+    assert_equal revs[2].committer_date, Time.utc(2006, 6, 11, 18, 34, 17)
   end
 
   # This is an excerpt from the log for Wireshark. It includes Subversion log excerpts in
@@ -95,10 +95,10 @@ describe 'SvnParser' do
     revs = OhlohScm::SvnParser.parse(log)
 
     assert revs
-    revs.size.must_equal 2
+    assert_equal revs.size, 2
 
-    revs[0].token.must_equal 21_932
-    revs[1].token.must_equal 21_931
+    assert_equal revs[0].token, 21_932
+    assert_equal revs[1].token, 21_931
 
     comment = <<~COMMENT
       Update from samba tree revision 23054 to 23135
@@ -123,7 +123,7 @@ describe 'SvnParser' do
       ------------------------------------------------------------------------
       ============================ Samba log end ==============
     COMMENT
-    revs[0].message.must_equal comment
+    assert_equal revs[0].message, comment
   end
 
   it 'test_svn_copy' do
@@ -137,10 +137,10 @@ describe 'SvnParser' do
     LOG
 
     commits = OhlohScm::SvnParser.parse(log)
-    commits.size.must_equal 1
-    commits.first.diffs.size.must_equal 1
-    commits.first.diffs.first.path.must_equal '/trunk'
-    commits.first.diffs.first.from_path.must_equal '/branches/development'
-    commits.first.diffs.first.from_revision.must_equal 7
+    assert_equal commits.size, 1
+    assert_equal commits.first.diffs.size, 1
+    assert_equal commits.first.diffs.first.path, '/trunk'
+    assert_equal commits.first.diffs.first.from_path, '/branches/development'
+    assert_equal commits.first.diffs.first.from_revision, 7
   end
 end

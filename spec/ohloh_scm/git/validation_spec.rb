@@ -4,22 +4,22 @@ describe 'Git::Validation' do
   it 'wont have errors for valid url' do
     core = OhlohScm::Factory.get_core(scm_type: :git, url: 'https://github.com/ruby/ruby')
     core.validation.send(:validate_attributes)
-    core.errors.must_be :empty?
+    assert_empty core.errors
   end
 
   it 'must have errors for invalid branch_name' do
-    get_core(:git, branch_name: 'x' * 81).validation.send(:branch_name_errors).wont_be :empty?
-    get_core(:git, branch_name: 'foo@bar').validation.send(:branch_name_errors).wont_be :empty?
+    refute_empty get_core(:git, branch_name: 'x' * 81).validation.send(:branch_name_errors)
+    refute_empty get_core(:git, branch_name: 'foo@bar').validation.send(:branch_name_errors)
   end
 
   it 'must have errors for invalid username' do
-    get_core(:git, username: 'x' * 33).validation.send(:username_errors).wont_be :empty?
-    get_core(:git, username: 'foo@bar').validation.send(:username_errors).wont_be :empty?
+    refute_empty get_core(:git, username: 'x' * 33).validation.send(:username_errors)
+    refute_empty get_core(:git, username: 'foo@bar').validation.send(:username_errors)
   end
 
   it 'must have errors for invalid password' do
-    get_core(:git, password: 'x' * 33).validation.send(:password_errors).wont_be :empty?
-    get_core(:git, password: 'escape').validation.send(:password_errors).wont_be :empty?
+    refute_empty get_core(:git, password: 'x' * 33).validation.send(:password_errors)
+    refute_empty get_core(:git, password: 'escape').validation.send(:password_errors)
   end
 
   describe 'validate url' do
